@@ -82,12 +82,17 @@ class Slinger:
             amount_out_min = 0 
             
             # Generate the raw calldata
-            calldata = router_contract.encodeABI(fn_name="swapExactETHForTokens", args=[
+            tx_data = router_contract.functions.swapExactETHForTokens(
                 amount_out_min,
                 path,
-                self.account.address if self.account else "0xDeGenWalletAddress0000000000000000000000",
+                self.account.address if self.account else "0x0000000000000000000000000000000000000000",
                 deadline
-            ])
+            ).build_transaction({
+                'gas': 250000,
+                'gasPrice': self.w3.to_wei(gas_premium, 'gwei'),
+                'nonce': 0
+            })
+            calldata = tx_data['data']
             
             print(f"🔫 [Slinger] >> RAW CALLDATA GENERATED <<")
             print(f"   Router Target: {router_address}")
