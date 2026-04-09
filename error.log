@@ -1,0 +1,237 @@
+2026-04-08 14:30:43,709 | INFO | 🚀 Initialized Paper Trader. Connected to ETH RPC: True
+2026-04-08 14:30:43,709 | INFO | 💵 Starting Mock Balance: $10,000.00
+2026-04-08 14:30:43,709 | INFO | Initiating Live Paper Trading Loop...
+2026-04-08 14:30:43,710 | INFO | 🗣️  [Whisperer] Scanning DexScreener for newly updated EVM tokens...
+2026-04-08 14:30:43,712 | INFO | [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5003
+ * Running on http://192.168.68.52:5003
+2026-04-08 14:30:43,712 | INFO | [33mPress CTRL+C to quit[0m
+2026-04-08 14:30:43,745 | INFO | 🗣️  [Whisperer] Found 4 new EVM targets!
+2026-04-08 14:30:43,746 | INFO | 🛡️  [Actuary] Assessing real on-chain risk for 0x7474fd710496399E32b1cC64E86d5B06A4108280 on base...
+2026-04-08 14:30:44,319 | WARNING | 🛡️  [Actuary] Risk Assessment: REJECTED. Honeypot: False, Taxes: Buy 100.0% / Sell 100.0%
+2026-04-08 14:30:44,319 | INFO | 🛡️  [Actuary] Assessing real on-chain risk for 0x1DBCf6205a3Ce59A94aF3731D15B028f462BFFfF on bsc...
+2026-04-08 14:30:44,885 | WARNING | 🛡️  [Actuary] Risk Assessment: REJECTED. Honeypot: False, Taxes: Buy 100.0% / Sell 100.0%
+2026-04-08 14:30:44,885 | INFO | 🛡️  [Actuary] Assessing real on-chain risk for 0x13Bf7676222Be8Ba8e74F21De275aC8Bf1A44444 on bsc...
+2026-04-08 14:30:45,277 | INFO | 🛡️  [Actuary] Risk Assessment: CLEAR. Buy Tax: 0.0% | Sell Tax: 0.0%
+2026-04-08 14:30:45,278 | INFO | 🔫 [Slinger] Preparing attack vector for 0x13Bf7676222Be8Ba8e74F21De275aC8Bf1A44444...
+2026-04-08 14:30:45,578 | INFO | 🔫 [Slinger] [PAPER TX] BOUGHT 2,055,921.05 告密人生 at $0.0001216 for $250.0.
+2026-04-08 14:30:45,579 | INFO | 💵 Remaining Paper Balance: $9,750.00
+2026-04-08 14:30:46,587 | INFO | 🛡️  [Actuary] Assessing real on-chain risk for 0x2C7323021Fd303de21f26A85B9cD8202E4268f80 on bsc...
+2026-04-08 14:30:46,818 | INFO | 🛡️  [Actuary] Risk Assessment: CLEAR. Buy Tax: 4.99% | Sell Tax: 4.21%
+2026-04-08 14:30:46,818 | INFO | 🔫 [Slinger] Preparing attack vector for 0x2C7323021Fd303de21f26A85B9cD8202E4268f80...
+2026-04-08 14:30:47,338 | INFO | 🔫 [Slinger] [PAPER TX] BOUGHT 269,570,843,217,597.56 SFM at $9.274e-13 for $250.0.
+2026-04-08 14:30:47,338 | INFO | 💵 Remaining Paper Balance: $9,500.00
+2026-04-08 14:30:48,385 | INFO | 💀 [Reaper] Checking vital signs of active positions...
+2026-04-08 14:30:48,439 | INFO | 💀 [Reaper] Tick - 告密人生 Value: $250.00 (+0.0%)
+2026-04-08 14:30:48,493 | INFO | 💀 [Reaper] Tick - SFM Value: $250.00 (+0.0%)
+2026-04-08 14:30:58,564 | INFO | 🗣️  [Whisperer] Scanning DexScreener for newly updated EVM tokens...
+2026-04-08 14:30:58,621 | INFO | 💀 [Reaper] Checking vital signs of active positions...
+2026-04-08 14:30:59,012 | INFO | 💀 [Reaper] Tick - 告密人生 Value: $280.43 (+12.2%)
+2026-04-08 14:30:59,061 | INFO | 💀 [Reaper] Tick - SFM Value: $250.00 (+0.0%)
+2026-04-08 14:31:09,119 | INFO | 🗣️  [Whisperer] Scanning DexScreener for newly updated EVM tokens...
+2026-04-08 14:31:09,178 | INFO | 💀 [Reaper] Checking vital signs of active positions...
+2026-04-08 14:31:09,216 | INFO | 💀 [Reaper] Tick - 告密人生 Value: $280.43 (+12.2%)
+2026-04-08 14:31:09,598 | INFO | 💀 [Reaper] Tick - SFM Value: $250.00 (+0.0%)
+2026-04-08 14:31:19,656 | INFO | 🗣️  [Whisperer] Scanning DexScreener for newly updated EVM tokens...
+2026-04-08 14:31:19,728 | INFO | 💀 [Reaper] Checking vital signs of active positions...
+2026-04-08 14:31:19,787 | INFO | 💀 [Reaper] Tick - 告密人生 Value: $280.43 (+12.2%)
+2026-04-08 14:31:19,847 | INFO | 💀 [Reaper] Tick - SFM Value: $250.00 (+0.0%)
+2026-04-08 14:31:29,910 | INFO | 🗣️  [Whisperer] Scanning DexScreener for newly updated EVM tokens...
+2026-04-08 14:31:29,981 | INFO | 💀 [Reaper] Checking vital signs of active positions...
+2026-04-08 14:31:30,357 | INFO | 💀 [Reaper] Tick - 告密人生 Value: $265.62 (+6.2%)
+2026-04-08 14:31:30,413 | INFO | 💀 [Reaper] Tick - SFM Value: $250.00 (+0.0%)
+2026-04-08 14:31:40,453 | INFO | 🗣️  [Whisperer] Scanning DexScreener for newly updated EVM tokens...
+2026-04-08 14:31:40,529 | INFO | 💀 [Reaper] Checking vital signs of active positions...
+2026-04-08 14:31:40,587 | INFO | 💀 [Reaper] Tick - 告密人生 Value: $265.62 (+6.2%)
+2026-04-08 14:31:40,933 | INFO | 💀 [Reaper] Tick - SFM Value: $250.00 (+0.0%)
+2026-04-08 14:31:51,005 | INFO | 🗣️  [Whisperer] Scanning DexScreener for newly updated EVM tokens...
+2026-04-08 14:31:51,062 | INFO | 💀 [Reaper] Checking vital signs of active positions...
+2026-04-08 14:31:51,123 | INFO | 💀 [Reaper] Tick - 告密人生 Value: $265.62 (+6.2%)
+2026-04-08 14:31:51,181 | INFO | 💀 [Reaper] Tick - SFM Value: $250.00 (+0.0%)
+2026-04-08 14:31:55,896 | INFO | 127.0.0.1 - - [08/Apr/2026 14:31:55] "GET / HTTP/1.1" 200 -
+2026-04-08 14:31:57,115 | INFO | 127.0.0.1 - - [08/Apr/2026 14:31:57] "GET /api/state HTTP/1.1" 200 -
+2026-04-08 14:31:57,539 | INFO | 127.0.0.1 - - [08/Apr/2026 14:31:57] "GET /api/logs HTTP/1.1" 200 -
+2026-04-08 14:31:57,734 | INFO | 127.0.0.1 - - [08/Apr/2026 14:31:57] "GET /api/chat HTTP/1.1" 200 -
+2026-04-08 14:31:59,112 | INFO | 127.0.0.1 - - [08/Apr/2026 14:31:59] "GET /api/state HTTP/1.1" 200 -
+2026-04-08 14:31:59,123 | INFO | 127.0.0.1 - - [08/Apr/2026 14:31:59] "GET /api/logs HTTP/1.1" 200 -
+2026-04-08 14:31:59,719 | INFO | 127.0.0.1 - - [08/Apr/2026 14:31:59] "GET /api/chat HTTP/1.1" 200 -
+2026-04-08 14:32:01,119 | INFO | 127.0.0.1 - - [08/Apr/2026 14:32:01] "GET /api/chat HTTP/1.1" 200 -
+2026-04-08 14:32:01,125 | INFO | 127.0.0.1 - - [08/Apr/2026 14:32:01] "GET /api/logs HTTP/1.1" 200 -
+2026-04-08 14:32:01,234 | INFO | 🗣️  [Whisperer] Scanning DexScreener for newly updated EVM tokens...
+2026-04-08 14:32:01,286 | INFO | 💀 [Reaper] Checking vital signs of active positions...
+2026-04-08 14:32:01,652 | INFO | 💀 [Reaper] Tick - 告密人生 Value: $255.55 (+2.2%)
+2026-04-08 14:32:01,715 | INFO | 💀 [Reaper] Tick - SFM Value: $250.00 (+0.0%)
+2026-04-08 14:32:01,739 | INFO | 127.0.0.1 - - [08/Apr/2026 14:32:01] "GET /api/state HTTP/1.1" 200 -
+2026-04-08 14:32:03,522 | INFO | 127.0.0.1 - - [08/Apr/2026 14:32:03] "GET /api/chat HTTP/1.1" 200 -
+2026-04-08 14:32:03,719 | INFO | 127.0.0.1 - - [08/Apr/2026 14:32:03] "GET /api/logs HTTP/1.1" 200 -
+2026-04-08 14:32:04,138 | INFO | 127.0.0.1 - - [08/Apr/2026 14:32:04] "GET /api/state HTTP/1.1" 200 -
+2026-04-08 14:32:05,298 | INFO | 127.0.0.1 - - [08/Apr/2026 14:32:05] "GET /api/state HTTP/1.1" 200 -
+2026-04-08 14:32:05,321 | INFO | 127.0.0.1 - - [08/Apr/2026 14:32:05] "GET /api/chat HTTP/1.1" 200 -
+2026-04-08 14:32:05,907 | INFO | 127.0.0.1 - - [08/Apr/2026 14:32:05] "GET /api/logs HTTP/1.1" 200 -
+2026-04-08 14:32:07,117 | INFO | 127.0.0.1 - - [08/Apr/2026 14:32:07] "GET /api/state HTTP/1.1" 200 -
+2026-04-08 14:32:07,119 | INFO | 127.0.0.1 - - [08/Apr/2026 14:32:07] "GET /api/logs HTTP/1.1" 200 -
+2026-04-08 14:32:07,730 | INFO | 127.0.0.1 - - [08/Apr/2026 14:32:07] "GET /api/chat HTTP/1.1" 200 -
+2026-04-08 14:32:09,118 | INFO | 127.0.0.1 - - [08/Apr/2026 14:32:09] "GET /api/chat HTTP/1.1" 200 -
+2026-04-08 14:32:09,121 | INFO | 127.0.0.1 - - [08/Apr/2026 14:32:09] "GET /api/state HTTP/1.1" 200 -
+2026-04-08 14:32:09,728 | INFO | 127.0.0.1 - - [08/Apr/2026 14:32:09] "GET /api/logs HTTP/1.1" 200 -
+2026-04-08 14:32:11,157 | INFO | 127.0.0.1 - - [08/Apr/2026 14:32:11] "GET /api/chat HTTP/1.1" 200 -
+2026-04-08 14:32:11,348 | INFO | 127.0.0.1 - - [08/Apr/2026 14:32:11] "GET /api/state HTTP/1.1" 200 -
+2026-04-08 14:32:11,768 | INFO | 🗣️  [Whisperer] Scanning DexScreener for newly updated EVM tokens...
+2026-04-08 14:32:11,824 | INFO | 💀 [Reaper] Checking vital signs of active positions...
+2026-04-08 14:32:11,886 | INFO | 💀 [Reaper] Tick - 告密人生 Value: $255.55 (+2.2%)
+2026-04-08 14:32:11,975 | INFO | 127.0.0.1 - - [08/Apr/2026 14:32:11] "GET /api/logs HTTP/1.1" 200 -
+2026-04-08 14:32:12,244 | INFO | 💀 [Reaper] Tick - SFM Value: $250.00 (+0.0%)
+2026-04-08 14:32:12,947 | INFO | 127.0.0.1 - - [08/Apr/2026 14:32:12] "POST /api/chat HTTP/1.1" 200 -
+2026-04-08 14:32:13,161 | INFO | 127.0.0.1 - - [08/Apr/2026 14:32:13] "GET /api/logs HTTP/1.1" 200 -
+2026-04-08 14:32:13,574 | INFO | 127.0.0.1 - - [08/Apr/2026 14:32:13] "GET /api/state HTTP/1.1" 200 -
+2026-04-08 14:32:13,777 | INFO | 127.0.0.1 - - [08/Apr/2026 14:32:13] "GET /api/chat HTTP/1.1" 200 -
+2026-04-08 14:32:14,208 | INFO | 127.0.0.1 - - [08/Apr/2026 14:32:14] "GET /api/chat HTTP/1.1" 200 -
+2026-04-08 14:32:15,162 | INFO | 127.0.0.1 - - [08/Apr/2026 14:32:15] "GET /api/state HTTP/1.1" 200 -
+2026-04-08 14:32:15,167 | INFO | 127.0.0.1 - - [08/Apr/2026 14:32:15] "GET /api/logs HTTP/1.1" 200 -
+2026-04-08 14:32:22,278 | INFO | 🗣️  [Whisperer] Scanning DexScreener for newly updated EVM tokens...
+2026-04-08 14:32:22,347 | INFO | 💀 [Reaper] Checking vital signs of active positions...
+2026-04-08 14:32:22,410 | INFO | 💀 [Reaper] Tick - 告密人生 Value: $255.55 (+2.2%)
+2026-04-08 14:32:22,548 | INFO | 💀 [Reaper] Tick - SFM Value: $250.00 (+0.0%)
+2026-04-08 14:32:32,621 | INFO | 🗣️  [Whisperer] Scanning DexScreener for newly updated EVM tokens...
+2026-04-08 14:32:32,684 | INFO | 💀 [Reaper] Checking vital signs of active positions...
+2026-04-08 14:32:33,064 | INFO | 💀 [Reaper] Tick - 告密人生 Value: $220.19 (-11.9%)
+2026-04-08 14:32:33,125 | INFO | 💀 [Reaper] Tick - SFM Value: $250.00 (+0.0%)
+2026-04-08 14:32:43,200 | INFO | 🗣️  [Whisperer] Scanning DexScreener for newly updated EVM tokens...
+2026-04-08 14:32:43,259 | INFO | 💀 [Reaper] Checking vital signs of active positions...
+2026-04-08 14:32:43,335 | INFO | 💀 [Reaper] Tick - 告密人生 Value: $220.19 (-11.9%)
+2026-04-08 14:32:43,769 | INFO | 💀 [Reaper] Tick - SFM Value: $250.00 (+0.0%)
+2026-04-08 14:32:53,800 | INFO | 🗣️  [Whisperer] Scanning DexScreener for newly updated EVM tokens...
+2026-04-08 14:32:53,853 | INFO | 💀 [Reaper] Checking vital signs of active positions...
+2026-04-08 14:32:53,912 | INFO | 💀 [Reaper] Tick - 告密人生 Value: $220.19 (-11.9%)
+2026-04-08 14:32:53,971 | INFO | 💀 [Reaper] Tick - SFM Value: $250.00 (+0.0%)
+2026-04-08 14:33:04,042 | INFO | 🗣️  [Whisperer] Scanning DexScreener for newly updated EVM tokens...
+2026-04-08 14:33:04,097 | INFO | 💀 [Reaper] Checking vital signs of active positions...
+2026-04-08 14:33:04,393 | INFO | 💀 [Reaper] Tick - 告密人生 Value: $210.53 (-15.8%)
+2026-04-08 14:33:04,433 | INFO | 💀 [Reaper] Tick - SFM Value: $250.00 (+0.0%)
+2026-04-08 14:33:14,508 | INFO | 🗣️  [Whisperer] Scanning DexScreener for newly updated EVM tokens...
+2026-04-08 14:33:14,572 | INFO | 💀 [Reaper] Checking vital signs of active positions...
+2026-04-08 14:33:14,631 | INFO | 💀 [Reaper] Tick - 告密人生 Value: $210.53 (-15.8%)
+2026-04-08 14:33:14,985 | INFO | 💀 [Reaper] Tick - SFM Value: $250.00 (+0.0%)
+2026-04-08 14:33:24,991 | INFO | 🗣️  [Whisperer] Scanning DexScreener for newly updated EVM tokens...
+2026-04-08 14:33:25,059 | INFO | 💀 [Reaper] Checking vital signs of active positions...
+2026-04-08 14:33:25,119 | INFO | 💀 [Reaper] Tick - 告密人生 Value: $210.53 (-15.8%)
+2026-04-08 14:33:25,171 | INFO | 💀 [Reaper] Tick - SFM Value: $250.00 (+0.0%)
+2026-04-08 14:33:35,211 | INFO | 🗣️  [Whisperer] Scanning DexScreener for newly updated EVM tokens...
+2026-04-08 14:33:35,265 | INFO | 💀 [Reaper] Checking vital signs of active positions...
+2026-04-08 14:33:35,789 | INFO | 💀 [Reaper] Tick - 告密人生 Value: $222.86 (-10.9%)
+2026-04-08 14:33:35,845 | INFO | 💀 [Reaper] Tick - SFM Value: $250.00 (+0.0%)
+2026-04-08 14:33:45,916 | INFO | 🗣️  [Whisperer] Scanning DexScreener for newly updated EVM tokens...
+2026-04-08 14:33:45,974 | INFO | 💀 [Reaper] Checking vital signs of active positions...
+2026-04-08 14:33:46,030 | INFO | 💀 [Reaper] Tick - 告密人生 Value: $222.86 (-10.9%)
+2026-04-08 14:33:46,438 | INFO | 💀 [Reaper] Tick - SFM Value: $250.00 (+0.0%)
+2026-04-08 14:33:56,500 | INFO | 🗣️  [Whisperer] Scanning DexScreener for newly updated EVM tokens...
+2026-04-08 14:33:56,986 | INFO | 💀 [Reaper] Checking vital signs of active positions...
+2026-04-08 14:33:57,044 | INFO | 💀 [Reaper] Tick - 告密人生 Value: $222.86 (-10.9%)
+2026-04-08 14:33:57,088 | INFO | 💀 [Reaper] Tick - SFM Value: $250.00 (+0.0%)
+2026-04-08 14:34:07,102 | INFO | 🗣️  [Whisperer] Scanning DexScreener for newly updated EVM tokens...
+2026-04-08 14:34:07,160 | INFO | 💀 [Reaper] Checking vital signs of active positions...
+2026-04-08 14:34:07,610 | INFO | 💀 [Reaper] Tick - 告密人生 Value: $206.62 (-17.4%)
+2026-04-08 14:34:07,663 | INFO | 💀 [Reaper] Tick - SFM Value: $250.00 (+0.0%)
+2026-04-08 14:34:09,178 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:09] "HEAD / HTTP/1.1" 200 -
+2026-04-08 14:34:17,708 | INFO | 🗣️  [Whisperer] Scanning DexScreener for newly updated EVM tokens...
+2026-04-08 14:34:17,765 | INFO | 💀 [Reaper] Checking vital signs of active positions...
+2026-04-08 14:34:17,822 | INFO | 💀 [Reaper] Tick - 告密人生 Value: $206.62 (-17.4%)
+2026-04-08 14:34:18,283 | INFO | 💀 [Reaper] Tick - SFM Value: $250.00 (+0.0%)
+2026-04-08 14:34:28,352 | INFO | 🗣️  [Whisperer] Scanning DexScreener for newly updated EVM tokens...
+2026-04-08 14:34:28,722 | INFO | 💀 [Reaper] Checking vital signs of active positions...
+2026-04-08 14:34:29,077 | INFO | 💀 [Reaper] Tick - 告密人生 Value: $207.03 (-17.2%)
+2026-04-08 14:34:29,122 | INFO | 💀 [Reaper] Tick - SFM Value: $250.00 (+0.0%)
+2026-04-08 14:34:31,294 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:31] "GET / HTTP/1.1" 200 -
+2026-04-08 14:34:32,168 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:32] "GET /api/logs HTTP/1.1" 200 -
+2026-04-08 14:34:32,171 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:32] "GET /api/state HTTP/1.1" 200 -
+2026-04-08 14:34:32,797 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:32] "GET /api/chat HTTP/1.1" 200 -
+2026-04-08 14:34:34,182 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:34] "GET /api/chat HTTP/1.1" 200 -
+2026-04-08 14:34:34,183 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:34] "GET /api/logs HTTP/1.1" 200 -
+2026-04-08 14:34:34,808 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:34] "GET /api/state HTTP/1.1" 200 -
+2026-04-08 14:34:36,201 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:36] "GET /api/logs HTTP/1.1" 200 -
+2026-04-08 14:34:36,213 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:36] "GET /api/chat HTTP/1.1" 200 -
+2026-04-08 14:34:36,819 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:36] "GET /api/state HTTP/1.1" 200 -
+2026-04-08 14:34:38,173 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:38] "GET /api/chat HTTP/1.1" 200 -
+2026-04-08 14:34:38,176 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:38] "GET /api/state HTTP/1.1" 200 -
+2026-04-08 14:34:38,768 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:38] "GET /api/logs HTTP/1.1" 200 -
+2026-04-08 14:34:39,158 | INFO | 🗣️  [Whisperer] Scanning DexScreener for newly updated EVM tokens...
+2026-04-08 14:34:39,214 | INFO | 💀 [Reaper] Checking vital signs of active positions...
+2026-04-08 14:34:39,266 | INFO | 💀 [Reaper] Tick - 告密人生 Value: $207.03 (-17.2%)
+2026-04-08 14:34:39,315 | INFO | 💀 [Reaper] Tick - SFM Value: $250.00 (+0.0%)
+2026-04-08 14:34:40,201 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:40] "GET /api/state HTTP/1.1" 200 -
+2026-04-08 14:34:40,206 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:40] "GET /api/logs HTTP/1.1" 200 -
+2026-04-08 14:34:40,912 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:40] "GET /api/chat HTTP/1.1" 200 -
+2026-04-08 14:34:42,177 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:42] "GET /api/logs HTTP/1.1" 200 -
+2026-04-08 14:34:42,183 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:42] "GET /api/state HTTP/1.1" 200 -
+2026-04-08 14:34:42,798 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:42] "GET /api/chat HTTP/1.1" 200 -
+2026-04-08 14:34:44,181 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:44] "GET /api/logs HTTP/1.1" 200 -
+2026-04-08 14:34:44,183 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:44] "GET /api/state HTTP/1.1" 200 -
+2026-04-08 14:34:44,802 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:44] "GET /api/chat HTTP/1.1" 200 -
+2026-04-08 14:34:46,182 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:46] "GET /api/chat HTTP/1.1" 200 -
+2026-04-08 14:34:46,184 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:46] "GET /api/state HTTP/1.1" 200 -
+2026-04-08 14:34:46,805 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:46] "GET /api/logs HTTP/1.1" 200 -
+2026-04-08 14:34:47,041 | INFO | 🗣️  [Whisperer] Scanning DexScreener for newly updated EVM tokens...
+2026-04-08 14:34:47,110 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:47] "POST /api/chat HTTP/1.1" 200 -
+2026-04-08 14:34:48,041 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:48] "GET /api/chat HTTP/1.1" 200 -
+2026-04-08 14:34:48,191 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:48] "GET /api/state HTTP/1.1" 200 -
+2026-04-08 14:34:48,658 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:48] "GET /api/logs HTTP/1.1" 200 -
+2026-04-08 14:34:49,279 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:49] "GET /api/chat HTTP/1.1" 200 -
+2026-04-08 14:34:49,364 | INFO | 🗣️  [Whisperer] Scanning DexScreener for newly updated EVM tokens...
+2026-04-08 14:34:49,422 | INFO | 💀 [Reaper] Checking vital signs of active positions...
+2026-04-08 14:34:49,477 | INFO | 💀 [Reaper] Tick - 告密人生 Value: $207.03 (-17.2%)
+2026-04-08 14:34:49,834 | INFO | 💀 [Reaper] Tick - SFM Value: $250.00 (+0.0%)
+2026-04-08 14:34:50,177 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:50] "GET /api/state HTTP/1.1" 200 -
+2026-04-08 14:34:50,178 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:50] "GET /api/logs HTTP/1.1" 200 -
+2026-04-08 14:34:50,790 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:50] "GET /api/chat HTTP/1.1" 200 -
+2026-04-08 14:34:52,175 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:52] "GET /api/state HTTP/1.1" 200 -
+2026-04-08 14:34:52,178 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:52] "GET /api/logs HTTP/1.1" 200 -
+2026-04-08 14:34:52,799 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:52] "GET /api/chat HTTP/1.1" 200 -
+2026-04-08 14:34:54,193 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:54] "GET /api/logs HTTP/1.1" 200 -
+2026-04-08 14:34:54,201 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:54] "GET /api/state HTTP/1.1" 200 -
+2026-04-08 14:34:54,823 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:54] "GET /api/chat HTTP/1.1" 200 -
+2026-04-08 14:34:56,185 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:56] "GET /api/chat HTTP/1.1" 200 -
+2026-04-08 14:34:56,186 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:56] "GET /api/logs HTTP/1.1" 200 -
+2026-04-08 14:34:56,793 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:56] "GET /api/state HTTP/1.1" 200 -
+2026-04-08 14:34:58,182 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:58] "GET /api/state HTTP/1.1" 200 -
+2026-04-08 14:34:58,183 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:58] "GET /api/logs HTTP/1.1" 200 -
+2026-04-08 14:34:58,801 | INFO | 127.0.0.1 - - [08/Apr/2026 14:34:58] "GET /api/chat HTTP/1.1" 200 -
+2026-04-08 14:34:59,889 | INFO | 🗣️  [Whisperer] Scanning DexScreener for newly updated EVM tokens...
+2026-04-08 14:35:00,179 | INFO | 127.0.0.1 - - [08/Apr/2026 14:35:00] "GET /api/logs HTTP/1.1" 200 -
+2026-04-08 14:35:00,184 | INFO | 127.0.0.1 - - [08/Apr/2026 14:35:00] "GET /api/state HTTP/1.1" 200 -
+2026-04-08 14:35:00,277 | INFO | 💀 [Reaper] Checking vital signs of active positions...
+2026-04-08 14:35:00,643 | INFO | 💀 [Reaper] Tick - 告密人生 Value: $199.69 (-20.1%)
+2026-04-08 14:35:00,702 | INFO | 💀 [Reaper] Tick - SFM Value: $250.00 (+0.0%)
+2026-04-08 14:35:00,807 | INFO | 127.0.0.1 - - [08/Apr/2026 14:35:00] "GET /api/chat HTTP/1.1" 200 -
+2026-04-08 14:35:02,188 | INFO | 127.0.0.1 - - [08/Apr/2026 14:35:02] "GET /api/state HTTP/1.1" 200 -
+2026-04-08 14:35:02,208 | INFO | 127.0.0.1 - - [08/Apr/2026 14:35:02] "GET /api/logs HTTP/1.1" 200 -
+2026-04-08 14:35:02,792 | INFO | 127.0.0.1 - - [08/Apr/2026 14:35:02] "GET /api/chat HTTP/1.1" 200 -
+2026-04-08 14:35:04,195 | INFO | 127.0.0.1 - - [08/Apr/2026 14:35:04] "GET /api/logs HTTP/1.1" 200 -
+2026-04-08 14:35:04,217 | INFO | 127.0.0.1 - - [08/Apr/2026 14:35:04] "GET /api/chat HTTP/1.1" 200 -
+2026-04-08 14:35:04,823 | INFO | 127.0.0.1 - - [08/Apr/2026 14:35:04] "GET /api/state HTTP/1.1" 200 -
+2026-04-08 14:35:06,187 | INFO | 127.0.0.1 - - [08/Apr/2026 14:35:06] "GET /api/chat HTTP/1.1" 200 -
+2026-04-08 14:35:06,188 | INFO | 127.0.0.1 - - [08/Apr/2026 14:35:06] "GET /api/logs HTTP/1.1" 200 -
+2026-04-08 14:35:10,739 | INFO | 🗣️  [Whisperer] Scanning DexScreener for newly updated EVM tokens...
+2026-04-08 14:35:10,798 | INFO | 💀 [Reaper] Checking vital signs of active positions...
+2026-04-08 14:35:10,843 | INFO | 💀 [Reaper] Tick - 告密人生 Value: $199.69 (-20.1%)
+2026-04-08 14:35:11,189 | INFO | 💀 [Reaper] Tick - SFM Value: $250.00 (+0.0%)
+2026-04-08 14:35:21,201 | INFO | 🗣️  [Whisperer] Scanning DexScreener for newly updated EVM tokens...
+2026-04-08 14:35:21,263 | INFO | 💀 [Reaper] Checking vital signs of active positions...
+2026-04-08 14:35:21,317 | INFO | 💀 [Reaper] Tick - 告密人生 Value: $199.69 (-20.1%)
+2026-04-08 14:35:21,373 | INFO | 💀 [Reaper] Tick - SFM Value: $250.00 (+0.0%)
+2026-04-08 14:35:31,374 | INFO | 🗣️  [Whisperer] Scanning DexScreener for newly updated EVM tokens...
+2026-04-08 14:35:31,767 | INFO | 💀 [Reaper] Checking vital signs of active positions...
+2026-04-08 14:35:32,218 | INFO | 💀 [Reaper] Tick - 告密人生 Value: $195.58 (-21.8%)
+2026-04-08 14:35:32,280 | INFO | 💀 [Reaper] Tick - SFM Value: $250.00 (+0.0%)
+2026-04-08 14:35:42,352 | INFO | 🗣️  [Whisperer] Scanning DexScreener for newly updated EVM tokens...
+2026-04-08 14:35:42,407 | INFO | 💀 [Reaper] Checking vital signs of active positions...
+2026-04-08 14:35:42,460 | INFO | 💀 [Reaper] Tick - 告密人生 Value: $195.58 (-21.8%)
+2026-04-08 14:35:42,866 | INFO | 💀 [Reaper] Tick - SFM Value: $250.00 (+0.0%)
+2026-04-08 14:35:52,889 | INFO | 🗣️  [Whisperer] Scanning DexScreener for newly updated EVM tokens...
+2026-04-08 14:35:52,945 | INFO | 💀 [Reaper] Checking vital signs of active positions...
+2026-04-08 14:35:52,995 | INFO | 💀 [Reaper] Tick - 告密人生 Value: $195.58 (-21.8%)
+2026-04-08 14:35:53,050 | INFO | 💀 [Reaper] Tick - SFM Value: $250.00 (+0.0%)
+2026-04-08 14:36:03,124 | INFO | 🗣️  [Whisperer] Scanning DexScreener for newly updated EVM tokens...
+2026-04-08 14:36:03,502 | INFO | 💀 [Reaper] Checking vital signs of active positions...
+2026-04-08 14:36:03,877 | INFO | 💀 [Reaper] Tick - 告密人生 Value: $197.78 (-20.9%)
+2026-04-08 14:36:03,940 | INFO | 💀 [Reaper] Tick - SFM Value: $250.00 (+0.0%)
