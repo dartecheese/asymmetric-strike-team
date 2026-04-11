@@ -1,3 +1,4 @@
+import os
 import time
 from dotenv import load_dotenv
 
@@ -16,7 +17,23 @@ def main():
     # Initialize Team
     whisperer = Whisperer()
     actuary = Actuary(max_allowed_tax=0.25) # Give it 25% tolerance for degen plays
-    slinger = Slinger()
+    
+    # Real execution mode check
+    USE_REAL_EXECUTION = os.getenv("USE_REAL_EXECUTION", "false").lower() == "true"
+    RPC_URL = os.getenv("ETH_RPC_URL")
+    PRIVATE_KEY = os.getenv("PRIVATE_KEY")
+    
+    if USE_REAL_EXECUTION and RPC_URL and PRIVATE_KEY:
+        print("🚀 REAL EXECUTION MODE ENABLED")
+        from execution.real_slinger import RealSlingerAgent
+        from strategy_factory import StrategyFactory
+        factory = StrategyFactory()
+        degen_config = factory.get_profile("degen").slinger
+        slinger = RealSlingerAgent(degen_config, RPC_URL, PRIVATE_KEY)
+    else:
+        print("📝 PAPER TRADING MODE")
+        slinger = Slinger()
+    
     reaper = Reaper()
     
     # Execution Flow
