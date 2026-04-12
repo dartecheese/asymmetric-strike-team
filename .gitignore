@@ -73,4 +73,5 @@ error.log
 
 # Dashboard outputs
 dashboard.stdout
-dashboard.stderr
+dashboard.stderrdata/positions.json
+data/positions.tmp

@@ -6,6 +6,7 @@ import urllib.request
 import urllib.error
 from typing import Optional
 from core.models import ExecutionOrder
+from core.position_store import PositionStore
 
 logger = logging.getLogger("Reaper")
 
@@ -68,6 +69,7 @@ class Reaper:
     - FREE RIDE: extract principal at +100%
     - STOP LOSS: liquidate at -30%
     - TRAILING STOP: locks in gains after peak
+    - Persists all positions to disk — survives restarts
     """
     def __init__(
         self,
@@ -86,6 +88,39 @@ class Reaper:
         self.positions: dict[str, Position] = {}
         self._monitoring = False
         self._thread: Optional[threading.Thread] = None
+        self.store = PositionStore()
+
+        # Restore any active positions from disk
+        self._restore_positions()
+
+    def _restore_positions(self):
+        """Load active positions from disk on startup."""
+        saved = self.store.load_active()
+        if not saved:
+            return
+        print(f"💀 [Reaper] Restoring {len(saved)} position(s) from disk...")
+        for p in saved:
+            try:
+                from core.models import ExecutionOrder
+                order = ExecutionOrder(
+                    token_address=p["token_address"],
+                    chain=p.get("chain", "1"),
+                    action="BUY",
+                    amount_usd=p["amount_usd"],
+                    slippage_tolerance=0.15,
+                    gas_premium_gwei=30.0,
+                    entry_price_usd=p.get("entry_price_usd"),
+                )
+                pos = Position(order)
+                pos.current_value = p.get("current_value", pos.entry_value)
+                pos.peak_value    = p.get("peak_value",    pos.entry_value)
+                pos.status        = p.get("status",        "ACTIVE")
+                pos.pnl_pct       = p.get("pnl_pct",       0.0)
+                pos.last_price_usd = p.get("last_price_usd")
+                self.positions[p["token_address"]] = pos
+                print(f"   ↩  {p['token_address'][:14]}...  [{pos.status}]  ${pos.current_value:.2f}  {pos.pnl_pct:+.1f}%")
+            except Exception as e:
+                logger.warning(f"Could not restore position {p.get('token_address','?')[:12]}: {e}")
 
     def take_position(self, order: ExecutionOrder):
         """Register a new position to monitor."""
@@ -95,6 +130,7 @@ class Reaper:
 
         pos = Position(order)
         self.positions[order.token_address] = pos
+        self.store.save_position(pos)  # Persist immediately
 
         print(f"💀 [Reaper] Position opened: {order.token_address[:10]}...")
         print(f"   Entry value : ${order.amount_usd:.2f}")
@@ -151,24 +187,27 @@ class Reaper:
         return "hold"
 
     def _execute_action(self, pos: Position, action: str):
-        """Handle triggered actions."""
+        """Handle triggered actions and persist state."""
         if action == "stop":
             pos.status = "STOPPED"
             print(f"\n💀 [Reaper] ⛔ STOP LOSS hit on {pos.token_address[:10]}...")
             print(f"   PnL: {pos.pnl_pct:.1f}% | Value: ${pos.current_value:.2f}")
             print(f"   Position liquidated.")
+            self.store.save_position(pos)
 
         elif action == "free_ride":
             pos.status = "FREE_RIDE"
             print(f"\n💀 [Reaper] ⚡ FREE RIDE triggered on {pos.token_address[:10]}...")
             print(f"   +{pos.pnl_pct:.1f}% reached. Extracting principal (${pos.entry_value:.2f}).")
             print(f"   Moonbag remains. Trailing stop armed at -{self.trailing_stop_pct:.0f}% from peak.")
+            self.store.save_position(pos)
 
         elif action == "trail_stop":
             pos.status = "CLOSED"
             profit = pos.current_value - pos.entry_value
             print(f"\n💀 [Reaper] 🎯 TRAILING STOP fired on {pos.token_address[:10]}...")
             print(f"   Closed moonbag at ${pos.current_value:.2f} | Profit: +${profit:.2f}")
+            self.store.save_position(pos)
 
         elif action == "hold":
             direction = "📈" if pos.pnl_pct >= 0 else "📉"
@@ -176,6 +215,7 @@ class Reaper:
                 f"💀 [Reaper] Tick | {pos.token_address[:10]}... | "
                 f"${pos.current_value:.2f} | {direction} {pos.pnl_pct:+.1f}%"
             )
+            self.store.save_position(pos)  # Persist every tick
 
     def _monitor_loop(self):
         """Background monitoring loop."""
