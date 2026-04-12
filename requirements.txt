@@ -1,5 +1,20 @@
+# Asymmetric Strike Team — Core Dependencies
+# Python 3.14+ required
+
+# Data models & validation
 pydantic>=2.0.0
+
+# Web3 interaction
 web3>=6.0.0
-requests>=2.31.0
-python-dotenv>=1.0.0
 eth-account>=0.9.0
+
+# HTTP clients & APIs
+requests>=2.31.0
+
+# Environment management
+python-dotenv>=1.0.0
+
+# Development & Testing (optional)
+# pytest>=7.0.0
+# black>=23.0.0
+# mypy>=1.0.0

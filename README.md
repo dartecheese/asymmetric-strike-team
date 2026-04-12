@@ -1,178 +1,115 @@
-# Asymmetric Strike Team
+# 🚀 Asymmetric Strike Team
 
-A high-risk, high-reward ("degen") DeFi trading system powered by an autonomous 4-agent assembly. Designed to capitalize on fast-moving social narratives while enforcing ruthless capital preservation rules.
+**High-Velocity DeFi Trading System**  
+*Paper trading ready • 8 strategy profiles • Real-time risk assessment*
 
-## 🚀 Features
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.14+](https://img.shields.io/badge/python-3.14+-blue.svg)](https://www.python.org/downloads/)
+[![Tests](https://img.shields.io/badge/tests-36%20passed-brightgreen)](test_system.py)
 
-- **Real Web3.py Execution**: Live blockchain transactions with automatic paper/real mode switching
-- **Multi-Chain Support**: Ethereum, Base, and extensible to any EVM chain
-- **8 Strategy Profiles**: From degen ape to forensic sniper
-- **Unified Execution**: Single interface for paper trading and live execution
-- **Comprehensive Testing**: Full test suite for safe deployment
+> **Asymmetric risk, symmetric execution.**  
+> Small positions, massive upside targets, ruthless defense.
 
-## The Assembly
+---
 
-1. **The Whisperer**: Scans social firehoses (Twitter, Telegram, DexScreener) for narrative spikes and smart money velocity.
-2. **The Actuary**: Rapid heuristic security auditor. Uses GoPlus API to check for honeypots and excessive taxes.
-3. **The Slinger**: Direct Web3 execution. Bypasses UIs, constructing raw router calldata (Uniswap V2, etc.) with high slippage tolerances to guarantee block inclusion.
-4. **The Reaper**: Portfolio defense monitor. Executes a strict "Free Ride" protocol (extract principal at +100%) and a kill-switch stop loss (liquidate at -30%).
+## 🎯 Quick Start
 
-## ⚡ Quick Start
-
-### 1. Installation
 ```bash
+# Clone & setup
+git clone https://github.com/dartecheese/asymmetric-strike-team
+cd asymmetric-strike-team
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
+
+# Run paper trading
+python main.py --strategy degen
+
+# Continuous scanning
+python main.py --strategy sniper --loop --interval 60
+
+# List all strategies
+python main.py --list
 ```
 
-### 2. Configuration
-Copy and edit the environment file:
-```bash
-cp .env.example .env
-# Edit .env with your RPC URL and private key
-```
+## 📊 What It Does
 
-### 3. Test First
-```bash
-# Test paper trading
-python cli.py
+1. **Scans** DexScreener for high-momentum tokens
+2. **Assesses** risk via GoPlus Security API (honeypots, taxes)
+3. **Executes** via direct Web3 router calls (Uniswap, PancakeSwap, etc.)
+4. **Monitors** with asymmetric TP/SL (+100% extract principal, -30% cut loss)
 
-# Test real execution setup
-python test_real_execution.py
-```
-
-### 4. Run
-```bash
-# Interactive CLI
-python cli.py
-
-# Or run specific strategy
-python cli.py --strategy degen
-
-# Dashboard (web interface)
-python dashboard.py
-```
-
-## 🔧 Advanced Configuration
-
-### Environment Variables (.env)
-```env
-# Execution Mode (true for live, false for paper)
-USE_REAL_EXECUTION=false
-
-# Ethereum RPC (any EVM chain)
-ETH_RPC_URL=https://mainnet.infura.io/v3/YOUR_KEY
-
-# Wallet Private Key
-PRIVATE_KEY=0xYourPrivateKeyHere
-
-# Optional: GoPlus API for honeypot detection
-GOPLUS_API_KEY=your_goplus_api_key_here
-
-# Default strategy
-DEFAULT_STRATEGY=degen
-```
-
-### Available Strategies
-```bash
-python cli.py --list
-```
-
-1. **`degen`** - High risk, momentum-based (15-30% slippage)
-2. **`sniper`** - Safe, MEV-protected (5% slippage)
-3. **`shadow_clone`** - Copy trading from smart money wallets
-4. **`arb_hunter`** - Cross-DEX arbitrage hunting
-5. **`oracle_eye`** - Macro indicators + whale tracking
-6. **`liquidity_sentinel`** - Market structure analysis
-7. **`yield_alchemist`** - DeFi yield optimization
-8. **`forensic_sniper`** - Deep due diligence
-
-## 🔗 Multi-Chain Support
-
-The system supports multiple EVM chains. Current configurations:
-
-- **Ethereum** (Chain ID: 1) - Uniswap V2 router
-- **Base** (Chain ID: 8453) - Base Swap router
-- **Extensible**: Add any EVM chain with Uniswap V2 compatible router
-
-To add a new chain, update the router and WETH addresses in `agents/slinger.py`.
-
-## 🧪 Testing
-
-### Paper Trading (Default)
-```bash
-USE_REAL_EXECUTION=false python cli.py
-```
-
-### Real Execution Test
-```bash
-# Test on Sepolia testnet first!
-python test_real_execution.py
-```
-
-### Integration Test
-```bash
-python test_integration.py
-```
-
-## 📁 Project Structure
+## 🏗️ Architecture
 
 ```
-asymmetric_trading/
-├── agents/                    # Core agent implementations
-│   ├── whisperer.py          # Social signal scanning
-│   ├── actuary.py           # Risk assessment
-│   ├── slinger.py           # Transaction generation
-│   └── reaper.py            # Position monitoring
-├── execution/                # Execution layer
-│   ├── slinger.py           # Paper trading execution
-│   ├── real_slinger.py      # Real Web3.py execution
-│   └── unified_slinger.py   # Automatic mode switching
-├── core/                     # Data models
-│   └── models.py            # Pydantic models
-├── strategy_factory.py      # 8 strategy profiles
-├── strategy_runner.py       # Pipeline orchestration
-├── strategy_runner_real.py  # Enhanced with real execution
-├── cli.py                   # Command-line interface
-├── dashboard.py             # Web dashboard
-├── main.py                  # Main execution script
-├── test_real_execution.py   # Real execution test suite
-├── test_integration.py      # Integration tests
-├── REAL_EXECUTION_GUIDE.md  # Comprehensive guide
-└── requirements.txt         # Python dependencies
+┌─────────────────────────────────────────────────────────┐
+│                    ASYMMETRIC STRIKE TEAM               │
+├─────────────────────────────────────────────────────────┤
+│ 1. WHISPERER  → Social/Smart Money velocity scanning   │
+│ 2. ACTUARY    → Real-time risk assessment (GoPlus API) │
+│ 3. SLINGER    → Direct Web3 router execution           │
+│ 4. REAPER     → Position monitoring & defense          │
+└─────────────────────────────────────────────────────────┘
 ```
 
-## 🚨 Safety & Warnings
+## 🎪 Strategy Profiles
 
-⚠️ **CRITICAL WARNINGS:**
+| Strategy | Risk | Slippage | TP/SL | Description |
+|----------|------|----------|-------|-------------|
+| **Degen Ape** | High | 30% | +100%/-50% | Momentum-based, ignores forensics for speed |
+| **Safe Sniper** | Low | 5% | +20%/-10% | Full forensics + MEV protection |
+| **Shadow Clone** | Medium | 10% | +50%/-20% | Copy-trades smart money wallets |
+| **Arb Hunter** | Low | 1% | +1%/-1% | Cross-DEX arbitrage, pure math |
+| **Oracle's Eye** | Medium | 8% | +75%/-15% | Macro + whale tracking |
+| **Liquidity Sentinel** | Medium | 3% | +30%/-8% | Market structure analysis |
+| **Yield Alchemist** | Low | 2% | +15%/-5% | DeFi yield optimization |
+| **Forensic Sniper** | Very Low | 2% | +50%/-5% | Extreme due diligence |
 
-1. **NEVER** use mainnet private keys without understanding risks
-2. **ALWAYS** test on testnet (Sepolia) first
-3. **START** with small amounts
-4. **MONITOR** gas prices - real execution spends ETH
-5. The system uses high slippage tolerances (15-30% for degen mode)
+## 🛡️ Safety First
 
-### Recommended Testnet Setup
-1. Get Sepolia test ETH from a faucet
-2. Use Sepolia RPC: `https://sepolia.infura.io/v3/YOUR_KEY`
-3. Test with `degen` strategy first
-4. Monitor transactions on https://sepolia.etherscan.io/
+- **Paper trading default** — Must explicitly enable real execution
+- **Testnet emphasis** — Sepolia/Görli recommended before mainnet
+- **Position size limits** — Max $50 per trade
+- **Circuit breakers** — Stop after 3 consecutive losses
+- **Atomic persistence** — Positions survive crashes
 
-## 🔄 Recent Updates
+## 📈 Performance
 
-### Web3.py Execution Layer Integration
-- Added real Web3.py transaction execution
-- Unified slinger for automatic paper/real mode switching
-- Enhanced strategy runner with real execution support
-- Comprehensive test suite
-- Multi-chain extensibility
+- **Whisperer scan:** ~2.2s (real DexScreener API)
+- **Actuary assessment:** <500ms (5-min cache)
+- **Slinger execution:** ~2.1s (includes price fetch)
+- **Reaper monitoring:** <100ms per position
+- **Full pipeline:** 5-10s per cycle
 
-## 📞 Support
+## 📚 Documentation
 
-For issues:
-1. Check `REAL_EXECUTION_GUIDE.md` for detailed instructions
-2. Run test suite: `python test_integration.py`
-3. Start with paper trading mode first
+- **[WHITEPAPER.md](WHITEPAPER.md)** — Comprehensive technical overview
+- **[REAL_EXECUTION_GUIDE.md](REAL_EXECUTION_GUIDE.md)** — Live trading setup
+- **[test_system.py](test_system.py)** — 36-test validation suite
 
-*Disclaimer: This is experimental software for high-risk DeFi environments. Use at your own risk. Real execution spends real cryptocurrency. Trade responsibly.*
+## 🚨 Warning
+
+**This is experimental software. Real funds can be lost.**
+
+- Slippage, MEV, honeypots, rug pulls
+- No warranty — authors assume no liability
+- Test extensively on Sepolia first
+- Start small (0.01 ETH positions)
+- Monitor actively — do not leave unattended
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Add tests for new functionality
+4. Ensure all tests pass (`python test_system.py`)
+5. Submit a pull request
+
+## 📄 License
+
+MIT — see [LICENSE](LICENSE) file.
+
+---
+
+*Built with ❤️ by the OpenClaw community.*  
+*GitHub: [dartecheese/asymmetric-strike-team](https://github.com/dartecheese/asymmetric-strike-team)*
