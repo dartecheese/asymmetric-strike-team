@@ -99,7 +99,7 @@ class StrategyFactory:
         self.profiles["degen"] = StrategyProfile(
             name="Degen Ape",
             description="High risk, momentum-based. Ignores deep forensics for sheer speed.",
-            whisperer=WhispererConfig(min_velocity_score=80, scan_interval_seconds=15),
+            whisperer=WhispererConfig(min_velocity_score=40, scan_interval_seconds=15),  # Degen casts a wide net
             sleuth=None, # Too slow for degen mode
             actuary=ActuaryConfig(strict_mode=False, max_tax_allowed=30.0, require_locked_liquidity=False, allow_unverified_contracts=True),
             slinger=SlingerConfig(use_private_mempool=False, base_slippage_tolerance=0.30, gas_premium_multiplier=3.0),

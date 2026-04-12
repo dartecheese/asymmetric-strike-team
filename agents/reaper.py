@@ -48,15 +48,17 @@ def fetch_token_price_usd(token_address: str) -> Optional[float]:
 
 
 class Position:
-    def __init__(self, order: ExecutionOrder, entry_price_usd: Optional[float] = None):
+    def __init__(self, order: ExecutionOrder):
         self.token_address = order.token_address
+        self.chain = getattr(order, "chain", "1")
         self.amount_usd = order.amount_usd
-        self.entry_price_usd = entry_price_usd  # None in paper mode
+        self.entry_price_usd = order.entry_price_usd  # Set by Slinger at execution
         self.entry_value = order.amount_usd
         self.current_value = order.amount_usd
         self.peak_value = order.amount_usd
         self.status = "ACTIVE"  # ACTIVE | FREE_RIDE | STOPPED | CLOSED
         self.pnl_pct = 0.0
+        self.last_price_usd: Optional[float] = order.entry_price_usd
 
 
 class Reaper:
@@ -85,13 +87,13 @@ class Reaper:
         self._monitoring = False
         self._thread: Optional[threading.Thread] = None
 
-    def take_position(self, order: ExecutionOrder, entry_price_usd: Optional[float] = None):
+    def take_position(self, order: ExecutionOrder):
         """Register a new position to monitor."""
         if not order:
             logger.warning("take_position called with None order — skipping.")
             return
 
-        pos = Position(order, entry_price_usd)
+        pos = Position(order)
         self.positions[order.token_address] = pos
 
         print(f"💀 [Reaper] Position opened: {order.token_address[:10]}...")
@@ -106,15 +108,22 @@ class Reaper:
         Returns action: 'hold' | 'free_ride' | 'stop' | 'trail_stop'
         """
         if self.paper_mode or pos.entry_price_usd is None:
-            # Paper mode: simulate a simple random walk for demo purposes
+            # Paper mode: simulate a random walk for demo purposes
             import random
             drift = random.uniform(-0.05, 0.08)
             pos.current_value = pos.current_value * (1 + drift)
         else:
+            # Live mode: fetch real price from DexScreener
             current_price = fetch_token_price_usd(pos.token_address)
             if current_price is None:
-                logger.warning(f"No price data for {pos.token_address} — holding.")
-                return "hold"
+                # Fall back to last known price if fetch fails
+                if pos.last_price_usd:
+                    logger.warning(f"Price fetch failed for {pos.token_address[:10]}... — using last known price.")
+                    current_price = pos.last_price_usd
+                else:
+                    logger.warning(f"No price data at all for {pos.token_address[:10]}... — holding.")
+                    return "hold"
+            pos.last_price_usd = current_price
             price_ratio = current_price / pos.entry_price_usd
             pos.current_value = pos.entry_value * price_ratio
 
@@ -233,10 +242,12 @@ if __name__ == "__main__":
 
     order = ExecutionOrder(
         token_address="0x6982508145454Ce325dDbE47a25d4ec3d2311933",
+        chain="1",
         action="BUY",
         amount_usd=100.0,
         slippage_tolerance=0.30,
         gas_premium_gwei=50.0,
+        entry_price_usd=None,  # paper mode — will simulate
     )
 
     reaper.take_position(order)

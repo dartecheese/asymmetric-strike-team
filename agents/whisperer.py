@@ -112,8 +112,9 @@ class Whisperer:
         ]
 
     def _fetch_boosted_tokens(self) -> list[dict]:
-        """Fetch currently active boosts — paid attention = narrative signal."""
-        data = _get(f"{DEXSCREENER_BASE}/token-boosts/active/v1")
+        """Fetch top boosted tokens — paid attention = narrative signal."""
+        # /active/v1 is deprecated (404), use /top/v1
+        data = _get(f"{DEXSCREENER_BASE}/token-boosts/top/v1")
         if not data or not isinstance(data, list):
             return []
         return [
@@ -221,7 +222,7 @@ class Whisperer:
         candidates.sort(key=lambda c: c["score"], reverse=True)
         best = candidates[0]
 
-        # Filter out low-score noise
+        # Filter out low-score noise (inclusive — score equal to threshold is accepted)
         if best["score"] < self.min_velocity_score:
             print(f"🗣️  [Whisperer] Best candidate score {best['score']:.0f} below threshold {self.min_velocity_score}. Skipping.")
             return None

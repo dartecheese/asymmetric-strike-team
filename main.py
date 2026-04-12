@@ -151,6 +151,8 @@ def run_cycle(strategy: str = "degen", paper_mode: bool = True) -> bool:
 
     # --- Step 4: Reaper monitors with strategy TP/SL ---
     print("-" * 60)
+    live_price_tag = f"@ ${order.entry_price_usd:.8f}" if order.entry_price_usd else "(no price feed)"
+    print(f"💀 [Reaper] Entry price {live_price_tag} | {'LIVE price polling' if not paper_mode and order.entry_price_usd else 'paper sim'}")
     reaper.take_position(order)
     reaper.start_monitoring()
 

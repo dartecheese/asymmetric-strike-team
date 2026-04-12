@@ -28,7 +28,10 @@ class RiskAssessment(BaseModel):
 
 class ExecutionOrder(BaseModel):
     token_address: str
+    chain: str = Field(default="1", description="GoPlus/DexScreener chain ID")
     action: str = Field(pattern="^(BUY|SELL)$")
     amount_usd: float
     slippage_tolerance: float = Field(default=0.15, description="15% default for high volatility")
     gas_premium_gwei: float
+    entry_price_usd: Optional[float] = Field(default=None, description="Actual price at execution time")
+    tx_hash: Optional[str] = Field(default=None, description="Transaction hash if executed on-chain")

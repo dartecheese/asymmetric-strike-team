@@ -1,8 +1,32 @@
 import os
 import time
+import json
+import logging
+import urllib.request
+from typing import Optional
 from web3 import Web3
 from eth_account import Account
 from core.models import RiskAssessment, RiskLevel, ExecutionOrder
+
+logger = logging.getLogger("Slinger")
+
+
+def fetch_entry_price(token_address: str) -> Optional[float]:
+    """Fetch current token price from DexScreener for entry price recording."""
+    url = f"https://api.dexscreener.com/latest/dex/tokens/{token_address}"
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": "AsymmetricStrikeTeam/1.0"})
+        with urllib.request.urlopen(req, timeout=6) as resp:
+            data = json.loads(resp.read().decode())
+        pairs = data.get("pairs") or []
+        if not pairs:
+            return None
+        best = max(pairs, key=lambda p: float((p.get("liquidity") or {}).get("usd", 0) or 0))
+        price_str = best.get("priceUsd")
+        return float(price_str) if price_str else None
+    except Exception as e:
+        logger.warning(f"Entry price fetch failed: {e}")
+        return None
 
 # Standard Uniswap V2 Router ABI snippet for swapExactETHForTokens
 UNISWAP_V2_ROUTER_ABI = [
@@ -72,12 +96,21 @@ class Slinger:
         base_gas_gwei = 30.0
         gas_premium = base_gas_gwei * self._strategy_gas_multiplier
 
+        # Fetch live entry price for Reaper tracking
+        entry_price = fetch_entry_price(assessment.token_address)
+        if entry_price:
+            print(f"🔫 [Slinger] Entry price: ${entry_price:.8f}")
+        else:
+            print(f"🔫 [Slinger] Entry price unavailable — Reaper will use paper simulation.")
+
         order = ExecutionOrder(
             token_address=assessment.token_address,
+            chain=chain_id,
             action="BUY",
             amount_usd=assessment.max_allocation_usd,
             slippage_tolerance=slippage,
-            gas_premium_gwei=gas_premium
+            gas_premium_gwei=gas_premium,
+            entry_price_usd=entry_price,
         )
         
         try:
