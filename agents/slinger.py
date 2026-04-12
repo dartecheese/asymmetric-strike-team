@@ -12,11 +12,13 @@ logger = logging.getLogger("Slinger")
 
 
 def fetch_entry_price(token_address: str) -> Optional[float]:
-    """Fetch current token price from DexScreener for entry price recording."""
+    """Fetch current token price from DexScreener for entry price recording.
+    Fast timeout (2s) — if it fails, we proceed without entry price.
+    """
     url = f"https://api.dexscreener.com/latest/dex/tokens/{token_address}"
     try:
         req = urllib.request.Request(url, headers={"User-Agent": "AsymmetricStrikeTeam/1.0"})
-        with urllib.request.urlopen(req, timeout=6) as resp:
+        with urllib.request.urlopen(req, timeout=2) as resp:
             data = json.loads(resp.read().decode())
         pairs = data.get("pairs") or []
         if not pairs:
@@ -25,7 +27,7 @@ def fetch_entry_price(token_address: str) -> Optional[float]:
         price_str = best.get("priceUsd")
         return float(price_str) if price_str else None
     except Exception as e:
-        logger.warning(f"Entry price fetch failed: {e}")
+        logger.warning(f"Entry price fetch failed (2s timeout): {e}")
         return None
 
 # Standard Uniswap V2 Router ABI snippet for swapExactETHForTokens
