@@ -35,15 +35,24 @@ class Slinger:
             self.account = Account.from_key(self.private_key)
         else:
             self.account = None
-            
-        # Example routers
+
+        # Strategy-profile overrides (set by main.py after instantiation)
+        self._strategy_slippage: float = 0.15       # default 15%
+        self._strategy_gas_multiplier: float = 1.5  # default 1.5x
+        self._use_private_mempool: bool = False
+
+        # Routers per chain
         self.routers = {
-            "1": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D", # Uniswap V2
-            "8453": "0x4752ba5DBc23f44D87826276BF6Fd6b1C372aD24" # Base Swap
+            "1":     "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",  # Uniswap V2 (Ethereum)
+            "8453":  "0x4752ba5DBc23f44D87826276BF6Fd6b1C372aD24",  # BaseSwap (Base)
+            "42161": "0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506",  # SushiSwap (Arbitrum)
+            "56":    "0x10ED43C718714eb63d5aA57B78B54704E256024E",  # PancakeSwap (BSC)
         }
         self.weth = {
-            "1": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
-            "8453": "0x4200000000000000000000000000000000000006"
+            "1":     "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+            "8453":  "0x4200000000000000000000000000000000000006",
+            "42161": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+            "56":    "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
         }
 
     def execute_order(self, assessment: RiskAssessment, chain_id: str = "1") -> ExecutionOrder:
@@ -58,9 +67,11 @@ class Slinger:
         router_address = Web3.to_checksum_address(self.routers.get(chain_id, self.routers["1"]))
         weth_address = Web3.to_checksum_address(self.weth.get(chain_id, self.weth["1"]))
         
-        slippage = 0.15 # 15% slippage default for extreme volatility degen plays
-        gas_premium = 50.0 # Gwei
-        
+        # Use strategy-profile params if set, otherwise fall back to defaults
+        slippage = self._strategy_slippage
+        base_gas_gwei = 30.0
+        gas_premium = base_gas_gwei * self._strategy_gas_multiplier
+
         order = ExecutionOrder(
             token_address=assessment.token_address,
             action="BUY",
@@ -98,14 +109,14 @@ class Slinger:
             print(f"   Router Target: {router_address}")
             print(f"   Calldata[:64]...: {calldata[:64]}...")
             
+            mempool_mode = "PRIVATE (Flashbots)" if self._use_private_mempool else "PUBLIC"
             if self.account:
-                print("🔫 [Slinger] Live wallet detected. In production, transaction would broadcast here.")
-                # tx = self.w3.eth.send_raw_transaction(...)
+                print(f"🔫 [Slinger] Live wallet detected. Would broadcast via {mempool_mode} mempool.")
             else:
-                print("🔫 [Slinger] No private key loaded. Simulated execution complete.")
-                
-            print(f"   Value: ${order.amount_usd} USD")
-            print(f"   Slippage: {order.slippage_tolerance*100}% | Gas Premium: {order.gas_premium_gwei} Gwei")
+                print(f"🔫 [Slinger] Paper mode — simulated via {mempool_mode} mempool.")
+
+            print(f"   Value    : ${order.amount_usd} USD")
+            print(f"   Slippage : {order.slippage_tolerance*100:.1f}% | Gas: {order.gas_premium_gwei:.1f} Gwei")
             
             return order
             
