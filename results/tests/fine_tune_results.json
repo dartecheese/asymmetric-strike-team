@@ -1,0 +1,188 @@
+{
+  "timestamp": "2026-04-12T00:15:17.035635",
+  "best_params": {
+    "stop_loss": 0.44954554118766693,
+    "take_profit": 0.8285373360908403,
+    "min_signal": 0.8349422294774613,
+    "max_slippage": 3.0327928679784084,
+    "position_size": 0.2963785947892111
+  },
+  "best_metrics": {
+    "sharpe": 3.9476226260944336,
+    "win_rate": 1.0,
+    "avg_profit": 42.15,
+    "num_trades": 2
+  },
+  "optimization_history": [
+    {
+      "iteration": 0,
+      "params": {
+        "stop_loss": 0.37114384712389675,
+        "take_profit": 0.6797582851272963,
+        "min_signal": 0.7893061676270666,
+        "max_slippage": 2.3835092573202745,
+        "position_size": 0.1845992501791274
+      },
+      "metrics": {
+        "sharpe": 2.859605397989757,
+        "win_rate": 1.0,
+        "avg_profit": 36.266666666666666,
+        "num_trades": 3
+      },
+      "score": 6.356544129312847
+    },
+    {
+      "iteration": 1,
+      "params": {
+        "stop_loss": 0.3245727924523451,
+        "take_profit": 1.1505565232150472,
+        "min_signal": 0.7811581908735042,
+        "max_slippage": 2.9260941796855007,
+        "position_size": 0.25323908732839756
+      },
+      "metrics": {
+        "sharpe": 2.859605397989757,
+        "win_rate": 1.0,
+        "avg_profit": 36.266666666666666,
+        "num_trades": 3
+      },
+      "score": 6.356544129312847
+    },
+    {
+      "iteration": 2,
+      "params": {
+        "stop_loss": 0.10158147272448909,
+        "take_profit": 0.8478793127901587,
+        "min_signal": 0.7718665230706127,
+        "max_slippage": 3.3021045590925864,
+        "position_size": 0.47220484308856
+      },
+      "metrics": {
+        "sharpe": 2.859605397989757,
+        "win_rate": 1.0,
+        "avg_profit": 36.266666666666666,
+        "num_trades": 3
+      },
+      "score": 6.356544129312847
+    },
+    {
+      "iteration": 3,
+      "params": {
+        "stop_loss": 0.32897964909709765,
+        "take_profit": 0.6902004416527996,
+        "min_signal": 0.7763459349214705,
+        "max_slippage": 2.9223363292343656,
+        "position_size": 0.11391639202412299
+      },
+      "metrics": {
+        "sharpe": 2.859605397989757,
+        "win_rate": 1.0,
+        "avg_profit": 36.266666666666666,
+        "num_trades": 3
+      },
+      "score": 6.356544129312847
+    },
+    {
+      "iteration": 4,
+      "params": {
+        "stop_loss": 0.49691969752560833,
+        "take_profit": 1.6495979420412838,
+        "min_signal": 0.5839693892243469,
+        "max_slippage": 1.2014948783181763,
+        "position_size": 0.4913725101135596
+      },
+      "metrics": {
+        "sharpe": 0.5713782817534429,
+        "win_rate": 0.6,
+        "avg_profit": 16.4,
+        "num_trades": 5
+      },
+      "score": 1.5787565635068856
+    },
+    {
+      "iteration": 5,
+      "params": {
+        "stop_loss": 0.44954554118766693,
+        "take_profit": 0.8285373360908403,
+        "min_signal": 0.8349422294774613,
+        "max_slippage": 3.0327928679784084,
+        "position_size": 0.2963785947892111
+      },
+      "metrics": {
+        "sharpe": 3.9476226260944336,
+        "win_rate": 1.0,
+        "avg_profit": 42.15,
+        "num_trades": 2
+      },
+      "score": 8.473745252188868
+    },
+    {
+      "iteration": 6,
+      "params": {
+        "stop_loss": 0.36946433250985655,
+        "take_profit": 1.9592970792619369,
+        "min_signal": 0.7364629978785511,
+        "max_slippage": 4.649037407521784,
+        "position_size": 0.07574046954435347
+      },
+      "metrics": {
+        "sharpe": 2.859605397989757,
+        "win_rate": 1.0,
+        "avg_profit": 36.266666666666666,
+        "num_trades": 3
+      },
+      "score": 6.356544129312847
+    },
+    {
+      "iteration": 7,
+      "params": {
+        "stop_loss": 0.21176613378118336,
+        "take_profit": 1.3551177284836733,
+        "min_signal": 0.8571580673469555,
+        "max_slippage": 2.7443501089438365,
+        "position_size": 0.46437102360496985
+      },
+      "metrics": {
+        "sharpe": 0.497,
+        "win_rate": 1.0,
+        "avg_profit": 49.7,
+        "num_trades": 1
+      },
+      "score": 1.4969999999999999
+    },
+    {
+      "iteration": 8,
+      "params": {
+        "stop_loss": 0.4301428727933585,
+        "take_profit": 1.407551152265309,
+        "min_signal": 0.8622103454172623,
+        "max_slippage": 2.521653937603123,
+        "position_size": 0.1981957939509622
+      },
+      "metrics": {
+        "sharpe": 0.497,
+        "win_rate": 1.0,
+        "avg_profit": 49.7,
+        "num_trades": 1
+      },
+      "score": 1.4969999999999999
+    },
+    {
+      "iteration": 9,
+      "params": {
+        "stop_loss": 0.15506511816871626,
+        "take_profit": 1.8134928800493595,
+        "min_signal": 0.5492933713089992,
+        "max_slippage": 4.632721028568662,
+        "position_size": 0.21833498452831615
+      },
+      "metrics": {
+        "sharpe": 0.5713782817534429,
+        "win_rate": 0.6,
+        "avg_profit": 16.4,
+        "num_trades": 5
+      },
+      "score": 1.5787565635068856
+    }
+  ]
+}

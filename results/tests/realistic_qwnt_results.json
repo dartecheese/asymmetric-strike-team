@@ -1,0 +1,32 @@
+{
+  "timestamp": "2026-04-12T00:16:50.413083",
+  "optimization_type": "realistic_qwnt_trading",
+  "best_params": {
+    "stop_loss": 0.1819530823544352,
+    "take_profit": 0.40147800114156,
+    "trailing_stop": 0.09438792431998763,
+    "position_size_eth": 0.01,
+    "max_portfolio_risk": 0.01591948499793019,
+    "max_slippage_pct": 2.8443684388088672,
+    "gas_price_multiplier": 1.2191965224873682,
+    "use_mev_protection": true,
+    "min_signal_strength": 0.7438278427378023,
+    "min_volume_eth": 123.041534472,
+    "max_signal_age_min": 5,
+    "momentum_lookback": 15,
+    "volatility_cap_pct": 0.303885889761787
+  },
+  "best_metrics": {
+    "sharpe": 1.9328157025703074,
+    "win_rate": 0.9811320754716981,
+    "avg_profit": 21.6625900007746,
+    "num_trades": 53,
+    "max_drawdown": 1.4987898843548495,
+    "profit_factor": 111.11467740257446
+  },
+  "improvement": {
+    "sharpe_improvement": -0.07629738548208431,
+    "win_rate_improvement": -0.018867924528301883,
+    "drawdown_reduction": -1.4987898843548495
+  }
+}
