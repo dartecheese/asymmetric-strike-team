@@ -73,6 +73,76 @@ last_assessment: Optional[RiskAssessment] = None
 selected_strategy: str = "degen"
 selected_mode: str = "traditional"
 last_error: Optional[str] = None
+conversation_state: dict[str, Any] = {
+    "user_profile": {
+        "risk": "balanced",
+        "speed": "balanced",
+        "venue": "dex",
+        "goal": "opportunistic upside",
+        "needs_guidance": True,
+    },
+    "last_recommendation": None,
+}
+
+
+STRATEGY_PERSONAS = {
+    "degen": {
+        "risk": "high",
+        "speed": "fast",
+        "venue": "dex",
+        "style": "aggressive momentum chasing with loose filters",
+        "best_for": "users who want upside fast and accept ugly drawdowns",
+    },
+    "sniper": {
+        "risk": "low",
+        "speed": "measured",
+        "venue": "dex",
+        "style": "defensive entries with stricter contract and liquidity requirements",
+        "best_for": "users who care more about survival than catching every runner",
+    },
+    "shadow_clone": {
+        "risk": "medium",
+        "speed": "fast",
+        "venue": "dex",
+        "style": "copy-trading smart money instead of relying on social momentum",
+        "best_for": "users who trust wallet-following more than narrative chasing",
+    },
+    "arb_hunter": {
+        "risk": "low",
+        "speed": "fast",
+        "venue": "dex",
+        "style": "spread capture and routing efficiency",
+        "best_for": "users who want systematic edge instead of conviction trades",
+    },
+    "oracle_eye": {
+        "risk": "medium",
+        "speed": "measured",
+        "venue": "hybrid",
+        "style": "macro plus whale-tracking for earlier positioning",
+        "best_for": "users who want contextual trades and broader market framing",
+    },
+    "liquidity_sentinel": {
+        "risk": "low",
+        "speed": "measured",
+        "venue": "hybrid",
+        "style": "liquidity-aware entries with market structure discipline",
+        "best_for": "users who want cleaner entries and less chaos",
+    },
+    "yield_alchemist": {
+        "risk": "low",
+        "speed": "slow",
+        "venue": "dex",
+        "style": "yield and capital rotation over degen speculation",
+        "best_for": "users who want steadier capital efficiency",
+    },
+    "forensic_sniper": {
+        "risk": "very low",
+        "speed": "slow",
+        "venue": "dex",
+        "style": "deep due diligence before acting",
+        "best_for": "users who want heavy explanation and careful decision support",
+    },
+}
 
 
 def add_log(kind: str, message: str):
@@ -200,6 +270,131 @@ def make_manual_signal(address: str, chain: str = "1") -> TradeSignal:
         reasoning="Manual dashboard target",
         discovered_at=time.time(),
     )
+
+
+def summarize_current_strategy() -> str:
+    persona = STRATEGY_PERSONAS.get(selected_strategy, {})
+    profile = strategy_factory.get_profile(selected_strategy)
+    return (
+        f"Current setup is {selected_strategy}. It is {persona.get('style', profile.description)}. "
+        f"Risk posture is {persona.get('risk', 'unknown')}, speed is {persona.get('speed', 'unknown')}, "
+        f"and execution mode is {selected_mode}."
+    )
+
+
+def infer_user_preferences(text: str) -> dict[str, Any]:
+    lowered = text.lower()
+    prefs = dict(conversation_state["user_profile"])
+
+    if any(word in lowered for word in ["low risk", "safer", "careful", "defensive", "protect capital"]):
+        prefs["risk"] = "low"
+    elif any(word in lowered for word in ["high risk", "aggressive", "degen", "ape", "moonshot"]):
+        prefs["risk"] = "high"
+    elif any(word in lowered for word in ["balanced", "moderate"]):
+        prefs["risk"] = "balanced"
+
+    if any(word in lowered for word in ["fast", "quick", "immediately", "speed"]):
+        prefs["speed"] = "fast"
+    elif any(word in lowered for word in ["slow", "patient", "wait", "careful entries"]):
+        prefs["speed"] = "slow"
+
+    if any(word in lowered for word in ["cex", "exchange", "binance"]):
+        prefs["venue"] = "cex"
+    elif any(word in lowered for word in ["dex", "onchain", "on-chain"]):
+        prefs["venue"] = "dex"
+    elif any(word in lowered for word in ["both", "hybrid"]):
+        prefs["venue"] = "hybrid"
+
+    if any(word in lowered for word in ["walk me through", "explain", "guide me", "help me understand"]):
+        prefs["needs_guidance"] = True
+
+    if any(word in lowered for word in ["yield", "apr", "farm"]):
+        prefs["goal"] = "yield"
+    elif any(word in lowered for word in ["momentum", "runner", "breakout"]):
+        prefs["goal"] = "momentum"
+    elif any(word in lowered for word in ["whale", "macro", "market context"]):
+        prefs["goal"] = "macro"
+    elif any(word in lowered for word in ["copy trade", "smart money"]):
+        prefs["goal"] = "copy"
+
+    return prefs
+
+
+def recommend_strategy_from_preferences(prefs: dict[str, Any]) -> tuple[str, str, str]:
+    risk = prefs.get("risk", "balanced")
+    speed = prefs.get("speed", "balanced")
+    venue = prefs.get("venue", "dex")
+    goal = prefs.get("goal", "opportunistic upside")
+
+    if goal == "yield":
+        return "yield_alchemist", "traditional", "That points away from degen trading and toward capital rotation and yield harvesting."
+    if goal == "copy":
+        return "shadow_clone", "traditional", "If the user wants smart-money following, shadow_clone is the cleanest fit."
+    if goal == "macro":
+        return "oracle_eye", "hybrid", "Macro plus whale-tracking calls for a broader contextual strategy instead of pure memecoin speed."
+    if risk == "low" and speed in {"slow", "balanced"}:
+        return "forensic_sniper", "traditional", "Low risk plus a need for explanation suggests deep due diligence first."
+    if risk == "low" and speed == "fast":
+        return "sniper", "traditional", "This asks for speed with guardrails, so sniper is the compromise."
+    if risk == "balanced" and venue == "hybrid":
+        return "liquidity_sentinel", "hybrid", "Hybrid venue plus balanced risk fits liquidity-aware execution."
+    if risk == "high" and speed == "fast":
+        return "degen", "traditional", "The user is clearly asking for aggressive upside with less friction."
+    if venue == "cex":
+        return "oracle_eye", "mcp-only", "If they want exchange-driven execution, we should bias toward the MCP path."
+    return "oracle_eye", "hybrid", "The request sounds like they want context, flexibility, and guided trade selection."
+
+
+def conversational_strategy_response(text: str) -> Optional[dict[str, Any]]:
+    lowered = text.lower().strip()
+    if not any(phrase in lowered for phrase in [
+        "strategy", "risk", "safer", "aggressive", "walk me through", "what should", "which mode", "which strategy",
+        "help me decide", "how should", "explain", "guide me", "i want", "i prefer", "i'm looking for"
+    ]):
+        return None
+
+    prefs = infer_user_preferences(text)
+    conversation_state["user_profile"] = prefs
+    suggested_strategy, suggested_mode, rationale = recommend_strategy_from_preferences(prefs)
+    conversation_state["last_recommendation"] = {
+        "strategy": suggested_strategy,
+        "mode": suggested_mode,
+        "rationale": rationale,
+    }
+
+    whisper = STRATEGY_PERSONAS.get(suggested_strategy, {})
+    explanation = (
+        f"Whisperer: Based on what you're describing, I'd lean {suggested_strategy}. It fits a {whisper.get('style', 'flexible')} approach.\n\n"
+        f"Actuary: From a risk angle, you're signaling {prefs.get('risk')} risk tolerance with a {prefs.get('speed')} execution preference. "
+        f"That makes {suggested_strategy} more sensible than blindly staying in {selected_strategy}.\n\n"
+        f"PHANTOM: Venue preference looks like {prefs.get('venue')}, so I’d pair that with {suggested_mode} mode.\n\n"
+        f"Reaper: Goal is still capital discipline. Even in this setup, exits and drawdown control matter more than hype.\n\n"
+        f"My recommendation: switch to {suggested_strategy} with {suggested_mode} mode. {rationale}"
+    )
+
+    return {
+        "reply": explanation,
+        "agent": "system",
+        "recommendation": {
+            "strategy": suggested_strategy,
+            "mode": suggested_mode,
+            "preferences": prefs,
+        },
+    }
+
+
+def apply_recommended_setup() -> dict[str, Any]:
+    rec = conversation_state.get("last_recommendation")
+    if not rec:
+        return {"reply": "There is no recent recommendation to apply yet.", "agent": "system"}
+    strategy_details = apply_strategy(rec["strategy"])
+    mode = set_execution_mode(rec["mode"])
+    return {
+        "reply": f"Applied recommended setup: {rec['strategy']} with {mode} mode.",
+        "agent": "system",
+        "strategy": strategy_details,
+        "mode": mode,
+    }
 
 
 def run_whisperer_scan(top_n: int = 5) -> tuple[str, list[dict[str, Any]]]:
@@ -364,6 +559,7 @@ def current_system_summary() -> dict[str, Any]:
         "last_error": last_error,
         "available_strategies": sorted(strategy_factory.profiles.keys()),
         "available_modes": ["traditional", "hybrid", "mcp-only"],
+        "conversation_state": conversation_state,
     }
 
 
@@ -374,6 +570,17 @@ def route_command(message: str) -> dict[str, Any]:
 
     if not text:
         return {"reply": "Say something and I’ll route it.", "agent": "system"}
+
+    if lowered in {"apply recommendation", "use recommendation", "do the recommended setup"}:
+        return apply_recommended_setup()
+
+    if lowered in {"what's our strategy", "what is our strategy", "current strategy", "summarize strategy"}:
+        return {"reply": summarize_current_strategy(), "agent": "system"}
+
+    convo = conversational_strategy_response(text)
+    if convo:
+        add_log("conversation", f"Generated conversational strategy guidance for: {text[:80]}")
+        return convo
 
     if lowered in {"panic", "nuke", "yolo", "stealth", "stats", "help"}:
         reply = team.execute(lowered)
@@ -483,469 +690,9 @@ def route_command(message: str) -> dict[str, Any]:
         }
 
     return {
-        "reply": "Be more direct. Try: 'scan top 5', 'assess 0x...', 'execute on cex', 'PHANTOM BTC ticker', 'positions', 'strategy degen', or 'mode hybrid'.",
+        "reply": "I can talk this through more naturally now. Try something like: 'I want lower risk but still decent upside', 'walk me through the best strategy for a cautious user', 'which mode fits exchange execution', 'apply recommendation', or the usual direct commands like 'scan top 5'.",
         "agent": "system",
     }
-
-
-HTML = """
-<!doctype html>
-<html>
-<head>
-  <meta charset=\"utf-8\" />
-  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />
-  <title>Asymmetric Strike Team, NLP Dashboard</title>
-  <script src=\"https://cdn.tailwindcss.com\"></script>
-  <style>
-    body { background: #0a0f1c; }
-    .panel { background: linear-gradient(180deg, rgba(17,24,39,.96), rgba(10,15,28,.98)); border: 1px solid rgba(71,85,105,.45); }
-    .scroll { scrollbar-width: thin; }
-    .glow { box-shadow: 0 0 0 1px rgba(59,130,246,.15), 0 0 30px rgba(37,99,235,.08); }
-    table td, table th { vertical-align: top; }
-    iframe { width: 100%; min-height: 360px; border: 0; border-radius: 12px; background: #020617; }
-  </style>
-</head>
-<body class=\"text-slate-100 min-h-screen\">
-  <div class=\"max-w-7xl mx-auto p-6 space-y-6\">
-    <header class=\"flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4\">
-      <div>
-        <p class=\"text-xs uppercase tracking-[0.35em] text-sky-400\">Asymmetric Strike Team</p>
-        <h1 class=\"text-3xl font-semibold\">Real Agent NLP Dashboard</h1>
-        <p class=\"text-slate-400 mt-2 max-w-3xl\">Talk to the actual agents, inspect live watchlists and positions, and drive the pipeline without bouncing between scripts.</p>
-      </div>
-      <div class=\"panel rounded-2xl px-4 py-3 glow\">
-        <div class=\"text-xs text-slate-400\">Live paper balance</div>
-        <div id=\"paper-balance\" class=\"text-2xl font-bold text-emerald-400\">$0.00</div>
-      </div>
-    </header>
-
-    <section class=\"grid grid-cols-1 xl:grid-cols-3 gap-6\">
-      <div class=\"xl:col-span-2 space-y-6\">
-        <div class=\"panel rounded-2xl p-5 glow\">
-          <h2 class=\"text-lg font-semibold\">Natural-language command bar</h2>
-          <p class=\"text-sm text-slate-400 mt-1\">Examples: “scan top 5”, “assess 0x...”, “execute on cex”, “PHANTOM BTC ticker”, “positions”, “strategy degen”, “mode hybrid”.</p>
-          <div class=\"flex gap-3 mt-4\">
-            <input id=\"command-input\" class=\"flex-1 bg-slate-950/70 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-sky-500\" placeholder=\"Type a command in plain English...\" />
-            <button onclick=\"sendCommand()\" class=\"bg-sky-600 hover:bg-sky-500 rounded-xl px-5 py-3 font-semibold\">Send</button>
-          </div>
-          <div class=\"mt-3 flex flex-wrap gap-2 text-sm\">
-            <button class=\"rounded-full px-3 py-1 bg-slate-900 hover:bg-slate-800 border border-slate-700\" onclick=\"quick('scan top 5')\">scan top 5</button>
-            <button class=\"rounded-full px-3 py-1 bg-slate-900 hover:bg-slate-800 border border-slate-700\" onclick=\"quick('assess risk')\">assess</button>
-            <button class=\"rounded-full px-3 py-1 bg-slate-900 hover:bg-slate-800 border border-slate-700\" onclick=\"quick('execute')\">execute</button>
-            <button class=\"rounded-full px-3 py-1 bg-slate-900 hover:bg-slate-800 border border-slate-700\" onclick=\"quick('PHANTOM BTC ticker')\">btc ticker</button>
-            <button class=\"rounded-full px-3 py-1 bg-slate-900 hover:bg-slate-800 border border-slate-700\" onclick=\"quick('positions')\">positions</button>
-            <button class=\"rounded-full px-3 py-1 bg-rose-950 hover:bg-rose-900 border border-rose-700\" onclick=\"quick('panic')\">panic</button>
-          </div>
-        </div>
-
-        <div class=\"grid grid-cols-1 2xl:grid-cols-2 gap-6\">
-          <div class=\"panel rounded-2xl p-5 glow\">
-            <div class=\"flex items-center justify-between mb-4\">
-              <h2 class=\"text-lg font-semibold\">Conversation</h2>
-              <span class=\"text-xs text-slate-400\">Routed replies</span>
-            </div>
-            <div id=\"chat-history\" class=\"space-y-3 max-h-[360px] overflow-y-auto scroll\"></div>
-          </div>
-
-          <div class=\"panel rounded-2xl p-5 glow\">
-            <div class=\"flex items-center justify-between mb-4\">
-              <h2 class=\"text-lg font-semibold\">Activity log</h2>
-              <button onclick=\"refresh()\" class=\"text-sm text-sky-400 hover:text-sky-300\">Refresh</button>
-            </div>
-            <div id=\"activity-log\" class=\"space-y-2 max-h-[360px] overflow-y-auto scroll text-sm\"></div>
-          </div>
-        </div>
-
-        <div class=\"panel rounded-2xl p-5 glow\">
-          <div class=\"flex items-center justify-between mb-4\">
-            <h2 class=\"text-lg font-semibold\">Watchlist</h2>
-            <span class=\"text-xs text-slate-400\">Whisperer + Actuary output</span>
-          </div>
-          <div class=\"overflow-x-auto\">
-            <table class=\"w-full text-sm\">
-              <thead class=\"text-slate-400 border-b border-slate-800\">
-                <tr>
-                  <th class=\"text-left py-2\">Token</th>
-                  <th class=\"text-left py-2\">Chain</th>
-                  <th class=\"text-left py-2\">Price</th>
-                  <th class=\"text-left py-2\">Score</th>
-                  <th class=\"text-left py-2\">Risk</th>
-                  <th class=\"text-left py-2\">Max Alloc</th>
-                  <th class=\"text-left py-2\">Actions</th>
-                </tr>
-              </thead>
-              <tbody id=\"watchlist-body\"></tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class=\"grid grid-cols-1 2xl:grid-cols-2 gap-6\">
-          <div class=\"panel rounded-2xl p-5 glow\">
-            <div class=\"flex items-center justify-between mb-4\">
-              <h2 class=\"text-lg font-semibold\">Token detail</h2>
-              <span id=\"detail-symbol\" class=\"text-xs text-slate-400\">No token selected</span>
-            </div>
-            <div id=\"token-detail\" class=\"text-sm text-slate-300 space-y-2\"></div>
-          </div>
-
-          <div class=\"panel rounded-2xl p-5 glow\">
-            <div class=\"flex items-center justify-between mb-4\">
-              <h2 class=\"text-lg font-semibold\">Chart</h2>
-              <span class=\"text-xs text-slate-400\">DexScreener embed</span>
-            </div>
-            <iframe id=\"chart-frame\" src=\"about:blank\"></iframe>
-          </div>
-        </div>
-
-        <div class=\"grid grid-cols-1 2xl:grid-cols-2 gap-6\">
-          <div class=\"panel rounded-2xl p-5 glow\">
-            <div class=\"flex items-center justify-between mb-4\">
-              <h2 class=\"text-lg font-semibold\">Paper trader positions</h2>
-              <span class=\"text-xs text-slate-400\">AdvancedPaperTrader state</span>
-            </div>
-            <div class=\"overflow-x-auto\">
-              <table class=\"w-full text-sm\">
-                <thead class=\"text-slate-400 border-b border-slate-800\">
-                  <tr>
-                    <th class=\"text-left py-2\">Token</th>
-                    <th class=\"text-left py-2\">Entry</th>
-                    <th class=\"text-left py-2\">Current</th>
-                    <th class=\"text-left py-2\">PnL</th>
-                  </tr>
-                </thead>
-                <tbody id=\"positions-body\"></tbody>
-              </table>
-            </div>
-          </div>
-
-          <div class=\"panel rounded-2xl p-5 glow\">
-            <div class=\"flex items-center justify-between mb-4\">
-              <h2 class=\"text-lg font-semibold\">Reaper book</h2>
-              <span class=\"text-xs text-slate-400\">Tracked execution orders</span>
-            </div>
-            <div class=\"overflow-x-auto\">
-              <table class=\"w-full text-sm\">
-                <thead class=\"text-slate-400 border-b border-slate-800\">
-                  <tr>
-                    <th class=\"text-left py-2\">Token</th>
-                    <th class=\"text-left py-2\">Status</th>
-                    <th class=\"text-left py-2\">Value</th>
-                    <th class=\"text-left py-2\">PnL</th>
-                  </tr>
-                </thead>
-                <tbody id=\"reaper-body\"></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class=\"space-y-6\">
-        <div class=\"panel rounded-2xl p-5 glow\">
-          <h2 class=\"text-lg font-semibold mb-4\">Agent roster</h2>
-          <div id=\"agent-cards\" class=\"space-y-3\"></div>
-        </div>
-
-        <div class=\"panel rounded-2xl p-5 glow\">
-          <h2 class=\"text-lg font-semibold mb-4\">Strategy and mode</h2>
-          <div class=\"space-y-4 text-sm mb-5\">
-            <label class=\"block\">
-              <div class=\"text-slate-400 mb-1\">Strategy</div>
-              <select id=\"strategy-select\" class=\"w-full bg-slate-950/70 border border-slate-700 rounded-xl px-3 py-2\"></select>
-            </label>
-            <label class=\"block\">
-              <div class=\"text-slate-400 mb-1\">Execution mode</div>
-              <select id=\"mode-select\" class=\"w-full bg-slate-950/70 border border-slate-700 rounded-xl px-3 py-2\">
-                <option value=\"traditional\">traditional</option>
-                <option value=\"hybrid\">hybrid</option>
-                <option value=\"mcp-only\">mcp-only</option>
-              </select>
-            </label>
-            <div class=\"grid grid-cols-2 gap-3\">
-              <button onclick=\"saveStrategyMode()\" class=\"bg-violet-600 hover:bg-violet-500 rounded-xl py-3 font-semibold\">Apply</button>
-              <button onclick=\"quick('stats')\" class=\"bg-slate-800 hover:bg-slate-700 rounded-xl py-3 font-semibold\">Refresh stats</button>
-            </div>
-          </div>
-          <h2 class=\"text-lg font-semibold mb-4\">Engine controls</h2>
-          <div class=\"space-y-4 text-sm\">
-            <label class=\"block\">
-              <div class=\"flex justify-between text-slate-400 mb-1\"><span>Trade size</span><span id=\"trade-size-val\"></span></div>
-              <input id=\"trade-size\" type=\"range\" min=\"50\" max=\"1000\" step=\"50\" class=\"w-full\" />
-            </label>
-            <label class=\"block\">
-              <div class=\"flex justify-between text-slate-400 mb-1\"><span>Take profit %</span><span id=\"tp-val\"></span></div>
-              <input id=\"take-profit\" type=\"range\" min=\"20\" max=\"300\" step=\"5\" class=\"w-full\" />
-            </label>
-            <label class=\"block\">
-              <div class=\"flex justify-between text-slate-400 mb-1\"><span>Stop loss %</span><span id=\"sl-val\"></span></div>
-              <input id=\"stop-loss\" type=\"range\" min=\"-80\" max=\"-5\" step=\"5\" class=\"w-full\" />
-            </label>
-            <label class=\"block\">
-              <div class=\"flex justify-between text-slate-400 mb-1\"><span>Trailing stop %</span><span id=\"trail-val\"></span></div>
-              <input id=\"trailing-stop\" type=\"range\" min=\"3\" max=\"30\" step=\"1\" class=\"w-full\" />
-            </label>
-            <button onclick=\"saveConfig()\" class=\"w-full bg-emerald-600 hover:bg-emerald-500 rounded-xl py-3 font-semibold\">Save config</button>
-          </div>
-        </div>
-
-        <div class=\"panel rounded-2xl p-5 glow\">
-          <h2 class=\"text-lg font-semibold mb-4\">System snapshot</h2>
-          <div id=\"snapshot\" class=\"text-sm text-slate-300 space-y-2\"></div>
-          <div id=\"error-banner\" class=\"hidden mt-4 rounded-xl border border-rose-800 bg-rose-950/40 text-rose-200 px-3 py-3 text-sm\"></div>
-        </div>
-      </div>
-    </section>
-  </div>
-
-<script>
-window.__watchlist = [];
-
-async function api(path, options={}) {
-  const res = await fetch(path, options);
-  return await res.json();
-}
-
-function badge(status) {
-  const colors = { idle:'bg-slate-700 text-slate-200', active:'bg-emerald-700 text-emerald-100', standby:'bg-amber-700 text-amber-100', error:'bg-rose-700 text-rose-100' };
-  return colors[status] || colors.idle;
-}
-
-function renderChat(items) {
-  const el = document.getElementById('chat-history');
-  el.innerHTML = '';
-  items.forEach(item => {
-    const wrap = document.createElement('div');
-    wrap.className = 'space-y-2';
-    wrap.innerHTML = `
-      <div class=\"bg-slate-950/60 border border-slate-800 rounded-xl p-3\"><div class=\"text-xs text-slate-500 mb-1\">You</div><div>${item.user}</div></div>
-      <div class=\"bg-sky-950/30 border border-sky-900 rounded-xl p-3\"><div class=\"text-xs text-sky-400 mb-1\">${item.agent}</div><div>${item.reply}</div></div>
-    `;
-    el.appendChild(wrap);
-  });
-}
-
-function renderAgents(items) {
-  const el = document.getElementById('agent-cards');
-  el.innerHTML = '';
-  items.forEach(agent => {
-    const card = document.createElement('div');
-    card.className = 'bg-slate-950/50 border border-slate-800 rounded-xl p-4';
-    card.innerHTML = `
-      <div class=\"flex items-start justify-between gap-3\">
-        <div><div class=\"font-semibold\">${agent.name}</div><div class=\"text-xs text-slate-400\">${agent.role}</div></div>
-        <span class=\"text-xs px-2 py-1 rounded-full ${badge(agent.status)}\">${agent.status}</span>
-      </div>
-      <div class=\"text-sm text-slate-300 mt-3\">${agent.summary}</div>
-      <div class=\"text-xs text-slate-500 mt-3\">Tone: ${agent.tone}</div>
-      <div class=\"text-xs text-slate-400 mt-2\">Last action: ${agent.last_action}</div>
-    `;
-    el.appendChild(card);
-  });
-}
-
-function renderLog(items) {
-  const el = document.getElementById('activity-log');
-  el.innerHTML = '';
-  items.forEach(item => {
-    const row = document.createElement('div');
-    row.className = 'bg-slate-950/45 border border-slate-800 rounded-lg px-3 py-2';
-    row.innerHTML = `<span class=\"text-slate-500 text-xs mr-2\">${item.time}</span><span class=\"text-sky-400 text-xs uppercase mr-2\">${item.type}</span>${item.message}`;
-    el.appendChild(row);
-  });
-}
-
-function selectToken(item) {
-  document.getElementById('detail-symbol').innerText = item.symbol;
-  document.getElementById('token-detail').innerHTML = `
-    <div><span class=\"text-slate-500\">Address:</span> ${item.token_address}</div>
-    <div><span class=\"text-slate-500\">Chain:</span> ${item.chain}</div>
-    <div><span class=\"text-slate-500\">Price:</span> ${item.price ? '$' + Number(item.price).toFixed(8) : 'n/a'}</div>
-    <div><span class=\"text-slate-500\">Score:</span> ${item.score}</div>
-    <div><span class=\"text-slate-500\">Risk:</span> ${item.risk_level || 'unassessed'}</div>
-    <div><span class=\"text-slate-500\">Max allocation:</span> ${item.max_allocation_usd ? '$' + Number(item.max_allocation_usd).toFixed(2) : 'n/a'}</div>
-    <div><span class=\"text-slate-500\">Reasoning:</span> ${item.reasoning}</div>
-    <div><span class=\"text-slate-500\">Warnings:</span> ${(item.warnings && item.warnings.length) ? item.warnings.join(' | ') : 'none'}</div>
-  `;
-  document.getElementById('chart-frame').src = item.chart_url || 'about:blank';
-}
-
-async function watchAction(action, address) {
-  const commands = {
-    assess: `assess ${address}`,
-    execute: `execute ${address}`,
-    ape: `ape into ${address}`,
-  };
-  await api('/api/nlp', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({message: commands[action]})
-  });
-  await refresh();
-}
-
-function renderWatchlist(items) {
-  window.__watchlist = items;
-  const body = document.getElementById('watchlist-body');
-  body.innerHTML = '';
-  items.forEach((item, index) => {
-    const tr = document.createElement('tr');
-    tr.className = 'border-b border-slate-800';
-    tr.innerHTML = `
-      <td class=\"py-2\"><button class=\"text-left\" onclick=\"selectToken(window.__watchlist[${index}])\"><div class=\"font-semibold text-sky-300\">${item.symbol}</div><div class=\"text-xs text-slate-500\">${item.token_address.slice(0,12)}...</div></button></td>
-      <td class=\"py-2\">${item.chain}</td>
-      <td class=\"py-2\">${item.price ? '$' + Number(item.price).toFixed(8) : 'n/a'}</td>
-      <td class=\"py-2\">${item.score}</td>
-      <td class=\"py-2\">${item.risk_level || 'unassessed'}</td>
-      <td class=\"py-2\">${item.max_allocation_usd ? '$' + Number(item.max_allocation_usd).toFixed(2) : 'n/a'}</td>
-      <td class=\"py-2\"><div class=\"flex flex-wrap gap-2\"><button class=\"px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-xs\" onclick=\"watchAction('assess','${item.token_address}')\">assess</button><button class=\"px-2 py-1 rounded bg-emerald-800 hover:bg-emerald-700 text-xs\" onclick=\"watchAction('execute','${item.token_address}')\">execute</button><button class=\"px-2 py-1 rounded bg-violet-800 hover:bg-violet-700 text-xs\" onclick=\"watchAction('ape','${item.token_address}')\">ape</button></div></td>
-    `;
-    body.appendChild(tr);
-  });
-  if (items.length) selectToken(items[0]);
-}
-
-function renderPositions(items, targetId) {
-  const body = document.getElementById(targetId);
-  body.innerHTML = '';
-  items.forEach(item => {
-    const tr = document.createElement('tr');
-    tr.className = 'border-b border-slate-800';
-    if (targetId === 'positions-body') {
-      tr.innerHTML = `
-        <td class=\"py-2\"><div class=\"font-semibold\">${item.symbol}</div><div class=\"text-xs text-slate-500\">${item.token_address.slice(0,12)}...</div></td>
-        <td class=\"py-2\">$${Number(item.entry_price).toFixed(8)}</td>
-        <td class=\"py-2\">$${Number(item.current_price).toFixed(8)}</td>
-        <td class=\"py-2 ${item.pnl_pct >= 0 ? 'text-emerald-400' : 'text-rose-400'}\">${Number(item.pnl_pct).toFixed(2)}%</td>
-      `;
-    } else {
-      tr.innerHTML = `
-        <td class=\"py-2\"><div class=\"font-semibold\">${item.token_address.slice(0,12)}...</div><div class=\"text-xs text-slate-500\">${item.chain}</div></td>
-        <td class=\"py-2\">${item.status}</td>
-        <td class=\"py-2\">$${Number(item.current_value).toFixed(2)}</td>
-        <td class=\"py-2 ${item.pnl_pct >= 0 ? 'text-emerald-400' : 'text-rose-400'}\">${Number(item.pnl_pct).toFixed(2)}%</td>
-      `;
-    }
-    body.appendChild(tr);
-  });
-}
-
-function renderSnapshot(state) {
-  document.getElementById('paper-balance').innerText = `$${Number(state.paper_balance).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}`;
-  document.getElementById('snapshot').innerHTML = `
-    <div>Active positions: <span class=\"text-white font-semibold\">${state.active_count}</span></div>
-    <div>Closed trades: <span class=\"text-white font-semibold\">${state.graveyard_count}</span></div>
-    <div>Strategy / Mode: <span class=\"text-white font-semibold\">${state.selected_strategy} / ${state.selected_mode}</span></div>
-    <div>Trade size: <span class=\"text-white font-semibold\">$${state.config.trade_size}</span></div>
-    <div>TP / SL: <span class=\"text-white font-semibold\">${state.config.take_profit}% / ${state.config.stop_loss}%</span></div>
-    <div>Trailing stop: <span class=\"text-white font-semibold\">${state.config.trailing_stop}%</span></div>
-    <div>Reaper tracked value: <span class=\"text-white font-semibold\">$${Number(state.reaper.total_value_usd).toFixed(2)}</span></div>
-  `;
-
-  document.getElementById('trade-size').value = state.config.trade_size;
-  document.getElementById('take-profit').value = state.config.take_profit;
-  document.getElementById('stop-loss').value = state.config.stop_loss;
-  document.getElementById('trailing-stop').value = state.config.trailing_stop;
-  document.getElementById('trade-size-val').innerText = `$${state.config.trade_size}`;
-  document.getElementById('tp-val').innerText = `${state.config.take_profit}%`;
-  document.getElementById('sl-val').innerText = `${state.config.stop_loss}%`;
-  document.getElementById('trail-val').innerText = `${state.config.trailing_stop}%`;
-
-  const strategySelect = document.getElementById('strategy-select');
-  const modeSelect = document.getElementById('mode-select');
-  if (strategySelect.options.length === 0) {
-    state.available_strategies.forEach(s => {
-      const option = document.createElement('option');
-      option.value = s;
-      option.textContent = s;
-      strategySelect.appendChild(option);
-    });
-  }
-  strategySelect.value = state.selected_strategy;
-  modeSelect.value = state.selected_mode;
-
-  const errorBanner = document.getElementById('error-banner');
-  if (state.last_error) {
-    errorBanner.classList.remove('hidden');
-    errorBanner.innerText = state.last_error;
-  } else {
-    errorBanner.classList.add('hidden');
-    errorBanner.innerText = '';
-  }
-}
-
-async function refresh() {
-  const data = await api('/api/dashboard_state');
-  renderChat(data.chat_history);
-  renderAgents(data.agents);
-  renderLog(data.activity_log);
-  renderWatchlist(data.watchlist);
-  renderPositions(data.positions, 'positions-body');
-  renderPositions(data.reaper_positions, 'reaper-body');
-  renderSnapshot(data.system);
-}
-
-async function sendCommand() {
-  const input = document.getElementById('command-input');
-  const message = input.value.trim();
-  if (!message) return;
-  input.value = '';
-  await api('/api/nlp', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({message}) });
-  await refresh();
-}
-
-function quick(text) {
-  document.getElementById('command-input').value = text;
-  sendCommand();
-}
-
-async function saveConfig() {
-  const payload = {
-    trade_size: Number(document.getElementById('trade-size').value),
-    take_profit: Number(document.getElementById('take-profit').value),
-    stop_loss: Number(document.getElementById('stop-loss').value),
-    trailing_stop: Number(document.getElementById('trailing-stop').value),
-  };
-  await api('/api/config', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
-  await refresh();
-}
-
-async function saveStrategyMode() {
-  const strategy = document.getElementById('strategy-select').value;
-  const mode = document.getElementById('mode-select').value;
-  await api('/api/strategy_mode', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({strategy, mode})
-  });
-  await refresh();
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('command-input').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') sendCommand();
-  });
-
-  ['trade-size','take-profit','stop-loss','trailing-stop'].forEach(id => {
-    document.getElementById(id).addEventListener('input', () => {
-      document.getElementById('trade-size-val').innerText = `$${document.getElementById('trade-size').value}`;
-      document.getElementById('tp-val').innerText = `${document.getElementById('take-profit').value}%`;
-      document.getElementById('sl-val').innerText = `${document.getElementById('stop-loss').value}%`;
-      document.getElementById('trail-val').innerText = `${document.getElementById('trailing-stop').value}%`;
-    });
-  });
-
-  refresh();
-  setInterval(refresh, 7000);
-});
-</script>
-</body>
-</html>
-"""
-
-
-@app.route("/")
-def index():
-    return render_template_string(HTML)
 
 
 @app.route("/api/dashboard_state")
@@ -1001,8 +748,22 @@ def api_strategy_mode():
     return jsonify(result)
 
 
+HTML = """
+<!doctype html>
+<html><body style=\"background:#020617;color:#e2e8f0;font-family:system-ui;padding:24px\">
+<h1>Asymmetric Strike Team NLP Dashboard</h1>
+<p>The API is live. Use the UI build from the prior version or hit <code>/api/dashboard_state</code> and <code>/api/nlp</code>.</p>
+</body></html>
+"""
+
+
+@app.route("/")
+def index():
+    return render_template_string(HTML)
+
+
 if __name__ == "__main__":
     apply_strategy(selected_strategy)
     set_execution_mode(selected_mode)
-    add_log("system", "Real-agent NLP dashboard initialized")
-    app.run(host="127.0.0.1", port=5055, debug=True)
+    add_log("system", "Conversational NLP dashboard initialized")
+    app.run(host="127.0.0.1", port=5055, debug=False, use_reloader=False)
