@@ -17,6 +17,7 @@ from agents.unified_slinger import UnifiedSlinger
 from agents.whisperer import Whisperer
 from core.models import RiskAssessment, RiskLevel, TradeSignal
 from pricing import get_token_info
+from strategy_factory import StrategyFactory
 from team_commands import TeamCommands
 from v2_engine import AdvancedPaperTrader
 
@@ -29,7 +30,6 @@ state_lock = threading.Lock()
 
 trader = AdvancedPaperTrader()
 team = TeamCommands(trader)
-
 whisperer = Whisperer(min_velocity_score=30)
 actuary = Actuary(max_allowed_tax=0.20)
 unified_slinger = UnifiedSlinger()
@@ -41,6 +41,7 @@ reaper = Reaper(
     paper_mode=True,
 )
 phantom = PhantomMCPAgent()
+strategy_factory = StrategyFactory()
 reaper.start_monitoring()
 
 
@@ -69,11 +70,21 @@ watchlist: list[dict[str, Any]] = []
 analysis_cache: dict[str, dict[str, Any]] = {}
 last_signal: Optional[TradeSignal] = None
 last_assessment: Optional[RiskAssessment] = None
+selected_strategy: str = "degen"
+selected_mode: str = "traditional"
+last_error: Optional[str] = None
 
 
 def add_log(kind: str, message: str):
     activity_log.insert(0, {"time": time.strftime("%H:%M:%S"), "type": kind, "message": message})
     del activity_log[150:]
+
+
+def set_error(message: Optional[str]):
+    global last_error
+    last_error = message
+    if message:
+        add_log("error", message)
 
 
 def set_agent(agent_id: str, status: str, action: str):
@@ -118,7 +129,55 @@ def build_watch_item(signal: TradeSignal, assessment: RiskAssessment | None = No
         "max_allocation_usd": assessment.max_allocation_usd if assessment else None,
         "warnings": assessment.warnings if assessment else [],
         "discovered_at": signal.discovered_at,
+        "chart_url": f"https://dexscreener.com/ethereum/{signal.token_address}?embed=1&theme=dark&info=0",
     }
+
+
+def apply_strategy(name: str) -> dict[str, Any]:
+    global selected_strategy, whisperer
+    profile = strategy_factory.get_profile(name)
+    selected_strategy = name
+    whisperer_cfg = profile.whisperer
+    min_velocity = whisperer_cfg.min_velocity_score if whisperer_cfg else 30
+    whisperer = Whisperer(min_velocity_score=min_velocity)
+    reaper.take_profit_pct = profile.reaper.take_profit_pct
+    reaper.stop_loss_pct = profile.reaper.stop_loss_pct
+    reaper.trailing_stop_pct = profile.reaper.trailing_stop_pct
+    trader.config["take_profit"] = profile.reaper.take_profit_pct
+    trader.config["stop_loss"] = profile.reaper.stop_loss_pct
+    trader.config["trailing_stop"] = profile.reaper.trailing_stop_pct
+    trader.config["trade_size"] = max(25.0, profile.actuary.max_tax_allowed * 5)
+    unified_slinger.set_strategy_params(
+        slippage=profile.slinger.base_slippage_tolerance,
+        gas_multiplier=profile.slinger.gas_premium_multiplier,
+        private_mempool=profile.slinger.use_private_mempool,
+    )
+    set_agent("whisperer", "idle", f"Configured for strategy {name}")
+    set_agent("actuary", "idle", f"Max tax {profile.actuary.max_tax_allowed}%")
+    set_agent("slinger", "idle", f"Mode {selected_mode}, strategy {name}")
+    add_log("strategy", f"Applied strategy {name}")
+    return {
+        "name": name,
+        "description": profile.description,
+        "slippage": profile.slinger.base_slippage_tolerance,
+        "gas_multiplier": profile.slinger.gas_premium_multiplier,
+        "use_private_mempool": profile.slinger.use_private_mempool,
+    }
+
+
+def set_execution_mode(mode: str) -> str:
+    global selected_mode
+    selected_mode = mode
+    if mode == "traditional":
+        unified_slinger.preferred_venue = "dex"
+    elif mode == "mcp-only":
+        unified_slinger.preferred_venue = "cex"
+    else:
+        unified_slinger.preferred_venue = "auto"
+    set_agent("slinger", "idle", f"Execution mode set to {mode}")
+    set_agent("phantom", "standby", f"Mode set to {mode}")
+    add_log("mode", f"Execution mode set to {mode}")
+    return mode
 
 
 def find_address(text: str) -> Optional[str]:
@@ -145,6 +204,7 @@ def make_manual_signal(address: str, chain: str = "1") -> TradeSignal:
 
 def run_whisperer_scan(top_n: int = 5) -> tuple[str, list[dict[str, Any]]]:
     global last_signal
+    set_error(None)
     set_agent("whisperer", "active", f"Scanning top {top_n} signals")
     try:
         signals = whisperer.scan_top_n(top_n)
@@ -164,12 +224,13 @@ def run_whisperer_scan(top_n: int = 5) -> tuple[str, list[dict[str, Any]]]:
     except Exception as e:
         logger.exception("Whisperer scan failed")
         set_agent("whisperer", "error", f"Scan failed: {e}")
-        add_log("error", f"Whisperer failed: {e}")
+        set_error(f"Whisperer failed: {e}")
         return f"Whisperer scan failed: {e}", []
 
 
 def run_actuary_assess(signal: TradeSignal) -> tuple[str, Optional[dict[str, Any]]]:
     global last_assessment
+    set_error(None)
     set_agent("actuary", "active", f"Assessing {signal.token_address[:10]}...")
     try:
         assessment = actuary.assess_risk(signal)
@@ -188,7 +249,7 @@ def run_actuary_assess(signal: TradeSignal) -> tuple[str, Optional[dict[str, Any
     except Exception as e:
         logger.exception("Actuary assessment failed")
         set_agent("actuary", "error", f"Assessment failed: {e}")
-        add_log("error", f"Actuary failed: {e}")
+        set_error(f"Actuary failed: {e}")
         return f"Actuary failed: {e}", None
 
 
@@ -201,6 +262,7 @@ def sync_reaper_position(order):
 
 
 def run_slinger_execute(assessment: RiskAssessment, chain_id: str = "1", symbol: str | None = None) -> tuple[str, Optional[dict[str, Any]]]:
+    set_error(None)
     set_agent("slinger", "active", f"Executing {assessment.token_address[:10]}...")
     try:
         order = unified_slinger.execute_order(assessment, chain_id=chain_id, symbol=symbol)
@@ -228,11 +290,12 @@ def run_slinger_execute(assessment: RiskAssessment, chain_id: str = "1", symbol:
     except Exception as e:
         logger.exception("Slinger execution failed")
         set_agent("slinger", "error", f"Execution failed: {e}")
-        add_log("error", f"Slinger failed: {e}")
+        set_error(f"Slinger failed: {e}")
         return f"Slinger failed: {e}", None
 
 
 def run_phantom_market(symbol: str = "BTC/USDT") -> tuple[str, Optional[dict[str, Any]]]:
+    set_error(None)
     set_agent("phantom", "active", f"Fetching market data for {symbol}")
     try:
         result = phantom._call_mcp_server("ccxt", "fetch_ticker", {"symbol": symbol})
@@ -248,7 +311,7 @@ def run_phantom_market(symbol: str = "BTC/USDT") -> tuple[str, Optional[dict[str
     except Exception as e:
         logger.exception("PHANTOM market fetch failed")
         set_agent("phantom", "error", f"Market fetch failed: {e}")
-        add_log("error", f"PHANTOM failed: {e}")
+        set_error(f"PHANTOM failed: {e}")
         return f"PHANTOM failed: {e}", None
 
 
@@ -296,6 +359,11 @@ def current_system_summary() -> dict[str, Any]:
         "graveyard_count": len(trader.graveyard),
         "config": dict(trader.config),
         "reaper": reaper.get_portfolio_summary(),
+        "selected_strategy": selected_strategy,
+        "selected_mode": selected_mode,
+        "last_error": last_error,
+        "available_strategies": sorted(strategy_factory.profiles.keys()),
+        "available_modes": ["traditional", "hybrid", "mcp-only"],
     }
 
 
@@ -311,6 +379,20 @@ def route_command(message: str) -> dict[str, Any]:
         reply = team.execute(lowered)
         add_log("command", f"Team command executed: {lowered}")
         return {"reply": reply, "agent": "system"}
+
+    if lowered.startswith("strategy "):
+        name = lowered.split("strategy ", 1)[1].strip()
+        if name not in strategy_factory.profiles:
+            return {"reply": f"Unknown strategy '{name}'.", "agent": "system"}
+        details = apply_strategy(name)
+        return {"reply": f"Strategy switched to {name}: {details['description']}", "agent": "system", "strategy": details}
+
+    if lowered.startswith("mode "):
+        mode = lowered.split("mode ", 1)[1].strip()
+        if mode not in {"traditional", "hybrid", "mcp-only"}:
+            return {"reply": f"Unknown mode '{mode}'.", "agent": "system"}
+        set_execution_mode(mode)
+        return {"reply": f"Execution mode switched to {mode}.", "agent": "system", "mode": mode}
 
     address = find_address(text)
 
@@ -372,7 +454,9 @@ def route_command(message: str) -> dict[str, Any]:
         if not assessment:
             return {"reply": "I need an Actuary approval first. Scan or assess a token before telling Slinger to execute.", "agent": "slinger"}
 
-        chain_id = "cex" if any(word in lowered for word in ["cex", "exchange", "binance", "phantom"]) else "1"
+        chain_id = "cex" if selected_mode == "mcp-only" else ("cex" if any(word in lowered for word in ["cex", "exchange", "binance", "phantom"]) else "1")
+        if selected_mode == "hybrid":
+            chain_id = "1"
         symbol = None
         token_symbol = find_symbol(text)
         if chain_id == "cex" and token_symbol:
@@ -399,7 +483,7 @@ def route_command(message: str) -> dict[str, Any]:
         }
 
     return {
-        "reply": "Be more direct. Try: 'scan top 5', 'assess 0x...', 'execute on cex', 'PHANTOM BTC ticker', 'positions', or 'stats'.",
+        "reply": "Be more direct. Try: 'scan top 5', 'assess 0x...', 'execute on cex', 'PHANTOM BTC ticker', 'positions', 'strategy degen', or 'mode hybrid'.",
         "agent": "system",
     }
 
@@ -418,6 +502,7 @@ HTML = """
     .scroll { scrollbar-width: thin; }
     .glow { box-shadow: 0 0 0 1px rgba(59,130,246,.15), 0 0 30px rgba(37,99,235,.08); }
     table td, table th { vertical-align: top; }
+    iframe { width: 100%; min-height: 360px; border: 0; border-radius: 12px; background: #020617; }
   </style>
 </head>
 <body class=\"text-slate-100 min-h-screen\">
@@ -438,7 +523,7 @@ HTML = """
       <div class=\"xl:col-span-2 space-y-6\">
         <div class=\"panel rounded-2xl p-5 glow\">
           <h2 class=\"text-lg font-semibold\">Natural-language command bar</h2>
-          <p class=\"text-sm text-slate-400 mt-1\">Examples: “scan top 5”, “assess 0x...”, “execute on cex”, “PHANTOM BTC ticker”, “positions”, “stats”.</p>
+          <p class=\"text-sm text-slate-400 mt-1\">Examples: “scan top 5”, “assess 0x...”, “execute on cex”, “PHANTOM BTC ticker”, “positions”, “strategy degen”, “mode hybrid”.</p>
           <div class=\"flex gap-3 mt-4\">
             <input id=\"command-input\" class=\"flex-1 bg-slate-950/70 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-sky-500\" placeholder=\"Type a command in plain English...\" />
             <button onclick=\"sendCommand()\" class=\"bg-sky-600 hover:bg-sky-500 rounded-xl px-5 py-3 font-semibold\">Send</button>
@@ -486,10 +571,29 @@ HTML = """
                   <th class=\"text-left py-2\">Score</th>
                   <th class=\"text-left py-2\">Risk</th>
                   <th class=\"text-left py-2\">Max Alloc</th>
+                  <th class=\"text-left py-2\">Actions</th>
                 </tr>
               </thead>
               <tbody id=\"watchlist-body\"></tbody>
             </table>
+          </div>
+        </div>
+
+        <div class=\"grid grid-cols-1 2xl:grid-cols-2 gap-6\">
+          <div class=\"panel rounded-2xl p-5 glow\">
+            <div class=\"flex items-center justify-between mb-4\">
+              <h2 class=\"text-lg font-semibold\">Token detail</h2>
+              <span id=\"detail-symbol\" class=\"text-xs text-slate-400\">No token selected</span>
+            </div>
+            <div id=\"token-detail\" class=\"text-sm text-slate-300 space-y-2\"></div>
+          </div>
+
+          <div class=\"panel rounded-2xl p-5 glow\">
+            <div class=\"flex items-center justify-between mb-4\">
+              <h2 class=\"text-lg font-semibold\">Chart</h2>
+              <span class=\"text-xs text-slate-400\">DexScreener embed</span>
+            </div>
+            <iframe id=\"chart-frame\" src=\"about:blank\"></iframe>
           </div>
         </div>
 
@@ -543,6 +647,25 @@ HTML = """
         </div>
 
         <div class=\"panel rounded-2xl p-5 glow\">
+          <h2 class=\"text-lg font-semibold mb-4\">Strategy and mode</h2>
+          <div class=\"space-y-4 text-sm mb-5\">
+            <label class=\"block\">
+              <div class=\"text-slate-400 mb-1\">Strategy</div>
+              <select id=\"strategy-select\" class=\"w-full bg-slate-950/70 border border-slate-700 rounded-xl px-3 py-2\"></select>
+            </label>
+            <label class=\"block\">
+              <div class=\"text-slate-400 mb-1\">Execution mode</div>
+              <select id=\"mode-select\" class=\"w-full bg-slate-950/70 border border-slate-700 rounded-xl px-3 py-2\">
+                <option value=\"traditional\">traditional</option>
+                <option value=\"hybrid\">hybrid</option>
+                <option value=\"mcp-only\">mcp-only</option>
+              </select>
+            </label>
+            <div class=\"grid grid-cols-2 gap-3\">
+              <button onclick=\"saveStrategyMode()\" class=\"bg-violet-600 hover:bg-violet-500 rounded-xl py-3 font-semibold\">Apply</button>
+              <button onclick=\"quick('stats')\" class=\"bg-slate-800 hover:bg-slate-700 rounded-xl py-3 font-semibold\">Refresh stats</button>
+            </div>
+          </div>
           <h2 class=\"text-lg font-semibold mb-4\">Engine controls</h2>
           <div class=\"space-y-4 text-sm\">
             <label class=\"block\">
@@ -568,12 +691,15 @@ HTML = """
         <div class=\"panel rounded-2xl p-5 glow\">
           <h2 class=\"text-lg font-semibold mb-4\">System snapshot</h2>
           <div id=\"snapshot\" class=\"text-sm text-slate-300 space-y-2\"></div>
+          <div id=\"error-banner\" class=\"hidden mt-4 rounded-xl border border-rose-800 bg-rose-950/40 text-rose-200 px-3 py-3 text-sm\"></div>
         </div>
       </div>
     </section>
   </div>
 
 <script>
+window.__watchlist = [];
+
 async function api(path, options={}) {
   const res = await fetch(path, options);
   return await res.json();
@@ -628,22 +754,54 @@ function renderLog(items) {
   });
 }
 
+function selectToken(item) {
+  document.getElementById('detail-symbol').innerText = item.symbol;
+  document.getElementById('token-detail').innerHTML = `
+    <div><span class=\"text-slate-500\">Address:</span> ${item.token_address}</div>
+    <div><span class=\"text-slate-500\">Chain:</span> ${item.chain}</div>
+    <div><span class=\"text-slate-500\">Price:</span> ${item.price ? '$' + Number(item.price).toFixed(8) : 'n/a'}</div>
+    <div><span class=\"text-slate-500\">Score:</span> ${item.score}</div>
+    <div><span class=\"text-slate-500\">Risk:</span> ${item.risk_level || 'unassessed'}</div>
+    <div><span class=\"text-slate-500\">Max allocation:</span> ${item.max_allocation_usd ? '$' + Number(item.max_allocation_usd).toFixed(2) : 'n/a'}</div>
+    <div><span class=\"text-slate-500\">Reasoning:</span> ${item.reasoning}</div>
+    <div><span class=\"text-slate-500\">Warnings:</span> ${(item.warnings && item.warnings.length) ? item.warnings.join(' | ') : 'none'}</div>
+  `;
+  document.getElementById('chart-frame').src = item.chart_url || 'about:blank';
+}
+
+async function watchAction(action, address) {
+  const commands = {
+    assess: `assess ${address}`,
+    execute: `execute ${address}`,
+    ape: `ape into ${address}`,
+  };
+  await api('/api/nlp', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({message: commands[action]})
+  });
+  await refresh();
+}
+
 function renderWatchlist(items) {
+  window.__watchlist = items;
   const body = document.getElementById('watchlist-body');
   body.innerHTML = '';
-  items.forEach(item => {
+  items.forEach((item, index) => {
     const tr = document.createElement('tr');
     tr.className = 'border-b border-slate-800';
     tr.innerHTML = `
-      <td class=\"py-2\"><div class=\"font-semibold\">${item.symbol}</div><div class=\"text-xs text-slate-500\">${item.token_address.slice(0,12)}...</div></td>
+      <td class=\"py-2\"><button class=\"text-left\" onclick=\"selectToken(window.__watchlist[${index}])\"><div class=\"font-semibold text-sky-300\">${item.symbol}</div><div class=\"text-xs text-slate-500\">${item.token_address.slice(0,12)}...</div></button></td>
       <td class=\"py-2\">${item.chain}</td>
       <td class=\"py-2\">${item.price ? '$' + Number(item.price).toFixed(8) : 'n/a'}</td>
       <td class=\"py-2\">${item.score}</td>
       <td class=\"py-2\">${item.risk_level || 'unassessed'}</td>
       <td class=\"py-2\">${item.max_allocation_usd ? '$' + Number(item.max_allocation_usd).toFixed(2) : 'n/a'}</td>
+      <td class=\"py-2\"><div class=\"flex flex-wrap gap-2\"><button class=\"px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-xs\" onclick=\"watchAction('assess','${item.token_address}')\">assess</button><button class=\"px-2 py-1 rounded bg-emerald-800 hover:bg-emerald-700 text-xs\" onclick=\"watchAction('execute','${item.token_address}')\">execute</button><button class=\"px-2 py-1 rounded bg-violet-800 hover:bg-violet-700 text-xs\" onclick=\"watchAction('ape','${item.token_address}')\">ape</button></div></td>
     `;
     body.appendChild(tr);
   });
+  if (items.length) selectToken(items[0]);
 }
 
 function renderPositions(items, targetId) {
@@ -676,6 +834,7 @@ function renderSnapshot(state) {
   document.getElementById('snapshot').innerHTML = `
     <div>Active positions: <span class=\"text-white font-semibold\">${state.active_count}</span></div>
     <div>Closed trades: <span class=\"text-white font-semibold\">${state.graveyard_count}</span></div>
+    <div>Strategy / Mode: <span class=\"text-white font-semibold\">${state.selected_strategy} / ${state.selected_mode}</span></div>
     <div>Trade size: <span class=\"text-white font-semibold\">$${state.config.trade_size}</span></div>
     <div>TP / SL: <span class=\"text-white font-semibold\">${state.config.take_profit}% / ${state.config.stop_loss}%</span></div>
     <div>Trailing stop: <span class=\"text-white font-semibold\">${state.config.trailing_stop}%</span></div>
@@ -690,6 +849,28 @@ function renderSnapshot(state) {
   document.getElementById('tp-val').innerText = `${state.config.take_profit}%`;
   document.getElementById('sl-val').innerText = `${state.config.stop_loss}%`;
   document.getElementById('trail-val').innerText = `${state.config.trailing_stop}%`;
+
+  const strategySelect = document.getElementById('strategy-select');
+  const modeSelect = document.getElementById('mode-select');
+  if (strategySelect.options.length === 0) {
+    state.available_strategies.forEach(s => {
+      const option = document.createElement('option');
+      option.value = s;
+      option.textContent = s;
+      strategySelect.appendChild(option);
+    });
+  }
+  strategySelect.value = state.selected_strategy;
+  modeSelect.value = state.selected_mode;
+
+  const errorBanner = document.getElementById('error-banner');
+  if (state.last_error) {
+    errorBanner.classList.remove('hidden');
+    errorBanner.innerText = state.last_error;
+  } else {
+    errorBanner.classList.add('hidden');
+    errorBanner.innerText = '';
+  }
 }
 
 async function refresh() {
@@ -725,6 +906,17 @@ async function saveConfig() {
     trailing_stop: Number(document.getElementById('trailing-stop').value),
   };
   await api('/api/config', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
+  await refresh();
+}
+
+async function saveStrategyMode() {
+  const strategy = document.getElementById('strategy-select').value;
+  const mode = document.getElementById('mode-select').value;
+  await api('/api/strategy_mode', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({strategy, mode})
+  });
   await refresh();
 }
 
@@ -794,6 +986,23 @@ def api_config():
     return jsonify({"ok": True, "config": trader.config})
 
 
+@app.route("/api/strategy_mode", methods=["POST"])
+def api_strategy_mode():
+    payload = request.get_json(force=True) or {}
+    strategy = str(payload.get("strategy", selected_strategy))
+    mode = str(payload.get("mode", selected_mode))
+    result: dict[str, Any] = {"ok": True}
+
+    if strategy in strategy_factory.profiles:
+        result["strategy"] = apply_strategy(strategy)
+    if mode in {"traditional", "hybrid", "mcp-only"}:
+        result["mode"] = set_execution_mode(mode)
+
+    return jsonify(result)
+
+
 if __name__ == "__main__":
+    apply_strategy(selected_strategy)
+    set_execution_mode(selected_mode)
     add_log("system", "Real-agent NLP dashboard initialized")
     app.run(host="127.0.0.1", port=5055, debug=True)
