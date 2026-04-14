@@ -1,0 +1,8 @@
+scan_interval_ms = 5000
+paper_mode = true
+
+[[strategy_profiles]]
+name = "default"
+enabled = true
+max_positions = 5
+max_slippage_bps = 300

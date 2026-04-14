@@ -1,0 +1,10 @@
+[package]
+name = "ast-slinger"
+version.workspace = true
+edition.workspace = true
+publish = false
+
+[dependencies]
+async-trait.workspace = true
+ast-core = { path = "../ast-core" }
+ast-safety = { path = "../ast-safety" }

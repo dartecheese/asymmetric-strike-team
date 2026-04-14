@@ -1,0 +1,52 @@
+[workspace]
+members = [
+  ".",
+  "crates/ast-core",
+  "crates/ast-whisperer",
+  "crates/ast-actuary",
+  "crates/ast-slinger",
+  "crates/ast-reaper",
+  "crates/ast-safety",
+  "crates/ast-observe",
+]
+resolver = "2"
+
+[workspace.package]
+edition = "2024"
+version = "0.1.0"
+authors = ["Colton <colton@example.com>"]
+license = "MIT"
+
+[workspace.dependencies]
+anyhow = "1.0"
+async-trait = "0.1"
+axum = { version = "0.8", features = ["json"] }
+config = { version = "0.15", default-features = false, features = ["toml"] }
+rust_decimal = { version = "1.39", features = ["serde"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "2.0"
+tokio = { version = "1.48", features = ["macros", "rt-multi-thread", "signal", "time", "sync"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt", "json"] }
+
+[package]
+name = "asymmetric-strike-team"
+version.workspace = true
+edition.workspace = true
+publish = false
+
+[dependencies]
+anyhow.workspace = true
+async-trait.workspace = true
+axum.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+ast-core = { path = "crates/ast-core" }
+ast-whisperer = { path = "crates/ast-whisperer" }
+ast-actuary = { path = "crates/ast-actuary" }
+ast-slinger = { path = "crates/ast-slinger" }
+ast-reaper = { path = "crates/ast-reaper" }
+ast-safety = { path = "crates/ast-safety" }
+ast-observe = { path = "crates/ast-observe" }

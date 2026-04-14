@@ -1,0 +1,10 @@
+[package]
+name = "ast-observe"
+version.workspace = true
+edition.workspace = true
+publish = false
+
+[dependencies]
+ast-core = { path = "../ast-core" }
+tracing.workspace = true
+tracing-subscriber.workspace = true

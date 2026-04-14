@@ -1,0 +1,8 @@
+[package]
+name = "ast-safety"
+version.workspace = true
+edition.workspace = true
+publish = false
+
+[dependencies]
+ast-core = { path = "../ast-core" }

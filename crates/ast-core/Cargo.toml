@@ -1,0 +1,11 @@
+[package]
+name = "ast-core"
+version.workspace = true
+edition.workspace = true
+publish = false
+
+[dependencies]
+config.workspace = true
+rust_decimal.workspace = true
+serde.workspace = true
+thiserror.workspace = true
