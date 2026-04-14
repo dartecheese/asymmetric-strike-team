@@ -1,123 +1,104 @@
 """
-Unified Slinger Agent - Switches between real and paper execution based on environment.
+Unified Slinger - Smart Execution Router
+=========================================
+Routes execution to either DEX (Web3) or CEX (CCXT) based on:
+1. Signal chain (Ethereum/Base/Arbitrum -> DEX, "cex" -> CEX)
+2. Token availability
+3. Liquidity and fees
 """
-
-import os
 import logging
-from typing import Optional
-from dotenv import load_dotenv
+from typing import Optional, Dict, Any
 
-try:
-    from core.models import ExecutionOrder
-    from strategy_factory import SlingerConfig
-except ImportError:
-    # Fallback for standalone testing
-    from pydantic import BaseModel
-    
-    class ExecutionOrder(BaseModel):
-        token_address: str
-        action: str
-        amount_usd: float
-        slippage_tolerance: float
-        gas_premium_gwei: float
-        
-    class SlingerConfig(BaseModel):
-        use_private_mempool: bool = False
-        base_slippage_tolerance: float = 0.15
-        gas_premium_multiplier: float = 1.5
+from core.models import RiskAssessment, ExecutionOrder
+from agents.slinger import Slinger as DEXSlinger
+from agents.cex_slinger import CEXSlinger
 
-load_dotenv()
-
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("UnifiedSlinger")
 
-class UnifiedSlingerAgent:
-    """
-    Unified execution agent that automatically switches between:
-    - Real Web3.py execution (when USE_REAL_EXECUTION=true)
-    - Paper trading simulation (default)
-    """
-    def __init__(self, config: SlingerConfig):
-        self.config = config
-        self.use_real = os.getenv("USE_REAL_EXECUTION", "false").lower() == "true"
-        self.rpc_url = os.getenv("ETH_RPC_URL")
-        self.private_key = os.getenv("PRIVATE_KEY")
-        
-        if self.use_real and self.rpc_url and self.private_key:
-            logger.info("🚀 Initializing REAL execution mode")
-            try:
-                from execution.real_slinger import RealSlingerAgent
-                self.real_slinger = RealSlingerAgent(config, self.rpc_url, self.private_key)
-                self.mode = "REAL"
-            except ImportError as e:
-                logger.error(f"Failed to load RealSlingerAgent: {e}")
-                self.mode = "PAPER"
-                self._init_paper_slinger()
-        else:
-            logger.info("📝 Initializing PAPER trading mode")
-            self.mode = "PAPER"
-            self._init_paper_slinger()
-    
-    def _init_paper_slinger(self):
-        """Initialize the paper trading slinger."""
-        from execution.slinger import SlingerAgent
-        self.paper_slinger = SlingerAgent(self.config, rpc_url="http://localhost:8545")
-    
-    def execute_order(self, order: ExecutionOrder, wallet_address: str = None, private_key: str = None):
-        """Execute order in appropriate mode."""
-        logger.info(f"Executing {order.action} for {order.token_address} (${order.amount_usd}) in {self.mode} mode")
-        
-        if self.mode == "REAL":
-            # Real execution - wallet address and private key come from env
-            return self.real_slinger.execute_order(order)
-        else:
-            # Paper execution - use provided or mock credentials
-            wallet = wallet_address or "0xMockWalletAddress"
-            key = private_key or "MockPrivateKey"
-            return self.paper_slinger.execute_order(order, wallet, key)
-    
-    def get_mode(self):
-        """Get current execution mode."""
-        return self.mode
-    
-    def test_connection(self):
-        """Test the connection (real mode) or simulation (paper mode)."""
-        if self.mode == "REAL":
-            try:
-                # Test Web3 connection
-                from web3 import Web3
-                w3 = Web3(Web3.HTTPProvider(self.rpc_url))
-                if w3.is_connected():
-                    return f"✅ Connected to chain ID: {w3.eth.chain_id}"
-                else:
-                    return "❌ Failed to connect to RPC"
-            except Exception as e:
-                return f"❌ Connection test failed: {e}"
-        else:
-            return "📝 Paper trading mode - no blockchain connection needed"
 
-if __name__ == "__main__":
-    # Test the unified slinger
-    from strategy_factory import StrategyFactory
-    
-    factory = StrategyFactory()
-    degen_config = factory.get_profile("degen").slinger
-    
-    slinger = UnifiedSlingerAgent(degen_config)
-    print(f"Mode: {slinger.get_mode()}")
-    print(f"Connection test: {slinger.test_connection()}")
-    
-    # Test with a mock order
-    order = ExecutionOrder(
-        token_address="0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",  # UNI token
-        action="BUY",
-        amount_usd=100.0,
-        slippage_tolerance=0.30,
-        gas_premium_gwei=50.0
-    )
-    
-    try:
-        tx_hash = slinger.execute_order(order)
-        print(f"Transaction result: {tx_hash}")
-    except Exception as e:
-        print(f"Execution test failed: {e}")
+class UnifiedSlinger:
+    """Unified Slinger: smart execution router for DEX and CEX venues."""
+
+    def __init__(
+        self,
+        dex_rpc_url: str = None,
+        dex_private_key: str = None,
+        cex_exchange: str = "binance",
+        cex_account: str = "default",
+    ):
+        self.dex_slinger = DEXSlinger(rpc_url=dex_rpc_url, private_key=dex_private_key)
+        self.cex_slinger = CEXSlinger(exchange_id=cex_exchange, account_name=cex_account)
+        self._strategy_slippage = 0.15
+        self._strategy_gas_multiplier = 1.5
+        self._use_private_mempool = False
+        self.preferred_venue = "auto"
+
+    def set_strategy_params(self, slippage: float, gas_multiplier: float, private_mempool: bool):
+        self._strategy_slippage = slippage
+        self._strategy_gas_multiplier = gas_multiplier
+        self._use_private_mempool = private_mempool
+        self.dex_slinger._strategy_slippage = slippage
+        self.dex_slinger._strategy_gas_multiplier = gas_multiplier
+        self.dex_slinger._use_private_mempool = private_mempool
+        self.cex_slinger._strategy_slippage = slippage
+
+    def execute_order(self, assessment: RiskAssessment, chain_id: str = "1", symbol: str = None) -> Optional[ExecutionOrder]:
+        print("🔫 [Unified Slinger] Routing execution...")
+        print(f"   Chain: {chain_id} | Token: {assessment.token_address}")
+        print(f"   Allocation: ${assessment.max_allocation_usd}")
+
+        venue = self._determine_venue(chain_id, assessment)
+        if venue == "dex":
+            print(f"   → Routing to DEX (chain {chain_id})")
+            return self.dex_slinger.execute_order(assessment, chain_id=chain_id)
+
+        if venue == "cex":
+            if not symbol:
+                symbol = self._token_to_symbol(assessment.token_address)
+                if not symbol:
+                    print(f"   ❌ No symbol mapping for token {assessment.token_address}")
+                    return None
+
+            print(f"   → Routing to CEX ({self.cex_slinger.exchange_id}: {symbol})")
+            return self.cex_slinger.execute_order(assessment, symbol=symbol)
+
+        print(f"   ❌ Unknown venue: {venue}")
+        return None
+
+    def _determine_venue(self, chain_id: str, assessment: RiskAssessment) -> str:
+        if self.preferred_venue != "auto":
+            return self.preferred_venue
+        if chain_id == "cex":
+            return "cex"
+
+        cex_tokens = {
+            "0x6982508145454ce325ddbe47a25d4ec3d2311933": "PEPE/USDT",
+            "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": "WETH/USDT",
+            "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599": "WBTC/USDT",
+            "0xdac17f958d2ee523a2206206994597c13d831ec7": "USDT/USDT",
+            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": "USDC/USDT",
+        }
+        if assessment.token_address.lower() in cex_tokens:
+            print(f"   Token {assessment.token_address[:10]}... is CEX-listed")
+            return "cex"
+        return "dex"
+
+    def _token_to_symbol(self, token_address: str) -> Optional[str]:
+        token_map = {
+            "0x6982508145454ce325ddbe47a25d4ec3d2311933": "PEPE/USDT",
+            "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": "ETH/USDT",
+            "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599": "BTC/USDT",
+            "0xdac17f958d2ee523a2206206994597c13d831ec7": "USDT/USDT",
+            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": "USDC/USDT",
+            "BTC": "BTC/USDT",
+            "ETH": "ETH/USDT",
+            "BNB": "BNB/USDT",
+            "SOL": "SOL/USDT",
+        }
+        return token_map.get(token_address.lower()) or token_map.get(token_address.upper())
+
+    def get_balances(self) -> Dict[str, Any]:
+        return {
+            "dex": "Not implemented",
+            "cex": self.cex_slinger.get_balance(),
+        }

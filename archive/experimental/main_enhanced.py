@@ -1,20 +1,12 @@
 """
-Asymmetric Strike Team — Main Entry Point
+Asymmetric Strike Team — Enhanced Version
 ==========================================
-Pipeline: Whisperer → Actuary → Slinger → Reaper
-
-Strategy profiles flow through to every agent — pick one and all params adjust:
-  degen | sniper | shadow_clone | arb_hunter | oracle_eye | liquidity_sentinel | yield_alchemist | forensic_sniper
-
-Run modes:
-  python main.py                              # Paper, degen strategy, single cycle
-  python main.py --strategy sniper            # Different strategy profile
-  python main.py --loop                       # Continuous scanning
-  python main.py --loop --interval 30         # Scan every 30s
-  python main.py --list                       # Show all strategies
-  USE_REAL_EXECUTION=true python main.py      # Live execution
+Includes:
+1. Enhanced Whisperer with sentiment analysis
+2. Unified Slinger (DEX + CEX execution)
+3. Better error handling and validation
+4. Multi-venue execution routing
 """
-
 import os
 import sys
 import time
@@ -29,7 +21,7 @@ logging.basicConfig(
     format="%(asctime)s [%(name)s] %(levelname)s: %(message)s",
     datefmt="%H:%M:%S",
 )
-logger = logging.getLogger("Main")
+logger = logging.getLogger("MainEnhanced")
 
 
 def list_strategies():
@@ -55,24 +47,24 @@ def list_strategies():
         print()
 
 
-def build_banner(strategy_name: str, mode: str):
-    print("\n" + "=" * 60)
-    print("🚀  ASYMMETRIC STRIKE TEAM")
+def build_banner(strategy_name: str, mode: str, enhanced: bool = True):
+    print("\n" + "=" * 70)
+    print("🚀  ASYMMETRIC STRIKE TEAM - ENHANCED")
     print(f"   Strategy : {strategy_name}")
     print(f"   Mode     : {mode}")
-    print("=" * 60 + "\n")
+    if enhanced:
+        print("   Features : Sentiment Analysis + Unified Execution (DEX/CEX)")
+    print("=" * 70 + "\n")
 
 
-def run_cycle(strategy: str = "degen", paper_mode: bool = True) -> bool:
+def run_enhanced_cycle(strategy: str = "degen", paper_mode: bool = True) -> bool:
     """
-    Run a single scan → assess → execute → monitor cycle.
-    Strategy profile flows through to all agent configs.
-    Returns True if a trade was placed, False otherwise.
+    Run enhanced scan → assess → execute → monitor cycle.
     """
     from strategy_factory import StrategyFactory
-    from agents.whisperer import Whisperer
+    from agents.enhanced_whisperer import EnhancedWhisperer
     from agents.actuary import Actuary
-    from execution.unified_slinger import UnifiedSlinger
+    from agents.unified_slinger import UnifiedSlinger
     from agents.reaper import Reaper
     from core.models import RiskLevel
 
@@ -83,20 +75,20 @@ def run_cycle(strategy: str = "degen", paper_mode: bool = True) -> bool:
         logger.error(str(e))
         return False
 
-    # --- Build agents from strategy profile ---
+    # --- Build enhanced agents ---
 
-    # Whisperer: use profile's velocity score threshold
+    # Enhanced Whisperer with sentiment analysis
     whisperer_cfg = profile.whisperer
     min_score = whisperer_cfg.min_velocity_score if whisperer_cfg else 50
-    whisperer = Whisperer(min_velocity_score=min_score)
+    whisperer = EnhancedWhisperer(min_velocity_score=min_score, use_sentiment=True)
 
     # Actuary: use profile's tax tolerance and strict mode
     actuary_cfg = profile.actuary
     actuary = Actuary(
-        max_allowed_tax=actuary_cfg.max_tax_allowed / 100,  # config stores as %, we use decimal
+        max_allowed_tax=actuary_cfg.max_tax_allowed / 100,
     )
 
-    # Unified Slinger: use profile's slippage and gas settings
+    # Unified Slinger: DEX + CEX execution
     slinger_cfg = profile.slinger
     slinger = UnifiedSlinger()
     slinger.set_strategy_params(
@@ -116,22 +108,23 @@ def run_cycle(strategy: str = "degen", paper_mode: bool = True) -> bool:
     )
 
     print(f"📐 Profile loaded: {profile.name}")
-    print(f"   Actuary  : max tax {actuary_cfg.max_tax_allowed:.0f}% | strict={actuary_cfg.strict_mode}")
-    print(f"   Slinger  : slippage {slinger_cfg.base_slippage_tolerance*100:.0f}% | private_mempool={slinger_cfg.use_private_mempool}")
-    print(f"   Reaper   : TP +{reaper_cfg.take_profit_pct:.0f}% | SL {reaper_cfg.stop_loss_pct:.0f}% | trail -{reaper_cfg.trailing_stop_pct:.0f}%")
+    print(f"   Whisperer : Enhanced with sentiment analysis")
+    print(f"   Actuary   : max tax {actuary_cfg.max_tax_allowed:.0f}% | strict={actuary_cfg.strict_mode}")
+    print(f"   Slinger   : Unified DEX/CEX | slippage {slinger_cfg.base_slippage_tolerance*100:.0f}%")
+    print(f"   Reaper    : TP +{reaper_cfg.take_profit_pct:.0f}% | SL {reaper_cfg.stop_loss_pct:.0f}%")
 
-    # --- Step 1: Whisperer scans for signals ---
-    print("\n" + "-" * 60)
+    # --- Step 1: Enhanced Whisperer scans with sentiment ---
+    print("\n" + "-" * 70)
     signal = whisperer.scan_firehose()
     if not signal:
-        logger.warning("Whisperer returned no signal this cycle.")
+        logger.warning("Enhanced Whisperer returned no signal this cycle.")
         return False
 
-    print(f"   Score: {signal.narrative_score} | Chain: {signal.chain}")
+    print(f"   Final Score: {signal.narrative_score} | Chain: {signal.chain}")
     print(f"   {signal.reasoning[:120]}")
 
-    # --- Step 2: Actuary assesses risk (always returns, never None) ---
-    print("-" * 60)
+    # --- Step 2: Actuary assesses risk ---
+    print("-" * 70)
     assessment = actuary.assess_risk(signal)
 
     if assessment.risk_level == RiskLevel.REJECTED:
@@ -143,18 +136,37 @@ def run_cycle(strategy: str = "degen", paper_mode: bool = True) -> bool:
         print(f"🛡️  Strict mode: HIGH risk token rejected.\n")
         return False
 
-    # --- Step 3: Slinger executes with strategy params ---
-    print("-" * 60)
-    order = slinger.execute_order(assessment, chain_id=signal.chain)
+    # --- Step 3: Unified Slinger executes (DEX or CEX) ---
+    print("-" * 70)
+    
+    # Determine if this is a CEX-listed token
+    token_lower = signal.token_address.lower()
+    cex_tokens = {
+        "0x6982508145454ce325ddbe47a25d4ec3d2311933": "PEPE/USDT",  # PEPE
+        "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": "ETH/USDT",    # WETH
+        "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599": "BTC/USDT",    # WBTC
+    }
+    
+    symbol = cex_tokens.get(token_lower)
+    if symbol:
+        print(f"   CEX-listed token detected: {symbol}")
+        chain_id = "cex"
+    else:
+        symbol = None
+        chain_id = signal.chain
+    
+    order = slinger.execute_order(assessment, chain_id=chain_id, symbol=symbol)
 
     if not order:
-        logger.warning("Slinger returned no order.")
+        logger.warning("Unified Slinger returned no order.")
         return False
 
-    # --- Step 4: Reaper monitors with strategy TP/SL ---
-    print("-" * 60)
-    live_price_tag = f"@ ${order.entry_price_usd:.8f}" if order.entry_price_usd else "(no price feed)"
-    print(f"💀 [Reaper] Entry price {live_price_tag} | {'LIVE price polling' if not paper_mode and order.entry_price_usd else 'paper sim'}")
+    # --- Step 4: Reaper monitors ---
+    print("-" * 70)
+    venue = "CEX" if order.is_cex else "DEX"
+    price_info = f"@ ${order.entry_price_usd:.8f}" if order.entry_price_usd else "(paper mode)"
+    print(f"💀 [Reaper] {venue} entry {price_info}")
+    
     reaper.take_position(order)
     reaper.start_monitoring()
 
@@ -171,7 +183,7 @@ def run_cycle(strategy: str = "degen", paper_mode: bool = True) -> bool:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Asymmetric Strike Team")
+    parser = argparse.ArgumentParser(description="Asymmetric Strike Team - Enhanced")
     parser.add_argument("--strategy", default="degen",
                         help="Strategy profile (default: degen)")
     parser.add_argument("--loop", action="store_true",
@@ -180,6 +192,10 @@ def main():
                         help="Seconds between scans in loop mode (default: 60)")
     parser.add_argument("--list", action="store_true",
                         help="List all available strategy profiles and exit")
+    parser.add_argument("--no-sentiment", action="store_true",
+                        help="Disable sentiment analysis")
+    parser.add_argument("--venue", choices=["auto", "dex", "cex"], default="auto",
+                        help="Execution venue preference (default: auto)")
     args = parser.parse_args()
 
     if args.list:
@@ -198,7 +214,7 @@ def main():
         logger.warning("USE_REAL_EXECUTION=true but RPC_URL or PRIVATE_KEY missing — defaulting to paper.")
 
     mode_label = "PAPER TRADING" if paper_mode else "🚨 LIVE EXECUTION"
-    build_banner(args.strategy.upper(), mode_label)
+    build_banner(args.strategy.upper(), mode_label, enhanced=not args.no_sentiment)
 
     if args.loop:
         print(f"🔄 Continuous mode — scanning every {args.interval}s. Ctrl+C to stop.\n")
@@ -206,16 +222,16 @@ def main():
         while True:
             try:
                 cycle += 1
-                print(f"\n{'='*60}\n  CYCLE #{cycle}\n{'='*60}")
-                run_cycle(strategy=args.strategy, paper_mode=paper_mode)
+                print(f"\n{'='*70}\n  CYCLE #{cycle}\n{'='*70}")
+                run_enhanced_cycle(strategy=args.strategy, paper_mode=paper_mode)
                 print(f"\n⏳ Next scan in {args.interval}s...")
                 time.sleep(args.interval)
             except KeyboardInterrupt:
                 print("\n\n🛑 Shutdown requested. Exiting.")
                 sys.exit(0)
     else:
-        run_cycle(strategy=args.strategy, paper_mode=paper_mode)
-        print("\n✅ Single cycle complete.")
+        run_enhanced_cycle(strategy=args.strategy, paper_mode=paper_mode)
+        print("\n✅ Enhanced cycle complete.")
 
 
 if __name__ == "__main__":

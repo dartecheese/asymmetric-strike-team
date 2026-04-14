@@ -20,21 +20,30 @@ wheels/
 .installed.cfg
 *.egg
 
-# Virtual Environment
+# Virtual environments
 venv/
-env/
-ENV/
-env.bak/
-venv.bak/
+.envrc
 
 # Environment variables
 .env
 .env.local
 .env.*.local
 
-# Logs
+# Node
+node_modules/
+
+# Logs and runtime outputs
 *.log
 logs/
+paper_trading.log
+dashboard.stdout
+dashboard.stderr
+error.log
+
+# Coverage and test caches
+.coverage
+htmlcov/
+.pytest_cache/
 
 # IDE
 .vscode/
@@ -44,34 +53,19 @@ logs/
 
 # OS
 .DS_Store
-.DS_Store?
 ._*
 .Spotlight-V100
 .Trashes
-ehthumbs.db
 Thumbs.db
-
-# Test artifacts
-.coverage
-htmlcov/
-.pytest_cache/
-
-# Jupyter Notebook
-.ipynb_checkpoints
 
 # Temporary files
 *.tmp
 *.temp
 
-# Database
+# Databases
 *.db
 *.sqlite
 
-# Paper trading logs
-paper_trading.log
-error.log
-
-# Dashboard outputs
-dashboard.stdout
-dashboard.stderrdata/positions.json
+# Local runtime state
+data/positions.json
 data/positions.tmp

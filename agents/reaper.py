@@ -78,6 +78,7 @@ class Reaper:
         trailing_stop_pct: float = 15.0,
         poll_interval_sec: float = 10.0,
         paper_mode: bool = True,
+        store_path=None,
     ):
         self.take_profit_pct = take_profit_pct
         self.stop_loss_pct = stop_loss_pct
@@ -88,7 +89,7 @@ class Reaper:
         self.positions: dict[str, Position] = {}
         self._monitoring = False
         self._thread: Optional[threading.Thread] = None
-        self.store = PositionStore()
+        self.store = PositionStore(store_path) if store_path else PositionStore()
 
         # Restore any active positions from disk
         self._restore_positions()
@@ -101,7 +102,6 @@ class Reaper:
         print(f"💀 [Reaper] Restoring {len(saved)} position(s) from disk...")
         for p in saved:
             try:
-                from core.models import ExecutionOrder
                 order = ExecutionOrder(
                     token_address=p["token_address"],
                     chain=p.get("chain", "1"),
@@ -113,9 +113,9 @@ class Reaper:
                 )
                 pos = Position(order)
                 pos.current_value = p.get("current_value", pos.entry_value)
-                pos.peak_value    = p.get("peak_value",    pos.entry_value)
-                pos.status        = p.get("status",        "ACTIVE")
-                pos.pnl_pct       = p.get("pnl_pct",       0.0)
+                pos.peak_value = p.get("peak_value", pos.entry_value)
+                pos.status = p.get("status", "ACTIVE")
+                pos.pnl_pct = p.get("pnl_pct", 0.0)
                 pos.last_price_usd = p.get("last_price_usd")
                 self.positions[p["token_address"]] = pos
                 print(f"   ↩  {p['token_address'][:14]}...  [{pos.status}]  ${pos.current_value:.2f}  {pos.pnl_pct:+.1f}%")
