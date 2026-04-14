@@ -50,6 +50,7 @@ dependencies = [
  "config",
  "rust_decimal",
  "serde",
+ "serde_json",
  "thiserror",
 ]
 
@@ -69,6 +70,10 @@ dependencies = [
  "ast-core",
  "ast-safety",
  "async-trait",
+ "rust_decimal",
+ "serde",
+ "serde_json",
+ "tokio",
 ]
 
 [[package]]
