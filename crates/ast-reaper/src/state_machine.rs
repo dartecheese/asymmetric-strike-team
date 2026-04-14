@@ -40,16 +40,20 @@ impl Default for ReaperThresholds {
 
 impl ManagedPosition {
     pub fn from_order(order: ExecutionOrder) -> Result<Self> {
+        let token = order.token().clone();
+        let amount_usd = order.amount_usd();
+        let venue = order.venue().clone();
+
         let position = Position {
-            token: order.token.clone(),
+            token,
             state: PositionState::Pending,
-            amount_usd: order.amount_usd,
+            amount_usd,
         }
         .transition(PositionState::Open)?;
 
         Ok(Self {
             token: position.token,
-            venue: order.venue,
+            venue,
             state: position.state,
             amount_usd: position.amount_usd,
             entry_value_usd: position.amount_usd,
@@ -81,7 +85,7 @@ impl ManagedPosition {
     }
 
     pub fn id(&self) -> String {
-        self.token.address.to_lowercase()
+        self.token.address.as_str().to_lowercase()
     }
 
     pub fn evaluate(
@@ -183,19 +187,14 @@ mod tests {
     }
 
     fn sample_position() -> ManagedPosition {
-        ManagedPosition::from_order(ExecutionOrder {
-            token: Token {
-                address: "0xabc".into(),
-                chain: "base".into(),
-                symbol: "AST".into(),
-                decimals: 18,
-            },
-            venue: Venue::Dex {
-                chain: "base".into(),
-                router: "router".into(),
-            },
-            amount_usd: usd(100),
-        })
+        ManagedPosition::from_order(
+            ExecutionOrder::builder()
+                .token(Token::new("0xabc", "base", "AST", 18).expect("valid token"))
+                .venue(Venue::dex("base", "router").expect("valid venue"))
+                .amount_usd(usd(100))
+                .build()
+                .expect("valid execution order"),
+        )
         .expect("position from order")
     }
 
@@ -213,16 +212,8 @@ mod tests {
     #[test]
     fn rejects_invalid_restore_payloads() {
         let error = ManagedPosition::restore(
-            Token {
-                address: "0xabc".into(),
-                chain: "base".into(),
-                symbol: "AST".into(),
-                decimals: 18,
-            },
-            Venue::Dex {
-                chain: "base".into(),
-                router: "router".into(),
-            },
+            Token::new("0xabc", "base", "AST", 18).expect("valid token"),
+            Venue::dex("base", "router").expect("valid venue"),
             PositionState::Open,
             usd(100),
             usd(100),

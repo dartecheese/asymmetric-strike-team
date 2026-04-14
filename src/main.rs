@@ -2,25 +2,32 @@ use std::sync::Arc;
 
 use anyhow::Result;
 use ast_actuary::{Actuary, NullActuary};
-use ast_core::AppConfig;
+use ast_core::StartupConfig;
 use ast_observe::init_tracing;
 use ast_reaper::{NullReaper, Reaper};
 use ast_slinger::{NullSlinger, Slinger};
 use ast_whisperer::{NullWhisperer, Whisperer};
-use tokio::{signal, time::{sleep, Duration}};
+use tokio::{
+    signal,
+    time::{Duration, sleep},
+};
 use tracing::{error, info};
 
 #[tokio::main]
 async fn main() -> Result<()> {
     init_tracing();
-    let config = AppConfig::load().expect("startup config must load");
+    let startup = StartupConfig::load()?;
+    let config = startup.app;
 
     let whisperer = Arc::new(NullWhisperer);
     let actuary = Arc::new(NullActuary);
     let slinger = Arc::new(NullSlinger);
     let reaper = Arc::new(NullReaper);
 
-    info!(paper_mode = config.paper_mode, "starting asymmetric strike team");
+    info!(
+        paper_mode = config.paper_mode,
+        "starting asymmetric strike team"
+    );
 
     loop {
         tokio::select! {

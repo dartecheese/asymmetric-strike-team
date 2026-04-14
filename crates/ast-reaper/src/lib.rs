@@ -105,19 +105,14 @@ mod tests {
     }
 
     fn order(address: &str, amount: i64) -> AuthorizedOrder {
-        AuthorizedOrder(ExecutionOrder {
-            token: Token {
-                address: address.into(),
-                chain: "base".into(),
-                symbol: "AST".into(),
-                decimals: 18,
-            },
-            venue: Venue::Dex {
-                chain: "base".into(),
-                router: "router".into(),
-            },
-            amount_usd: usd(amount),
-        })
+        AuthorizedOrder(
+            ExecutionOrder::builder()
+                .token(Token::new(address, "base", "AST", 18).expect("valid token"))
+                .venue(Venue::dex("base", "router").expect("valid venue"))
+                .amount_usd(usd(amount))
+                .build()
+                .expect("valid execution order"),
+        )
     }
 
     fn temp_path(name: &str) -> PathBuf {

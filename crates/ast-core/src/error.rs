@@ -1,3 +1,4 @@
+use rust_decimal::Error as DecimalError;
 use thiserror::Error;
 
 #[derive(Debug, Error)]
@@ -14,6 +15,8 @@ pub enum AstError {
     Serialization(#[from] serde_json::Error),
     #[error("validation error: {0}")]
     Validation(String),
+    #[error("money parse error: {0}")]
+    MoneyParse(#[from] DecimalError),
 }
 
 pub type Result<T> = std::result::Result<T, AstError>;

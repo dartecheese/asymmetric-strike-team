@@ -207,16 +207,8 @@ mod tests {
 
     fn sample_position(address: &str, state: PositionState, value: i64) -> ManagedPosition {
         ManagedPosition::restore(
-            Token {
-                address: address.into(),
-                chain: "base".into(),
-                symbol: "AST".into(),
-                decimals: 18,
-            },
-            Venue::Dex {
-                chain: "base".into(),
-                router: "router".into(),
-            },
+            Token::new(address, "base", "AST", 18).expect("valid token"),
+            Venue::dex("base", "router").expect("valid venue"),
             state,
             usd(value),
             usd(value),
@@ -265,19 +257,14 @@ mod tests {
     fn persists_from_execution_order_shape() {
         let path = temp_path("order-shape");
         let store = PositionStore::new(&path);
-        let position = ManagedPosition::from_order(ExecutionOrder {
-            token: Token {
-                address: "0x4".into(),
-                chain: "base".into(),
-                symbol: "AST".into(),
-                decimals: 18,
-            },
-            venue: Venue::Dex {
-                chain: "base".into(),
-                router: "router".into(),
-            },
-            amount_usd: usd(42),
-        })
+        let position = ManagedPosition::from_order(
+            ExecutionOrder::builder()
+                .token(Token::new("0x4", "base", "AST", 18).expect("valid token"))
+                .venue(Venue::dex("base", "router").expect("valid venue"))
+                .amount_usd(usd(42))
+                .build()
+                .expect("valid execution order"),
+        )
         .expect("from order");
 
         store.persist_positions([&position]).expect("persist");
