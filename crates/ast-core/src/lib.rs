@@ -6,5 +6,6 @@ pub use config::{AppConfig, CliOverrides, SecretConfig, StartupConfig, StrategyP
 pub use error::{AstError, Result};
 pub use types::{
     Address, Chain, ExchangeName, ExecutionOrder, ExecutionOrderBuilder, Position, PositionState,
-    RiskAssessment, RiskLevel, Router, Signal, Symbol, Token, TradingPair, Usd, Venue,
+    RiskAssessment, RiskFactor, RiskFactorScore, RiskLevel, Router, Signal, SignalMetrics,
+    SignalSource, Symbol, Token, TradingPair, Usd, Venue,
 };

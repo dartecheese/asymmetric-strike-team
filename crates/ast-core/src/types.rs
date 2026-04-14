@@ -102,8 +102,8 @@ pub struct Usd(pub Decimal);
 
 impl Usd {
     pub fn new(value: Decimal) -> Result<Self> {
-        if value.is_sign_negative() || value.is_zero() {
-            return Err(AstError::Validation("USD amount must be positive".into()));
+        if value.is_sign_negative() {
+            return Err(AstError::Validation("USD amount must be non-negative".into()));
         }
         Ok(Self(value.round_dp_with_strategy(
             2,
@@ -111,7 +111,15 @@ impl Usd {
         )))
     }
 
+    pub const fn zero() -> Self {
+        Self(Decimal::ZERO)
+    }
+
     pub fn value(self) -> Decimal {
+        self.0
+    }
+
+    pub const fn raw(&self) -> Decimal {
         self.0
     }
 }
@@ -293,6 +301,27 @@ impl PositionState {
 pub struct Signal {
     pub token: Token,
     pub confidence_bps: u16,
+    pub source: SignalSource,
+    pub reasoning: String,
+    pub metrics: SignalMetrics,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub enum SignalSource {
+    DexProfile,
+    DexBoost,
+    DexProfileAndBoost,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct SignalMetrics {
+    pub liquidity_usd: Option<Decimal>,
+    pub volume_24h_usd: Option<Decimal>,
+    pub velocity_score: u16,
+    pub price_change_h1_bps: i32,
+    pub price_change_h6_bps: i32,
+    pub freshness_bonus_bps: u16,
+    pub boost_score_bps: u16,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -300,12 +329,33 @@ pub struct RiskAssessment {
     pub token: Token,
     pub risk_level: RiskLevel,
     pub max_allocation_usd: Usd,
+    pub provider: String,
+    pub factors: Vec<RiskFactorScore>,
+    pub warnings: Vec<String>,
 }
 
 impl RiskAssessment {
     pub fn acceptable(&self) -> bool {
         !matches!(self.risk_level, RiskLevel::Critical | RiskLevel::Rejected)
     }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub enum RiskFactor {
+    Honeypot,
+    BuyTax,
+    SellTax,
+    LiquidityLock,
+    ContractVerification,
+    UnknownToken,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct RiskFactorScore {
+    pub factor: RiskFactor,
+    pub risk_level: RiskLevel,
+    pub score_bps: u16,
+    pub summary: String,
 }
 
 #[cfg(test)]

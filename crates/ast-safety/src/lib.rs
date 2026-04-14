@@ -1,13 +1,3 @@
-use ast_core::{ExecutionOrder, Result};
+pub mod breaker;
 
-#[derive(Debug, Clone)]
-pub struct AuthorizedOrder(pub ExecutionOrder);
-
-#[derive(Debug, Default)]
-pub struct SafetyBreaker;
-
-impl SafetyBreaker {
-    pub fn authorize(&self, order: ExecutionOrder) -> Result<AuthorizedOrder> {
-        Ok(AuthorizedOrder(order))
-    }
-}
+pub use breaker::{AuthorizedOrder, CooldownPolicy, SafetyBreaker, SafetyConfig, SafetyContext};

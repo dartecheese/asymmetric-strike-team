@@ -5,6 +5,7 @@ use ast_actuary::{Actuary, NullActuary};
 use ast_core::StartupConfig;
 use ast_observe::init_tracing;
 use ast_reaper::{NullReaper, Reaper};
+use ast_safety::{SafetyBreaker, SafetyContext};
 use ast_slinger::{NullSlinger, Slinger};
 use ast_whisperer::{NullWhisperer, Whisperer};
 use tokio::{
@@ -22,6 +23,7 @@ async fn main() -> Result<()> {
     let whisperer = Arc::new(NullWhisperer);
     let actuary = Arc::new(NullActuary);
     let slinger = Arc::new(NullSlinger);
+    let safety = Arc::new(SafetyBreaker::default());
     let reaper = Arc::new(NullReaper);
 
     info!(
@@ -35,7 +37,7 @@ async fn main() -> Result<()> {
                 info!("shutdown signal received");
                 break;
             }
-            result = run_cycle(&*whisperer, &*actuary, &*slinger, &*reaper) => {
+            result = run_cycle(&*whisperer, &*actuary, &*slinger, &*safety, &*reaper) => {
                 if let Err(err) = result {
                     error!(error = %err, "trading cycle failed");
                 }
@@ -51,6 +53,7 @@ async fn run_cycle(
     whisperer: &dyn Whisperer,
     actuary: &dyn Actuary,
     slinger: &dyn Slinger,
+    safety: &SafetyBreaker,
     reaper: &dyn Reaper,
 ) -> Result<()> {
     let signals = whisperer.scan().await?;
@@ -58,7 +61,10 @@ async fn run_cycle(
         let risk = actuary.assess(&signal).await?;
         if risk.acceptable() {
             if let Ok(order) = slinger.route(&signal, &risk).await {
-                reaper.track(order).await?;
+                let context = SafetyContext::default();
+                if let Ok(authorized) = safety.authorize(order, &context) {
+                    reaper.track(authorized).await?;
+                }
             }
         }
     }

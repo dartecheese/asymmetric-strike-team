@@ -5,6 +5,11 @@ use thiserror::Error;
 pub enum AstError {
     #[error("configuration error: {0}")]
     Config(String),
+    #[error("external service {service} failed: {message}")]
+    ExternalService {
+        service: &'static str,
+        message: String,
+    },
     #[error("invalid transition from {from} to {to}")]
     InvalidTransition { from: &'static str, to: &'static str },
     #[error("io error: {0}")]
@@ -13,6 +18,15 @@ pub enum AstError {
     PersistenceCorruption(String),
     #[error("serialization error: {0}")]
     Serialization(#[from] serde_json::Error),
+    #[error("safety violation: {0}")]
+    SafetyViolation(String),
+    #[error("slippage exceeded: observed {observed_bps} bps > max {max_bps} bps")]
+    SlippageExceeded { observed_bps: u32, max_bps: u32 },
+    #[error("timeout while waiting for {service} after {duration_ms}ms")]
+    Timeout {
+        service: &'static str,
+        duration_ms: u64,
+    },
     #[error("validation error: {0}")]
     Validation(String),
     #[error("money parse error: {0}")]
