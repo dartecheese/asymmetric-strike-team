@@ -5,6 +5,8 @@ use thiserror::Error;
 pub enum AstError {
     #[error("configuration error: {0}")]
     Config(String),
+    #[error("execution error: {0}")]
+    Execution(String),
     #[error("external service {service} failed: {message}")]
     ExternalService {
         service: &'static str,

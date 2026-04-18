@@ -1,0 +1,22 @@
+{
+  "log_file": "logs/48h_test_20260412_190036.log",
+  "log_tail": "2026-04-12 19:00:38 [INFO] Boosted tokens found: 0\n2026-04-12 19:00:50 [INFO] Cycle #1 completed successfully\n2026-04-12 19:00:50 [INFO] Next cycle in 300 seconds...\n2026-04-12 19:05:51 [INFO] Starting cycle #2\n2026-04-12 19:05:51 [WARNING] No API keys found for binance/default - paper mode only\n2026-04-12 19:05:51 [INFO] PositionStore: /Users/colto/.openclaw/workspace/codex/asymmetric_trading/data/positions.json\n2026-04-12 19:05:51 [INFO] New profiles found: 4\n2026-04-12 19:05:53 [INFO] Boosted tokens found: 0\n2026-04-12 19:06:04 [INFO] Cycle #2 completed successfully\n2026-04-12 19:06:04 [INFO] Next cycle in 300 seconds...\n",
+  "progress": {
+    "start_time": "2026-04-12T19:00:36.791487",
+    "current_time": "2026-04-12T19:08:09.066596",
+    "elapsed_hours": 0.1256319747222222,
+    "remaining_hours": 47.874368025277775,
+    "progress_percent": 0.2617332806712963,
+    "is_complete": false
+  },
+  "performance": {
+    "total_trades": 2,
+    "winning_trades": 2,
+    "losing_trades": 0,
+    "win_rate": 100.0,
+    "total_pnl_usd": 10.0,
+    "avg_win_usd": 5.0,
+    "avg_loss_usd": 0
+  },
+  "results": {}
+}

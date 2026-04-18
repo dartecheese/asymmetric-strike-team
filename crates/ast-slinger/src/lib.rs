@@ -1,6 +1,8 @@
 pub mod cex;
 pub mod dex;
+pub mod gas;
 pub mod slippage;
+pub mod tx_manager;
 pub mod venue_resolver;
 
 use async_trait::async_trait;
@@ -48,6 +50,8 @@ where
 }
 
 pub use cex::{CexExecutor, CexQuote, CexVenue};
-pub use dex::{DexExecutor, DexQuote, DexVenue};
+pub use dex::{DexConfig, DexQuote, DexSwapExecutor, DexVenue};
+pub use gas::{GasConfig, GasEstimator, GasParams};
 pub use slippage::{SlippageCheck, SlippageGuard};
-pub use venue_resolver::{StaticVenueResolver, VenueResolver};
+pub use tx_manager::{NonceManager, PendingTx, TxMonitor};
+pub use venue_resolver::{ChainVenueResolver, StaticVenueResolver, VenueResolver};

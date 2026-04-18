@@ -1,0 +1,78 @@
+[
+  {
+    "agent": "PHANTOM",
+    "timestamp": "2026-04-12T13:15:06.354581",
+    "signal": {
+      "symbol": "BTC/USDT",
+      "direction": "buy",
+      "confidence": 0.85,
+      "signal_type": "sentiment",
+      "timestamp": "2026-04-12T13:15:06.352595",
+      "metadata": {
+        "source": "PULSE",
+        "sentiment_score": 0.8,
+        "funding_rate": -0.0001
+      }
+    },
+    "market_data": {
+      "symbol": "BTC/USDT",
+      "price": 65939.69658748127,
+      "bid": 65873.7568908938,
+      "ask": 66005.63628406875
+    },
+    "order": {
+      "id": "TEST_1775999706_BUY_BTC_USDT",
+      "symbol": "BTC/USDT",
+      "side": "buy",
+      "type": "limit",
+      "price": 66005.63628406875,
+      "amount": 0.00135,
+      "status": "open"
+    },
+    "risk_params": {
+      "max_position_size_pct": 0.01,
+      "max_daily_loss_pct": 0.02,
+      "stop_loss_pct": 0.3,
+      "take_profit_pct": 1.0,
+      "min_confidence_score": 0.7
+    }
+  },
+  {
+    "agent": "PHANTOM",
+    "timestamp": "2026-04-12T13:15:06.355027",
+    "signal": {
+      "symbol": "SOL/USDT",
+      "direction": "buy",
+      "confidence": 0.72,
+      "signal_type": "trending",
+      "timestamp": "2026-04-12T13:15:06.352613",
+      "metadata": {
+        "source": "SWEEP",
+        "volume_spike": 2.5,
+        "social_trending": true
+      }
+    },
+    "market_data": {
+      "symbol": "SOL/USDT",
+      "price": 65652.26724587231,
+      "bid": 65586.61497862644,
+      "ask": 65717.91951311818
+    },
+    "order": {
+      "id": "TEST_1775999706_BUY_SOL_USDT",
+      "symbol": "SOL/USDT",
+      "side": "buy",
+      "type": "limit",
+      "price": 65717.91951311818,
+      "amount": 0.00122,
+      "status": "open"
+    },
+    "risk_params": {
+      "max_position_size_pct": 0.01,
+      "max_daily_loss_pct": 0.02,
+      "stop_loss_pct": 0.3,
+      "take_profit_pct": 1.0,
+      "min_confidence_score": 0.7
+    }
+  }
+]

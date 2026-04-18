@@ -1,0 +1,37 @@
+# REALISTIC QWNT TRADING CONFIGURATION
+# Generated 2026-04-12T00:16:50.413259
+# Based on realistic optimization with 200 trade scenarios
+
+# RISK MANAGEMENT
+STOP_LOSS = 0.1819530823544352  # 18.2%
+TAKE_PROFIT = 0.40147800114156  # 40.1%
+TRAILING_STOP = 0.09438792431998763  # 9.4%
+POSITION_SIZE_ETH = 0.01  # ETH per trade
+MAX_PORTFOLIO_RISK = 0.01591948499793019  # 1.6%
+
+# EXECUTION PARAMETERS
+MAX_SLIPPAGE_PCT = 2.8443684388088672  # 2.8%
+GAS_PRICE_MULTIPLIER = 1.2191965224873682
+USE_MEV_PROTECTION = True
+
+# SIGNAL FILTERING
+MIN_SIGNAL_STRENGTH = 0.7438278427378023  # 74%
+MIN_VOLUME_ETH = 123.041534472
+MAX_SIGNAL_AGE_MIN = 5  # minutes
+
+# STRATEGY PARAMETERS
+MOMENTUM_LOOKBACK = 15  # periods
+VOLATILITY_CAP_PCT = 0.303885889761787  # 30.4%
+
+# EXPECTED PERFORMANCE (simulated)
+# Sharpe Ratio: 1.93
+# Win Rate: 98.1%
+# Avg Profit per Trade: 21.7%
+# Max Drawdown: 1.5%
+# Profit Factor: 111.11
+
+# DEPLOYMENT NOTES:
+# 1. Start with paper trading to validate
+# 2. Use 10% of position size for first week
+# 3. Monitor drawdown closely
+# 4. Re-optimize weekly with new market data

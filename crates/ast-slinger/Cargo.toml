@@ -5,7 +5,10 @@ edition.workspace = true
 publish = false
 
 [dependencies]
+alloy.workspace = true
 async-trait.workspace = true
 ast-core = { path = "../ast-core" }
 ast-safety = { path = "../ast-safety" }
 rust_decimal.workspace = true
+thiserror.workspace = true
+tokio.workspace = true

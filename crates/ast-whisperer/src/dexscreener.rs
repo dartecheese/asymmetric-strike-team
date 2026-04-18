@@ -113,17 +113,19 @@ impl DexScreenerClient {
     }
 }
 
-#[derive(Debug)]
+const SEEN_TOKEN_TTL: Duration = Duration::from_secs(6 * 3600); // resurface after 6 h
+
 pub struct DexScreenerWhisperer {
     client: Arc<DexScreenerClient>,
-    seen_tokens: Mutex<HashSet<String>>,
+    /// (address_lowercase → first_seen instant) with TTL eviction
+    seen_tokens: Mutex<HashMap<String, Instant>>,
 }
 
 impl DexScreenerWhisperer {
     pub fn new(config: DexScreenerConfig) -> Result<Self> {
         Ok(Self {
             client: Arc::new(DexScreenerClient::new(config)?),
-            seen_tokens: Mutex::new(HashSet::new()),
+            seen_tokens: Mutex::new(HashMap::new()),
         })
     }
 
@@ -144,7 +146,13 @@ impl DexScreenerWhisperer {
             }
         };
 
-        let seen_tokens = self.seen_tokens.lock().await.clone();
+        let now = Instant::now();
+        // Evict expired entries then snapshot the live set
+        let seen_snapshot: HashSet<String> = {
+            let mut seen = self.seen_tokens.lock().await;
+            seen.retain(|_, first_seen| now.duration_since(*first_seen) < SEEN_TOKEN_TTL);
+            seen.keys().cloned().collect()
+        };
         let mut candidates = HashMap::<String, CandidateSignal>::new();
 
         for profile in profiles {
@@ -152,11 +160,12 @@ impl DexScreenerWhisperer {
                 continue;
             };
 
-            if seen_tokens.contains(&token.address.as_str().to_lowercase()) {
+            if seen_snapshot.contains(&token.address.as_str().to_lowercase()) {
                 continue;
             }
 
             let pair = self.best_pair(token.address.as_str()).await.ok().flatten();
+            let token = enrich_token_from_pair(token, pair.as_ref());
             let score = compute_signal_score(pair.as_ref(), false);
             let candidate = CandidateSignal::from_profile(token, profile, pair, score);
             candidates.insert(candidate.token.address.as_str().to_lowercase(), candidate);
@@ -167,7 +176,7 @@ impl DexScreenerWhisperer {
                 continue;
             };
 
-            if seen_tokens.contains(&token.address.as_str().to_lowercase()) {
+            if seen_snapshot.contains(&token.address.as_str().to_lowercase()) {
                 continue;
             }
 
@@ -187,6 +196,7 @@ impl DexScreenerWhisperer {
             }
 
             let pair = self.best_pair(token.address.as_str()).await.ok().flatten();
+            let token = enrich_token_from_pair(token, pair.as_ref());
             let score =
                 compute_signal_score(pair.as_ref(), true).saturating_add(boost.boost_score_bps());
             let candidate = CandidateSignal::from_boost(token, boost, pair, score);
@@ -212,15 +222,39 @@ impl DexScreenerWhisperer {
 impl Whisperer for DexScreenerWhisperer {
     async fn scan(&self) -> Result<Vec<Signal>> {
         let mut candidates = self.build_candidates().await?;
+
+        tracing::debug!(total = candidates.len(), "candidates before velocity filter");
+        for c in &candidates {
+            tracing::debug!(
+                token = %c.token.address,
+                symbol = %c.token.symbol,
+                chain = %c.token.chain,
+                velocity = c.metrics.velocity_score,
+                confidence = c.confidence_bps,
+                "candidate"
+            );
+        }
+
         candidates.retain(|candidate| {
-            candidate.metrics.velocity_score >= self.client.config.min_velocity_score
+            let pass = candidate.metrics.velocity_score >= self.client.config.min_velocity_score;
+            if !pass {
+                tracing::debug!(
+                    token = %candidate.token.address,
+                    velocity = candidate.metrics.velocity_score,
+                    min = self.client.config.min_velocity_score,
+                    "filtered: velocity too low"
+                );
+            }
+            pass
         });
+
         candidates.sort_by(|left, right| right.confidence_bps.cmp(&left.confidence_bps));
 
+        let now = Instant::now();
         let mut seen_tokens = self.seen_tokens.lock().await;
         let mut signals = Vec::new();
         for candidate in candidates {
-            seen_tokens.insert(candidate.token.address.as_str().to_lowercase());
+            seen_tokens.insert(candidate.token.address.as_str().to_lowercase(), now);
             signals.push(candidate.into_signal());
         }
 
@@ -294,6 +328,7 @@ impl CandidateSignal {
 fn pair_metrics(pair: Option<&Pair>, include_boost: bool) -> SignalMetrics {
     let Some(pair) = pair else {
         return SignalMetrics {
+            velocity_score: compute_signal_score(None, include_boost),
             boost_score_bps: if include_boost { 1_500 } else { 0 },
             ..SignalMetrics::default()
         };
@@ -451,10 +486,19 @@ struct TokenPairsResponse {
     pairs: Vec<Pair>,
 }
 
+#[derive(Debug, Clone, Default, Deserialize)]
+pub struct PairToken {
+    pub symbol: Option<String>,
+    pub name: Option<String>,
+    pub decimals: Option<u8>,
+}
+
 #[derive(Debug, Clone, Deserialize)]
 pub struct Pair {
     #[serde(rename = "chainId")]
     pub chain_id: String,
+    #[serde(rename = "baseToken", default)]
+    pub base_token: PairToken,
     pub liquidity: Liquidity,
     pub volume: Volume,
     #[serde(rename = "priceChange")]
@@ -493,17 +537,37 @@ pub struct PriceChange {
     pub h6: Option<String>,
 }
 
+fn enrich_token_from_pair(token: Token, pair: Option<&Pair>) -> Token {
+    let Some(pair) = pair else {
+        return token;
+    };
+    let symbol = pair
+        .base_token
+        .symbol
+        .clone()
+        .filter(|s| !s.is_empty())
+        .unwrap_or_else(|| token.symbol.as_str().to_string());
+    let decimals = pair.base_token.decimals.unwrap_or(token.decimals);
+    Token::new(token.address.as_str(), token.chain.as_str(), symbol, decimals)
+        .unwrap_or(token)
+}
+
 fn parse_decimal(value: &str) -> Option<Decimal> {
     Decimal::from_str_exact(value).ok()
 }
 
 fn chain_to_evm(chain: &str) -> Option<&'static str> {
     match chain {
-        "ethereum" => Some("1"),
-        "bsc" => Some("56"),
-        "arbitrum" => Some("42161"),
-        "base" => Some("8453"),
-        "polygon" => Some("137"),
+        "ethereum" => Some("ethereum"),
+        "bsc" => Some("bsc"),
+        "arbitrum" => Some("arbitrum"),
+        "base" => Some("base"),
+        "polygon" => Some("polygon"),
+        "optimism" => Some("optimism"),
+        "avalanche" => Some("avalanche"),
+        "scroll" => Some("scroll"),
+        "zksync" => Some("zksync"),
+        "linea" => Some("linea"),
         _ => None,
     }
 }
@@ -516,6 +580,11 @@ mod tests {
     fn boosted_pairs_get_additional_signal_weight() {
         let pair = Pair {
             chain_id: "base".to_string(),
+            base_token: PairToken {
+                symbol: Some("TEST".to_string()),
+                name: Some("Test Token".to_string()),
+                decimals: Some(18),
+            },
             liquidity: Liquidity {
                 usd: Some("30000".to_string()),
             },

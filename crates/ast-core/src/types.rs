@@ -102,8 +102,8 @@ pub struct Usd(pub Decimal);
 
 impl Usd {
     pub fn new(value: Decimal) -> Result<Self> {
-        if value.is_sign_negative() {
-            return Err(AstError::Validation("USD amount must be non-negative".into()));
+        if value.is_sign_negative() || value.is_zero() {
+            return Err(AstError::Validation("USD amount must be positive".into()));
         }
         Ok(Self(value.round_dp_with_strategy(
             2,
@@ -179,9 +179,21 @@ impl Venue {
     }
 
     pub fn cex(exchange: impl Into<String>, pair: impl Into<String>) -> Result<Self> {
+        let pair_str: String = pair.into();
+        // Validate "BASE/QUOTE" format and reject trivial pairs like USDT/USDT
+        let parts: Vec<&str> = pair_str.splitn(2, '/').collect();
+        if parts.len() == 2 {
+            let base = parts[0].trim().to_uppercase();
+            let quote = parts[1].trim().to_uppercase();
+            if base == quote {
+                return Err(AstError::Validation(format!(
+                    "invalid CEX pair '{pair_str}': base and quote assets cannot be the same"
+                )));
+            }
+        }
         Ok(Self::Cex {
             exchange: ExchangeName::new(exchange)?,
-            pair: TradingPair::new(pair)?,
+            pair: TradingPair::new(pair_str)?,
         })
     }
 }

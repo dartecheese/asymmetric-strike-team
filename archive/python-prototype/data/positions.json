@@ -1,0 +1,93 @@
+{
+  "0xa365c2952dc2806292e7b92a9692a05a75957777": {
+    "token_address": "0xa365C2952dc2806292E7b92a9692a05a75957777",
+    "chain": "56",
+    "amount_usd": 50.0,
+    "entry_value": 50.0,
+    "current_value": 50.0,
+    "peak_value": 50.0,
+    "entry_price_usd": 0.0001805,
+    "last_price_usd": 0.0001805,
+    "status": "ACTIVE",
+    "pnl_pct": 0.0,
+    "saved_at": 1776001816.9035761
+  },
+  "0x6982508145454ce325ddbe47a25d4ec3d2311933": {
+    "token_address": "0x6982508145454Ce325dDbE47a25d4ec3d2311933",
+    "chain": "1",
+    "amount_usd": 50.0,
+    "entry_value": 50.0,
+    "current_value": 50.0,
+    "peak_value": 50.0,
+    "entry_price_usd": 0.00042,
+    "last_price_usd": 0.00042,
+    "status": "ACTIVE",
+    "pnl_pct": 0.0,
+    "saved_at": 1775998369.397655
+  },
+  "0xbench00000000000000000000000000000000001": {
+    "token_address": "0xBENCH00000000000000000000000000000000001",
+    "chain": "1",
+    "amount_usd": 50.0,
+    "entry_value": 50.0,
+    "current_value": 55.0,
+    "peak_value": 55.0,
+    "entry_price_usd": 0.001,
+    "last_price_usd": 0.0011,
+    "status": "ACTIVE",
+    "pnl_pct": 10.0,
+    "saved_at": 1775998369.399327
+  },
+  "0xc5acf9c1cdaf769d9c991f6dc8561e48be10a7d0": {
+    "token_address": "0xc5AcF9c1Cdaf769D9C991F6dC8561e48be10a7D0",
+    "chain": "8453",
+    "amount_usd": 30.0,
+    "entry_value": 30.0,
+    "current_value": 30.0,
+    "peak_value": 30.0,
+    "entry_price_usd": 3.69e-07,
+    "last_price_usd": 3.69e-07,
+    "status": "ACTIVE",
+    "pnl_pct": 0.0,
+    "saved_at": 1776006896.226592
+  },
+  "0xdad06ee947cfafe08e4e22476c470027f34f4444": {
+    "token_address": "0xDad06EE947CfAFe08E4E22476c470027f34f4444",
+    "chain": "56",
+    "amount_usd": 50.0,
+    "entry_value": 50.0,
+    "current_value": 50.0,
+    "peak_value": 50.0,
+    "entry_price_usd": 0.0001782,
+    "last_price_usd": 0.0001782,
+    "status": "ACTIVE",
+    "pnl_pct": 0.0,
+    "saved_at": 1776024033.747988
+  },
+  "0xe6a56b5fce37732cb143c2d51817b5db57b64444": {
+    "token_address": "0xe6a56b5fce37732Cb143c2D51817b5DB57b64444",
+    "chain": "1",
+    "amount_usd": 50.0,
+    "entry_value": 50.0,
+    "current_value": 50.166560452327126,
+    "peak_value": 50.166560452327126,
+    "entry_price_usd": 9.391e-05,
+    "last_price_usd": 9.391e-05,
+    "status": "ACTIVE",
+    "pnl_pct": 0.33312090465425115,
+    "saved_at": 1776116596.413704
+  },
+  "0x28166094d0be567764ded4adbfd9fe170c0315e7": {
+    "token_address": "0x28166094d0BE567764DED4adbfD9Fe170C0315E7",
+    "chain": "1",
+    "amount_usd": 50.0,
+    "entry_value": 50.0,
+    "current_value": 122.06445616854927,
+    "peak_value": 138.36514604074912,
+    "entry_price_usd": 6.794e-05,
+    "last_price_usd": 6.794e-05,
+    "status": "CLOSED",
+    "pnl_pct": 144.12891233709854,
+    "saved_at": 1776157851.891243
+  }
+}

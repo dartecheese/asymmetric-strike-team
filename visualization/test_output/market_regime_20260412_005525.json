@@ -1,0 +1,31 @@
+{
+  "overall_regime": "bull",
+  "confidence": 0.75,
+  "regime_strength": {
+    "bull": 0.8,
+    "bear": 0.1,
+    "correction": 0.1
+  },
+  "recommendations": [
+    {
+      "sector": "Technology",
+      "action": "buy",
+      "strength": 0.9
+    },
+    {
+      "sector": "Healthcare",
+      "action": "buy",
+      "strength": 0.7
+    },
+    {
+      "sector": "Energy",
+      "action": "sell",
+      "strength": 0.6
+    },
+    {
+      "sector": "Finance",
+      "action": "hold",
+      "strength": 0.5
+    }
+  ]
+}

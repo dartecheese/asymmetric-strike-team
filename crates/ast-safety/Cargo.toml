@@ -7,3 +7,4 @@ publish = false
 [dependencies]
 ast-core = { path = "../ast-core" }
 rust_decimal.workspace = true
+tokio.workspace = true
