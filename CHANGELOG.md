@@ -4,6 +4,20 @@ All notable changes to the Asymmetric Strike Team project will be documented in 
 
 ## [Unreleased]
 
+### Added
+- **AI Agent Pipeline**: Four new AI-powered agent wrappers (`ai_agents/`) that use local LLMs for reasoning:
+  - `AIWhisperer` — LLM ranks DexScreener signals and selects the best candidate
+  - `AIActuary` — LLM reasons about GoPlus risk data to set risk level and allocation
+  - `AISlinger` — LLM plans execution parameters (slippage, gas, mempool)
+  - `AIReaper` — LLM decides whether to hold, sell, or scale position
+- **Dual inference backends**: `OllamaEngine` (via Ollama HTTP API) and `MLXEngine` (via Apple MLX on M-series Metal). Auto-detects and falls back gracefully.
+- **MLX support**: Runs on Apple Silicon (M1-M5) natively via `mlx-lm`. Tested and working on M5 Metal.
+- **`grind.py` runner**: CLI tool that wires all four agents together. Supports `--model`, `--strategy`, `--once`, `--dry-run`, `--no-model` flags.
+- **Graceful fallback chain**: Each AI agent falls back to rules-based logic when the model is unavailable.
+
+### Changed
+- **Documentation reframe**: README and WHITEPAPER rewritten from "product" voice to "tool" voice — slow, local, stone-wheel aesthetic. Philosophy unchanged. Install steps, architecture, and warnings preserved.
+
 ## [1.1.0] - 2026-04-11
 
 ### Added

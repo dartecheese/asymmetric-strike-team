@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# =============================================================================
+#  grind — Grinding Wheel CLI
+#
+#  Installed by the Asymmetric Strike Team installer. Routes to the project's
+#  `grind.py` through the project venv so you can call it from anywhere.
+#
+#  Usage:
+#    grind --once           # single pipeline turn
+#    grind                  # continuous loop (default 300s)
+#    grind --no-model       # rules-based only (no AI)
+#    grind --help           # full help
+# =============================================================================
+
+set -euo pipefail
+
+# Resolve symlinks to find the real project root
+SCRIPT="${BASH_SOURCE[0]:-$0}"
+while [ -L "$SCRIPT" ]; do
+  DIR="$(cd "$(dirname "$SCRIPT")" && pwd)"
+  SCRIPT="$(readlink "$SCRIPT")"
+  [[ "$SCRIPT" != /* ]] && SCRIPT="$DIR/$SCRIPT"
+done
+PROJECT_DIR="$(cd "$(dirname "$SCRIPT")/.." && pwd)"
+
+VENV_PYTHON="$PROJECT_DIR/.venv/bin/python3"
+
+if [ ! -f "$VENV_PYTHON" ]; then
+    echo "[grind] ERROR: venv not found at $VENV_PYTHON" >&2
+    echo "[grind] Run: cd $PROJECT_DIR && python3 -m venv .venv" >&2
+    echo "[grind] Then: .venv/bin/pip install -r $PROJECT_DIR/requirements.txt" >&2
+    exit 1
+fi
+
+exec "$VENV_PYTHON" "$PROJECT_DIR/grind.py" "$@"

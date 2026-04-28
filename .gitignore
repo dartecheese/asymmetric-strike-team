@@ -72,3 +72,14 @@ Thumbs.db
 # Local runtime state
 data/positions.json
 data/positions.tmp
+
+# Data / backtest artifacts
+data/backtest_results/
+data/ohlcv/
+data/ohlcv/
+
+# Local launchd plist (machine-specific)
+com.asymmetric-strike-team.grind.plist
+
+# Installer local state
+logs/

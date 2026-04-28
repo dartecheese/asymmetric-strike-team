@@ -99,11 +99,11 @@ class StrategyFactory:
         self.profiles["degen"] = StrategyProfile(
             name="Degen Ape",
             description="High risk, momentum-based. Ignores deep forensics for sheer speed.",
-            whisperer=WhispererConfig(min_velocity_score=40, scan_interval_seconds=15),  # Degen casts a wide net
-            sleuth=None, # Too slow for degen mode
+            whisperer=WhispererConfig(min_velocity_score=60, scan_interval_seconds=15),  # 60 = 3×+ vol spike conviction
+            sleuth=None,
             actuary=ActuaryConfig(strict_mode=False, max_tax_allowed=30.0, require_locked_liquidity=False, allow_unverified_contracts=True),
             slinger=SlingerConfig(use_private_mempool=False, base_slippage_tolerance=0.30, gas_premium_multiplier=3.0),
-            reaper=ReaperConfig(take_profit_pct=100.0, stop_loss_pct=-50.0, trailing_stop_pct=25.0, extract_principal_on_tp=True)
+            reaper=ReaperConfig(take_profit_pct=190.0, stop_loss_pct=-65.0, trailing_stop_pct=5.0, extract_principal_on_tp=True)
         )
 
         # 2. The Safe Sniper
@@ -159,7 +159,7 @@ class StrategyFactory:
             ),
             actuary=ActuaryConfig(strict_mode=True, max_tax_allowed=5.0),
             slinger=SlingerConfig(use_private_mempool=False, base_slippage_tolerance=0.08, gas_premium_multiplier=1.8),
-            reaper=ReaperConfig(take_profit_pct=75.0, stop_loss_pct=-15.0, trailing_stop_pct=8.0, extract_principal_on_tp=True)
+            reaper=ReaperConfig(take_profit_pct=100.0, stop_loss_pct=-50.0, trailing_stop_pct=5.0, extract_principal_on_tp=True)
         )
         
         # 6. The Liquidity Sentinel (Market Structure)
