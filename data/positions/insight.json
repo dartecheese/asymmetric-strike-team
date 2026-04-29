@@ -1,0 +1,758 @@
+[
+  {
+    "id": "insight-order-1777486354318-position",
+    "strategy": "insight",
+    "signal_id": "insight-1777486354318",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "INSG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "125",
+    "entry_price_usd": "1.60320",
+    "current_price_usd": "1.6673280",
+    "entry_notional_usd": "200",
+    "realized_pnl_usd": "32.0640000",
+    "stop_loss_price_usd": "1.4749440",
+    "take_profit_price_usd": "1.8436800",
+    "monitor_passes": 28,
+    "updated_at_ms": 1777488447722
+  },
+  {
+    "id": "insight-order-1777486363937-position",
+    "strategy": "insight",
+    "signal_id": "insight-1777486363937",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "INSG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "125",
+    "entry_price_usd": "1.60320",
+    "current_price_usd": "1.8597120",
+    "entry_notional_usd": "200",
+    "realized_pnl_usd": "32.0640000",
+    "stop_loss_price_usd": "1.4749440",
+    "take_profit_price_usd": "1.8436800",
+    "monitor_passes": 27,
+    "updated_at_ms": 1777488447722
+  },
+  {
+    "id": "insight-order-1777487262501-position",
+    "strategy": "insight",
+    "signal_id": "insight-1777487262501",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "INSG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "125",
+    "entry_price_usd": "1.60320",
+    "current_price_usd": "1.6673280",
+    "entry_notional_usd": "200",
+    "realized_pnl_usd": "32.0640000",
+    "stop_loss_price_usd": "1.4749440",
+    "take_profit_price_usd": "1.8436800",
+    "monitor_passes": 26,
+    "updated_at_ms": 1777488447722
+  },
+  {
+    "id": "insight-order-1777487307466-position",
+    "strategy": "insight",
+    "signal_id": "insight-1777487307466",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "INSG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "125",
+    "entry_price_usd": "1.60320",
+    "current_price_usd": "1.6673280",
+    "entry_notional_usd": "200",
+    "realized_pnl_usd": "32.0640000",
+    "stop_loss_price_usd": "1.4749440",
+    "take_profit_price_usd": "1.8436800",
+    "monitor_passes": 25,
+    "updated_at_ms": 1777488447722
+  },
+  {
+    "id": "insight-order-1777487352522-position",
+    "strategy": "insight",
+    "signal_id": "insight-1777487352522",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "INSG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "125",
+    "entry_price_usd": "1.60320",
+    "current_price_usd": "1.8597120",
+    "entry_notional_usd": "200",
+    "realized_pnl_usd": "32.0640000",
+    "stop_loss_price_usd": "1.4749440",
+    "take_profit_price_usd": "1.8436800",
+    "monitor_passes": 24,
+    "updated_at_ms": 1777488447722
+  },
+  {
+    "id": "insight-order-1777487397503-position",
+    "strategy": "insight",
+    "signal_id": "insight-1777487397503",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "INSG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "125",
+    "entry_price_usd": "1.60320",
+    "current_price_usd": "1.6673280",
+    "entry_notional_usd": "200",
+    "realized_pnl_usd": "32.0640000",
+    "stop_loss_price_usd": "1.4749440",
+    "take_profit_price_usd": "1.8436800",
+    "monitor_passes": 23,
+    "updated_at_ms": 1777488447722
+  },
+  {
+    "id": "insight-order-1777487442492-position",
+    "strategy": "insight",
+    "signal_id": "insight-1777487442492",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "INSG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "125",
+    "entry_price_usd": "1.60320",
+    "current_price_usd": "1.6673280",
+    "entry_notional_usd": "200",
+    "realized_pnl_usd": "32.0640000",
+    "stop_loss_price_usd": "1.4749440",
+    "take_profit_price_usd": "1.8436800",
+    "monitor_passes": 22,
+    "updated_at_ms": 1777488447722
+  },
+  {
+    "id": "insight-order-1777487487489-position",
+    "strategy": "insight",
+    "signal_id": "insight-1777487487489",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "INSG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "125",
+    "entry_price_usd": "1.60320",
+    "current_price_usd": "1.8597120",
+    "entry_notional_usd": "200",
+    "realized_pnl_usd": "32.0640000",
+    "stop_loss_price_usd": "1.4749440",
+    "take_profit_price_usd": "1.8436800",
+    "monitor_passes": 21,
+    "updated_at_ms": 1777488447722
+  },
+  {
+    "id": "insight-order-1777487532465-position",
+    "strategy": "insight",
+    "signal_id": "insight-1777487532465",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "INSG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "125",
+    "entry_price_usd": "1.60320",
+    "current_price_usd": "1.6673280",
+    "entry_notional_usd": "200",
+    "realized_pnl_usd": "32.0640000",
+    "stop_loss_price_usd": "1.4749440",
+    "take_profit_price_usd": "1.8436800",
+    "monitor_passes": 20,
+    "updated_at_ms": 1777488447722
+  },
+  {
+    "id": "insight-order-1777487577515-position",
+    "strategy": "insight",
+    "signal_id": "insight-1777487577515",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "INSG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "125",
+    "entry_price_usd": "1.60320",
+    "current_price_usd": "1.6673280",
+    "entry_notional_usd": "200",
+    "realized_pnl_usd": "32.0640000",
+    "stop_loss_price_usd": "1.4749440",
+    "take_profit_price_usd": "1.8436800",
+    "monitor_passes": 19,
+    "updated_at_ms": 1777488447722
+  },
+  {
+    "id": "insight-order-1777487622462-position",
+    "strategy": "insight",
+    "signal_id": "insight-1777487622462",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "INSG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "125",
+    "entry_price_usd": "1.60320",
+    "current_price_usd": "1.8597120",
+    "entry_notional_usd": "200",
+    "realized_pnl_usd": "32.0640000",
+    "stop_loss_price_usd": "1.4749440",
+    "take_profit_price_usd": "1.8436800",
+    "monitor_passes": 18,
+    "updated_at_ms": 1777488447722
+  },
+  {
+    "id": "insight-order-1777487667508-position",
+    "strategy": "insight",
+    "signal_id": "insight-1777487667508",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "INSG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "125",
+    "entry_price_usd": "1.60320",
+    "current_price_usd": "1.6673280",
+    "entry_notional_usd": "200",
+    "realized_pnl_usd": "32.0640000",
+    "stop_loss_price_usd": "1.4749440",
+    "take_profit_price_usd": "1.8436800",
+    "monitor_passes": 17,
+    "updated_at_ms": 1777488447722
+  },
+  {
+    "id": "insight-order-1777487712457-position",
+    "strategy": "insight",
+    "signal_id": "insight-1777487712457",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "INSG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "125",
+    "entry_price_usd": "1.60320",
+    "current_price_usd": "1.6673280",
+    "entry_notional_usd": "200",
+    "realized_pnl_usd": "32.0640000",
+    "stop_loss_price_usd": "1.4749440",
+    "take_profit_price_usd": "1.8436800",
+    "monitor_passes": 16,
+    "updated_at_ms": 1777488447722
+  },
+  {
+    "id": "insight-order-1777487757449-position",
+    "strategy": "insight",
+    "signal_id": "insight-1777487757449",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "INSG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "125",
+    "entry_price_usd": "1.60320",
+    "current_price_usd": "1.8597120",
+    "entry_notional_usd": "200",
+    "realized_pnl_usd": "32.0640000",
+    "stop_loss_price_usd": "1.4749440",
+    "take_profit_price_usd": "1.8436800",
+    "monitor_passes": 15,
+    "updated_at_ms": 1777488447722
+  },
+  {
+    "id": "insight-order-1777487802484-position",
+    "strategy": "insight",
+    "signal_id": "insight-1777487802484",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "INSG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "125",
+    "entry_price_usd": "1.60320",
+    "current_price_usd": "1.6673280",
+    "entry_notional_usd": "200",
+    "realized_pnl_usd": "32.0640000",
+    "stop_loss_price_usd": "1.4749440",
+    "take_profit_price_usd": "1.8436800",
+    "monitor_passes": 14,
+    "updated_at_ms": 1777488447722
+  },
+  {
+    "id": "insight-order-1777487847491-position",
+    "strategy": "insight",
+    "signal_id": "insight-1777487847491",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "INSG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "125",
+    "entry_price_usd": "1.60320",
+    "current_price_usd": "1.6673280",
+    "entry_notional_usd": "200",
+    "realized_pnl_usd": "32.0640000",
+    "stop_loss_price_usd": "1.4749440",
+    "take_profit_price_usd": "1.8436800",
+    "monitor_passes": 13,
+    "updated_at_ms": 1777488447722
+  },
+  {
+    "id": "insight-order-1777487892467-position",
+    "strategy": "insight",
+    "signal_id": "insight-1777487892467",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "INSG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "125",
+    "entry_price_usd": "1.60320",
+    "current_price_usd": "1.8597120",
+    "entry_notional_usd": "200",
+    "realized_pnl_usd": "32.0640000",
+    "stop_loss_price_usd": "1.4749440",
+    "take_profit_price_usd": "1.8436800",
+    "monitor_passes": 12,
+    "updated_at_ms": 1777488447722
+  },
+  {
+    "id": "insight-order-1777487937475-position",
+    "strategy": "insight",
+    "signal_id": "insight-1777487937475",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "INSG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "125",
+    "entry_price_usd": "1.60320",
+    "current_price_usd": "1.6673280",
+    "entry_notional_usd": "200",
+    "realized_pnl_usd": "32.0640000",
+    "stop_loss_price_usd": "1.4749440",
+    "take_profit_price_usd": "1.8436800",
+    "monitor_passes": 11,
+    "updated_at_ms": 1777488447722
+  },
+  {
+    "id": "insight-order-1777487982467-position",
+    "strategy": "insight",
+    "signal_id": "insight-1777487982467",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "INSG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "125",
+    "entry_price_usd": "1.60320",
+    "current_price_usd": "1.6673280",
+    "entry_notional_usd": "200",
+    "realized_pnl_usd": "32.0640000",
+    "stop_loss_price_usd": "1.4749440",
+    "take_profit_price_usd": "1.8436800",
+    "monitor_passes": 10,
+    "updated_at_ms": 1777488447722
+  },
+  {
+    "id": "insight-order-1777488027468-position",
+    "strategy": "insight",
+    "signal_id": "insight-1777488027468",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "INSG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "125",
+    "entry_price_usd": "1.60320",
+    "current_price_usd": "1.8597120",
+    "entry_notional_usd": "200",
+    "realized_pnl_usd": "32.0640000",
+    "stop_loss_price_usd": "1.4749440",
+    "take_profit_price_usd": "1.8436800",
+    "monitor_passes": 9,
+    "updated_at_ms": 1777488447722
+  },
+  {
+    "id": "insight-order-1777488132637-position",
+    "strategy": "insight",
+    "signal_id": "insight-1777488132637",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "INSG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "125",
+    "entry_price_usd": "1.60320",
+    "current_price_usd": "1.6673280",
+    "entry_notional_usd": "200",
+    "realized_pnl_usd": "32.0640000",
+    "stop_loss_price_usd": "1.4749440",
+    "take_profit_price_usd": "1.8436800",
+    "monitor_passes": 8,
+    "updated_at_ms": 1777488447722
+  },
+  {
+    "id": "insight-order-1777488177711-position",
+    "strategy": "insight",
+    "signal_id": "insight-1777488177711",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "INSG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "125",
+    "entry_price_usd": "1.60320",
+    "current_price_usd": "1.6673280",
+    "entry_notional_usd": "200",
+    "realized_pnl_usd": "32.0640000",
+    "stop_loss_price_usd": "1.4749440",
+    "take_profit_price_usd": "1.8436800",
+    "monitor_passes": 7,
+    "updated_at_ms": 1777488447722
+  },
+  {
+    "id": "insight-order-1777488222630-position",
+    "strategy": "insight",
+    "signal_id": "insight-1777488222630",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "INSG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "125",
+    "entry_price_usd": "1.60320",
+    "current_price_usd": "1.8597120",
+    "entry_notional_usd": "200",
+    "realized_pnl_usd": "32.0640000",
+    "stop_loss_price_usd": "1.4749440",
+    "take_profit_price_usd": "1.8436800",
+    "monitor_passes": 6,
+    "updated_at_ms": 1777488447722
+  },
+  {
+    "id": "insight-order-1777488267628-position",
+    "strategy": "insight",
+    "signal_id": "insight-1777488267628",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "INSG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "125",
+    "entry_price_usd": "1.60320",
+    "current_price_usd": "1.6673280",
+    "entry_notional_usd": "200",
+    "realized_pnl_usd": "32.0640000",
+    "stop_loss_price_usd": "1.4749440",
+    "take_profit_price_usd": "1.8436800",
+    "monitor_passes": 5,
+    "updated_at_ms": 1777488447722
+  },
+  {
+    "id": "insight-order-1777488312703-position",
+    "strategy": "insight",
+    "signal_id": "insight-1777488312703",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "INSG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "125",
+    "entry_price_usd": "1.60320",
+    "current_price_usd": "1.6673280",
+    "entry_notional_usd": "200",
+    "realized_pnl_usd": "32.0640000",
+    "stop_loss_price_usd": "1.4749440",
+    "take_profit_price_usd": "1.8436800",
+    "monitor_passes": 4,
+    "updated_at_ms": 1777488447722
+  },
+  {
+    "id": "insight-order-1777488357625-position",
+    "strategy": "insight",
+    "signal_id": "insight-1777488357625",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "INSG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "125",
+    "entry_price_usd": "1.60320",
+    "current_price_usd": "1.8597120",
+    "entry_notional_usd": "200",
+    "realized_pnl_usd": "32.0640000",
+    "stop_loss_price_usd": "1.4749440",
+    "take_profit_price_usd": "1.8436800",
+    "monitor_passes": 3,
+    "updated_at_ms": 1777488447722
+  },
+  {
+    "id": "insight-order-1777488402683-position",
+    "strategy": "insight",
+    "signal_id": "insight-1777488402683",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "INSG",
+      "decimals": 18
+    },
+    "state": "open",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "125",
+    "entry_price_usd": "1.60320",
+    "current_price_usd": "1.6673280",
+    "entry_notional_usd": "200",
+    "realized_pnl_usd": "0",
+    "stop_loss_price_usd": "1.4749440",
+    "take_profit_price_usd": "1.8436800",
+    "monitor_passes": 2,
+    "updated_at_ms": 1777488447722
+  },
+  {
+    "id": "insight-order-1777488447705-position",
+    "strategy": "insight",
+    "signal_id": "insight-1777488447705",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "INSG",
+      "decimals": 18
+    },
+    "state": "open",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "125",
+    "entry_price_usd": "1.60320",
+    "current_price_usd": "1.6673280",
+    "entry_notional_usd": "200",
+    "realized_pnl_usd": "0",
+    "stop_loss_price_usd": "1.4749440",
+    "take_profit_price_usd": "1.8436800",
+    "monitor_passes": 1,
+    "updated_at_ms": 1777488447722
+  }
+]

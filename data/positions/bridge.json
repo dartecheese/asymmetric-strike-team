@@ -1,0 +1,3188 @@
+[
+  {
+    "id": "bridge-order-1777486354475-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777486354475",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 118,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777486363928-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777486363928",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.4939200",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 117,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487262615-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487262615",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 116,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487272227-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487272227",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 115,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487282211-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487282211",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.4939200",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 114,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487292207-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487292207",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 113,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487302481-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487302481",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 112,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487312209-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487312209",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.4939200",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 111,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487322208-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487322208",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 110,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487332218-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487332218",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 109,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487342553-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487342553",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.4939200",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 108,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487352215-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487352215",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 107,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487362211-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487362211",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 106,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487372205-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487372205",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.4939200",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 105,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487382693-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487382693",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 104,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487392214-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487392214",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 103,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487402226-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487402226",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.4939200",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 102,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487412222-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487412222",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 101,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487422618-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487422618",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 100,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487432208-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487432208",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.4939200",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 99,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487442208-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487442208",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 98,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487452226-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487452226",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 97,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487462601-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487462601",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.4939200",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 96,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487472211-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487472211",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 95,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487482203-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487482203",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 94,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487492206-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487492206",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.4939200",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 93,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487502571-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487502571",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 92,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487512206-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487512206",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 91,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487522206-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487522206",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.4939200",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 90,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487532209-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487532209",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 89,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487542653-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487542653",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 88,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487552205-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487552205",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.4939200",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 87,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487562223-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487562223",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 86,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487572235-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487572235",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 85,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487582600-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487582600",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.4939200",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 84,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487592220-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487592220",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 83,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487602209-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487602209",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 82,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487612214-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487612214",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.4939200",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 81,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487622545-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487622545",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 80,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487632223-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487632223",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 79,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487642207-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487642207",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.4939200",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 78,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487652284-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487652284",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 77,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487662550-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487662550",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 76,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487672213-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487672213",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.4939200",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 75,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487682225-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487682225",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 74,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487692204-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487692204",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 73,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487702559-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487702559",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.4939200",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 72,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487712224-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487712224",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 71,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487722215-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487722215",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 70,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487732209-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487732209",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.4939200",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 69,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487742636-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487742636",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 68,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487752208-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487752208",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 67,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487762209-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487762209",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.4939200",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 66,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487772204-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487772204",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 65,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487782694-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487782694",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 64,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487792214-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487792214",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.4939200",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 63,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487802213-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487802213",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 62,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487812210-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487812210",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 61,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487822551-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487822551",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.4939200",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 60,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487832218-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487832218",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 59,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487842207-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487842207",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 58,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487852219-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487852219",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.4939200",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 57,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487862555-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487862555",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 56,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487872230-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487872230",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 55,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487882225-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487882225",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.4939200",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 54,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487892214-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487892214",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 53,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487902614-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487902614",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 52,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487912225-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487912225",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.4939200",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 51,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487922207-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487922207",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 50,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487932212-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487932212",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 49,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487942657-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487942657",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.4939200",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 48,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487952222-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487952222",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 47,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487962208-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487962208",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 46,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487972225-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487972225",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.4939200",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 45,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487982685-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487982685",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 44,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777487992205-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777487992205",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 43,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488002231-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488002231",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.4939200",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 42,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488012214-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488012214",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 41,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488022702-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488022702",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 40,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488032228-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488032228",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.4939200",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 39,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488042214-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488042214",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 38,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488052209-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488052209",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 37,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488122756-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488122756",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.4939200",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 36,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488132391-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488132391",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 35,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488142506-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488142506",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 34,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488152380-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488152380",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.4939200",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 33,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488162720-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488162720",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 32,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488172381-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488172381",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 31,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488182382-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488182382",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.4939200",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 30,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488192402-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488192402",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 29,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488202758-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488202758",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 28,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488212383-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488212383",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.4939200",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 27,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488222389-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488222389",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 26,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488232388-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488232388",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 25,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488242887-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488242887",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.4939200",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 24,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488252395-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488252395",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 23,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488262392-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488262392",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 22,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488272383-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488272383",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.4939200",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 21,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488282717-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488282717",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 20,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488292379-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488292379",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 19,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488302382-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488302382",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.4939200",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 18,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488312400-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488312400",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 17,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488323065-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488323065",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 16,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488332384-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488332384",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.4939200",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 15,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488342381-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488342381",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 14,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488352378-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488352378",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 13,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488362772-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488362772",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.4939200",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 12,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488372386-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488372386",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 11,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488382380-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488382380",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 10,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488392381-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488392381",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.4939200",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 9,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488402769-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488402769",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 8,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488412379-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488412379",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 7,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488422379-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488422379",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.4939200",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 6,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488432388-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488432388",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 5,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488442747-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488442747",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 4,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488452398-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488452398",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.4939200",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "64.255999998393600",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 3,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488462381-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488462381",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "open",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "0",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 2,
+    "updated_at_ms": 1777488472411
+  },
+  {
+    "id": "bridge-order-1777488472385-position",
+    "strategy": "bridge",
+    "signal_id": "bridge-1777488472385",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "BRDG",
+      "decimals": 18
+    },
+    "state": "open",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "133.33333333",
+    "entry_price_usd": "3.01200",
+    "current_price_usd": "3.1324800",
+    "entry_notional_usd": "400",
+    "realized_pnl_usd": "0",
+    "stop_loss_price_usd": "2.7710400",
+    "take_profit_price_usd": "3.4638000",
+    "monitor_passes": 1,
+    "updated_at_ms": 1777488472411
+  }
+]

@@ -1,0 +1,1109 @@
+[
+  {
+    "id": "thrive-order-1777486354004-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777486354004",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.5155400",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "80.400000000723600",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 41,
+    "updated_at_ms": 1777488462716
+  },
+  {
+    "id": "thrive-order-1777486364191-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777486364191",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.5155400",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "80.400000000723600",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 40,
+    "updated_at_ms": 1777488462716
+  },
+  {
+    "id": "thrive-order-1777487262506-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777487262506",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.6904100",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "80.400000000723600",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 39,
+    "updated_at_ms": 1777488462716
+  },
+  {
+    "id": "thrive-order-1777487292207-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777487292207",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.5155400",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "80.400000000723600",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 38,
+    "updated_at_ms": 1777488462716
+  },
+  {
+    "id": "thrive-order-1777487322214-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777487322214",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.5155400",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "80.400000000723600",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 37,
+    "updated_at_ms": 1777488462716
+  },
+  {
+    "id": "thrive-order-1777487352215-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777487352215",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.6904100",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "80.400000000723600",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 36,
+    "updated_at_ms": 1777488462716
+  },
+  {
+    "id": "thrive-order-1777487382210-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777487382210",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.5155400",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "80.400000000723600",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 35,
+    "updated_at_ms": 1777488462716
+  },
+  {
+    "id": "thrive-order-1777487412207-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777487412207",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.5155400",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "80.400000000723600",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 34,
+    "updated_at_ms": 1777488462716
+  },
+  {
+    "id": "thrive-order-1777487442219-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777487442219",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.6904100",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "80.400000000723600",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 33,
+    "updated_at_ms": 1777488462716
+  },
+  {
+    "id": "thrive-order-1777487472211-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777487472211",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.5155400",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "80.400000000723600",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 32,
+    "updated_at_ms": 1777488462716
+  },
+  {
+    "id": "thrive-order-1777487502218-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777487502218",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.5155400",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "80.400000000723600",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 31,
+    "updated_at_ms": 1777488462716
+  },
+  {
+    "id": "thrive-order-1777487532221-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777487532221",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.6904100",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "80.400000000723600",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 30,
+    "updated_at_ms": 1777488462716
+  },
+  {
+    "id": "thrive-order-1777487562218-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777487562218",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.5155400",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "80.400000000723600",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 29,
+    "updated_at_ms": 1777488462716
+  },
+  {
+    "id": "thrive-order-1777487592223-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777487592223",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.5155400",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "80.400000000723600",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 28,
+    "updated_at_ms": 1777488462716
+  },
+  {
+    "id": "thrive-order-1777487622230-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777487622230",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.6904100",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "80.400000000723600",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 27,
+    "updated_at_ms": 1777488462716
+  },
+  {
+    "id": "thrive-order-1777487652271-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777487652271",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.5155400",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "80.400000000723600",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 26,
+    "updated_at_ms": 1777488462716
+  },
+  {
+    "id": "thrive-order-1777487682209-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777487682209",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.5155400",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "80.400000000723600",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 25,
+    "updated_at_ms": 1777488462716
+  },
+  {
+    "id": "thrive-order-1777487712227-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777487712227",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.6904100",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "80.400000000723600",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 24,
+    "updated_at_ms": 1777488462716
+  },
+  {
+    "id": "thrive-order-1777487742229-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777487742229",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.5155400",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "80.400000000723600",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 23,
+    "updated_at_ms": 1777488462716
+  },
+  {
+    "id": "thrive-order-1777487772228-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777487772228",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.5155400",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "80.400000000723600",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 22,
+    "updated_at_ms": 1777488462716
+  },
+  {
+    "id": "thrive-order-1777487802552-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777487802552",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.6904100",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "80.400000000723600",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 21,
+    "updated_at_ms": 1777488462716
+  },
+  {
+    "id": "thrive-order-1777487832475-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777487832475",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.5155400",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "80.400000000723600",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 20,
+    "updated_at_ms": 1777488462716
+  },
+  {
+    "id": "thrive-order-1777487862468-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777487862468",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.5155400",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "80.400000000723600",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 19,
+    "updated_at_ms": 1777488462716
+  },
+  {
+    "id": "thrive-order-1777487892560-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777487892560",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.6904100",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "80.400000000723600",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 18,
+    "updated_at_ms": 1777488462716
+  },
+  {
+    "id": "thrive-order-1777487922560-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777487922560",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.5155400",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "80.400000000723600",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 17,
+    "updated_at_ms": 1777488462716
+  },
+  {
+    "id": "thrive-order-1777487952557-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777487952557",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.5155400",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "80.400000000723600",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 16,
+    "updated_at_ms": 1777488462716
+  },
+  {
+    "id": "thrive-order-1777487982508-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777487982508",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.6904100",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "80.400000000723600",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 15,
+    "updated_at_ms": 1777488462716
+  },
+  {
+    "id": "thrive-order-1777488012572-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777488012572",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.5155400",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "80.400000000723600",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 14,
+    "updated_at_ms": 1777488462716
+  },
+  {
+    "id": "thrive-order-1777488042471-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777488042471",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.5155400",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "80.400000000723600",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 13,
+    "updated_at_ms": 1777488462716
+  },
+  {
+    "id": "thrive-order-1777488132651-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777488132651",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.6904100",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "80.400000000723600",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 12,
+    "updated_at_ms": 1777488462716
+  },
+  {
+    "id": "thrive-order-1777488162707-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777488162707",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.5155400",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "80.400000000723600",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 11,
+    "updated_at_ms": 1777488462716
+  },
+  {
+    "id": "thrive-order-1777488192648-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777488192648",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.5155400",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "80.400000000723600",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 10,
+    "updated_at_ms": 1777488462716
+  },
+  {
+    "id": "thrive-order-1777488222648-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777488222648",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.6904100",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "80.400000000723600",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 9,
+    "updated_at_ms": 1777488462716
+  },
+  {
+    "id": "thrive-order-1777488252636-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777488252636",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.5155400",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "80.400000000723600",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 8,
+    "updated_at_ms": 1777488462716
+  },
+  {
+    "id": "thrive-order-1777488282649-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777488282649",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.5155400",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "80.400000000723600",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 7,
+    "updated_at_ms": 1777488462716
+  },
+  {
+    "id": "thrive-order-1777488312718-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777488312718",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.6904100",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "80.400000000723600",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 6,
+    "updated_at_ms": 1777488462716
+  },
+  {
+    "id": "thrive-order-1777488342622-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777488342622",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.5155400",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "80.400000000723600",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 5,
+    "updated_at_ms": 1777488462716
+  },
+  {
+    "id": "thrive-order-1777488372633-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777488372633",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.5155400",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "80.400000000723600",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 4,
+    "updated_at_ms": 1777488462716
+  },
+  {
+    "id": "thrive-order-1777488402683-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777488402683",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.6904100",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "80.400000000723600",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 3,
+    "updated_at_ms": 1777488462716
+  },
+  {
+    "id": "thrive-order-1777488432683-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777488432683",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "open",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.5155400",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "0",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 2,
+    "updated_at_ms": 1777488462716
+  },
+  {
+    "id": "thrive-order-1777488462689-position",
+    "strategy": "thrive",
+    "signal_id": "thrive-1777488462689",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "THRV",
+      "decimals": 18
+    },
+    "state": "open",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "344.82758621",
+    "entry_price_usd": "1.45725",
+    "current_price_usd": "1.5155400",
+    "entry_notional_usd": "500",
+    "realized_pnl_usd": "0",
+    "stop_loss_price_usd": "1.3406700",
+    "take_profit_price_usd": "1.6758375",
+    "monitor_passes": 1,
+    "updated_at_ms": 1777488462716
+  }
+]

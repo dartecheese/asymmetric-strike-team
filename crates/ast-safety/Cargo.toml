@@ -1,0 +1,10 @@
+[package]
+name = "ast-safety"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+async-trait.workspace = true
+thiserror.workspace = true
+
+ast-core = { path = "../ast-core" }

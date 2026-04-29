@@ -1,0 +1,596 @@
+[
+  {
+    "id": "echo-order-1777486354000-position",
+    "strategy": "echo",
+    "signal_id": "echo-1777486354000",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "ECHO",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "142.85714286",
+    "entry_price_usd": "2.10630",
+    "current_price_usd": "2.1905520",
+    "entry_notional_usd": "300",
+    "realized_pnl_usd": "48.144000000962880",
+    "stop_loss_price_usd": "1.9377960",
+    "take_profit_price_usd": "2.4222450",
+    "monitor_passes": 22,
+    "updated_at_ms": 1777488462708
+  },
+  {
+    "id": "echo-order-1777486364191-position",
+    "strategy": "echo",
+    "signal_id": "echo-1777486364191",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "ECHO",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "142.85714286",
+    "entry_price_usd": "2.10630",
+    "current_price_usd": "2.4433080",
+    "entry_notional_usd": "300",
+    "realized_pnl_usd": "48.144000000962880",
+    "stop_loss_price_usd": "1.9377960",
+    "take_profit_price_usd": "2.4222450",
+    "monitor_passes": 21,
+    "updated_at_ms": 1777488462708
+  },
+  {
+    "id": "echo-order-1777487262506-position",
+    "strategy": "echo",
+    "signal_id": "echo-1777487262506",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "ECHO",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "142.85714286",
+    "entry_price_usd": "2.10630",
+    "current_price_usd": "2.1905520",
+    "entry_notional_usd": "300",
+    "realized_pnl_usd": "48.144000000962880",
+    "stop_loss_price_usd": "1.9377960",
+    "take_profit_price_usd": "2.4222450",
+    "monitor_passes": 20,
+    "updated_at_ms": 1777488462708
+  },
+  {
+    "id": "echo-order-1777487322209-position",
+    "strategy": "echo",
+    "signal_id": "echo-1777487322209",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "ECHO",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "142.85714286",
+    "entry_price_usd": "2.10630",
+    "current_price_usd": "2.1905520",
+    "entry_notional_usd": "300",
+    "realized_pnl_usd": "48.144000000962880",
+    "stop_loss_price_usd": "1.9377960",
+    "take_profit_price_usd": "2.4222450",
+    "monitor_passes": 19,
+    "updated_at_ms": 1777488462708
+  },
+  {
+    "id": "echo-order-1777487382200-position",
+    "strategy": "echo",
+    "signal_id": "echo-1777487382200",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "ECHO",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "142.85714286",
+    "entry_price_usd": "2.10630",
+    "current_price_usd": "2.4433080",
+    "entry_notional_usd": "300",
+    "realized_pnl_usd": "48.144000000962880",
+    "stop_loss_price_usd": "1.9377960",
+    "take_profit_price_usd": "2.4222450",
+    "monitor_passes": 18,
+    "updated_at_ms": 1777488462708
+  },
+  {
+    "id": "echo-order-1777487442202-position",
+    "strategy": "echo",
+    "signal_id": "echo-1777487442202",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "ECHO",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "142.85714286",
+    "entry_price_usd": "2.10630",
+    "current_price_usd": "2.1905520",
+    "entry_notional_usd": "300",
+    "realized_pnl_usd": "48.144000000962880",
+    "stop_loss_price_usd": "1.9377960",
+    "take_profit_price_usd": "2.4222450",
+    "monitor_passes": 17,
+    "updated_at_ms": 1777488462708
+  },
+  {
+    "id": "echo-order-1777487502212-position",
+    "strategy": "echo",
+    "signal_id": "echo-1777487502212",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "ECHO",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "142.85714286",
+    "entry_price_usd": "2.10630",
+    "current_price_usd": "2.1905520",
+    "entry_notional_usd": "300",
+    "realized_pnl_usd": "48.144000000962880",
+    "stop_loss_price_usd": "1.9377960",
+    "take_profit_price_usd": "2.4222450",
+    "monitor_passes": 16,
+    "updated_at_ms": 1777488462708
+  },
+  {
+    "id": "echo-order-1777487562211-position",
+    "strategy": "echo",
+    "signal_id": "echo-1777487562211",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "ECHO",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "142.85714286",
+    "entry_price_usd": "2.10630",
+    "current_price_usd": "2.4433080",
+    "entry_notional_usd": "300",
+    "realized_pnl_usd": "48.144000000962880",
+    "stop_loss_price_usd": "1.9377960",
+    "take_profit_price_usd": "2.4222450",
+    "monitor_passes": 15,
+    "updated_at_ms": 1777488462708
+  },
+  {
+    "id": "echo-order-1777487622225-position",
+    "strategy": "echo",
+    "signal_id": "echo-1777487622225",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "ECHO",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "142.85714286",
+    "entry_price_usd": "2.10630",
+    "current_price_usd": "2.1905520",
+    "entry_notional_usd": "300",
+    "realized_pnl_usd": "48.144000000962880",
+    "stop_loss_price_usd": "1.9377960",
+    "take_profit_price_usd": "2.4222450",
+    "monitor_passes": 14,
+    "updated_at_ms": 1777488462708
+  },
+  {
+    "id": "echo-order-1777487682209-position",
+    "strategy": "echo",
+    "signal_id": "echo-1777487682209",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "ECHO",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "142.85714286",
+    "entry_price_usd": "2.10630",
+    "current_price_usd": "2.1905520",
+    "entry_notional_usd": "300",
+    "realized_pnl_usd": "48.144000000962880",
+    "stop_loss_price_usd": "1.9377960",
+    "take_profit_price_usd": "2.4222450",
+    "monitor_passes": 13,
+    "updated_at_ms": 1777488462708
+  },
+  {
+    "id": "echo-order-1777487742203-position",
+    "strategy": "echo",
+    "signal_id": "echo-1777487742203",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "ECHO",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "142.85714286",
+    "entry_price_usd": "2.10630",
+    "current_price_usd": "2.4433080",
+    "entry_notional_usd": "300",
+    "realized_pnl_usd": "48.144000000962880",
+    "stop_loss_price_usd": "1.9377960",
+    "take_profit_price_usd": "2.4222450",
+    "monitor_passes": 12,
+    "updated_at_ms": 1777488462708
+  },
+  {
+    "id": "echo-order-1777487802551-position",
+    "strategy": "echo",
+    "signal_id": "echo-1777487802551",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "ECHO",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "142.85714286",
+    "entry_price_usd": "2.10630",
+    "current_price_usd": "2.1905520",
+    "entry_notional_usd": "300",
+    "realized_pnl_usd": "48.144000000962880",
+    "stop_loss_price_usd": "1.9377960",
+    "take_profit_price_usd": "2.4222450",
+    "monitor_passes": 11,
+    "updated_at_ms": 1777488462708
+  },
+  {
+    "id": "echo-order-1777487862468-position",
+    "strategy": "echo",
+    "signal_id": "echo-1777487862468",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "ECHO",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "142.85714286",
+    "entry_price_usd": "2.10630",
+    "current_price_usd": "2.1905520",
+    "entry_notional_usd": "300",
+    "realized_pnl_usd": "48.144000000962880",
+    "stop_loss_price_usd": "1.9377960",
+    "take_profit_price_usd": "2.4222450",
+    "monitor_passes": 10,
+    "updated_at_ms": 1777488462708
+  },
+  {
+    "id": "echo-order-1777487922559-position",
+    "strategy": "echo",
+    "signal_id": "echo-1777487922559",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "ECHO",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "142.85714286",
+    "entry_price_usd": "2.10630",
+    "current_price_usd": "2.4433080",
+    "entry_notional_usd": "300",
+    "realized_pnl_usd": "48.144000000962880",
+    "stop_loss_price_usd": "1.9377960",
+    "take_profit_price_usd": "2.4222450",
+    "monitor_passes": 9,
+    "updated_at_ms": 1777488462708
+  },
+  {
+    "id": "echo-order-1777487982505-position",
+    "strategy": "echo",
+    "signal_id": "echo-1777487982505",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "ECHO",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "142.85714286",
+    "entry_price_usd": "2.10630",
+    "current_price_usd": "2.1905520",
+    "entry_notional_usd": "300",
+    "realized_pnl_usd": "48.144000000962880",
+    "stop_loss_price_usd": "1.9377960",
+    "take_profit_price_usd": "2.4222450",
+    "monitor_passes": 8,
+    "updated_at_ms": 1777488462708
+  },
+  {
+    "id": "echo-order-1777488042470-position",
+    "strategy": "echo",
+    "signal_id": "echo-1777488042470",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "ECHO",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "142.85714286",
+    "entry_price_usd": "2.10630",
+    "current_price_usd": "2.1905520",
+    "entry_notional_usd": "300",
+    "realized_pnl_usd": "48.144000000962880",
+    "stop_loss_price_usd": "1.9377960",
+    "take_profit_price_usd": "2.4222450",
+    "monitor_passes": 7,
+    "updated_at_ms": 1777488462708
+  },
+  {
+    "id": "echo-order-1777488162708-position",
+    "strategy": "echo",
+    "signal_id": "echo-1777488162708",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "ECHO",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "142.85714286",
+    "entry_price_usd": "2.10630",
+    "current_price_usd": "2.4433080",
+    "entry_notional_usd": "300",
+    "realized_pnl_usd": "48.144000000962880",
+    "stop_loss_price_usd": "1.9377960",
+    "take_profit_price_usd": "2.4222450",
+    "monitor_passes": 6,
+    "updated_at_ms": 1777488462708
+  },
+  {
+    "id": "echo-order-1777488222642-position",
+    "strategy": "echo",
+    "signal_id": "echo-1777488222642",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "ECHO",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "142.85714286",
+    "entry_price_usd": "2.10630",
+    "current_price_usd": "2.1905520",
+    "entry_notional_usd": "300",
+    "realized_pnl_usd": "48.144000000962880",
+    "stop_loss_price_usd": "1.9377960",
+    "take_profit_price_usd": "2.4222450",
+    "monitor_passes": 5,
+    "updated_at_ms": 1777488462708
+  },
+  {
+    "id": "echo-order-1777488282650-position",
+    "strategy": "echo",
+    "signal_id": "echo-1777488282650",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "ECHO",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "142.85714286",
+    "entry_price_usd": "2.10630",
+    "current_price_usd": "2.1905520",
+    "entry_notional_usd": "300",
+    "realized_pnl_usd": "48.144000000962880",
+    "stop_loss_price_usd": "1.9377960",
+    "take_profit_price_usd": "2.4222450",
+    "monitor_passes": 4,
+    "updated_at_ms": 1777488462708
+  },
+  {
+    "id": "echo-order-1777488342622-position",
+    "strategy": "echo",
+    "signal_id": "echo-1777488342622",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "ECHO",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "142.85714286",
+    "entry_price_usd": "2.10630",
+    "current_price_usd": "2.4433080",
+    "entry_notional_usd": "300",
+    "realized_pnl_usd": "48.144000000962880",
+    "stop_loss_price_usd": "1.9377960",
+    "take_profit_price_usd": "2.4222450",
+    "monitor_passes": 3,
+    "updated_at_ms": 1777488462708
+  },
+  {
+    "id": "echo-order-1777488402676-position",
+    "strategy": "echo",
+    "signal_id": "echo-1777488402676",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "ECHO",
+      "decimals": 18
+    },
+    "state": "open",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "142.85714286",
+    "entry_price_usd": "2.10630",
+    "current_price_usd": "2.1905520",
+    "entry_notional_usd": "300",
+    "realized_pnl_usd": "0",
+    "stop_loss_price_usd": "1.9377960",
+    "take_profit_price_usd": "2.4222450",
+    "monitor_passes": 2,
+    "updated_at_ms": 1777488462708
+  },
+  {
+    "id": "echo-order-1777488462688-position",
+    "strategy": "echo",
+    "signal_id": "echo-1777488462688",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "ECHO",
+      "decimals": 18
+    },
+    "state": "open",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "142.85714286",
+    "entry_price_usd": "2.10630",
+    "current_price_usd": "2.1905520",
+    "entry_notional_usd": "300",
+    "realized_pnl_usd": "0",
+    "stop_loss_price_usd": "1.9377960",
+    "take_profit_price_usd": "2.4222450",
+    "monitor_passes": 1,
+    "updated_at_ms": 1777488462708
+  }
+]

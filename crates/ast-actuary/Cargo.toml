@@ -1,0 +1,15 @@
+[package]
+name = "ast-actuary"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+alloy-primitives.workspace = true
+async-trait.workspace = true
+reqwest.workspace = true
+rust_decimal.workspace = true
+serde.workspace = true
+thiserror.workspace = true
+tokio.workspace = true
+
+ast-core = { path = "../ast-core" }

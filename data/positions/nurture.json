@@ -1,0 +1,326 @@
+[
+  {
+    "id": "nurture-order-1777486354327-position",
+    "strategy": "nurture",
+    "signal_id": "nurture-1777486354327",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "NURT",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "170.45454545",
+    "entry_price_usd": "0.881320",
+    "current_price_usd": "1.02233120",
+    "entry_notional_usd": "150",
+    "realized_pnl_usd": "24.0359999993590400",
+    "stop_loss_price_usd": "0.81081440",
+    "take_profit_price_usd": "1.01351800",
+    "monitor_passes": 12,
+    "updated_at_ms": 1777488402779
+  },
+  {
+    "id": "nurture-order-1777486363924-position",
+    "strategy": "nurture",
+    "signal_id": "nurture-1777486363924",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "NURT",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "170.45454545",
+    "entry_price_usd": "0.881320",
+    "current_price_usd": "0.91657280",
+    "entry_notional_usd": "150",
+    "realized_pnl_usd": "24.0359999993590400",
+    "stop_loss_price_usd": "0.81081440",
+    "take_profit_price_usd": "1.01351800",
+    "monitor_passes": 11,
+    "updated_at_ms": 1777488402779
+  },
+  {
+    "id": "nurture-order-1777487262615-position",
+    "strategy": "nurture",
+    "signal_id": "nurture-1777487262615",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "NURT",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "170.45454545",
+    "entry_price_usd": "0.881320",
+    "current_price_usd": "0.91657280",
+    "entry_notional_usd": "150",
+    "realized_pnl_usd": "24.0359999993590400",
+    "stop_loss_price_usd": "0.81081440",
+    "take_profit_price_usd": "1.01351800",
+    "monitor_passes": 10,
+    "updated_at_ms": 1777488402779
+  },
+  {
+    "id": "nurture-order-1777487382549-position",
+    "strategy": "nurture",
+    "signal_id": "nurture-1777487382549",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "NURT",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "170.45454545",
+    "entry_price_usd": "0.881320",
+    "current_price_usd": "1.02233120",
+    "entry_notional_usd": "150",
+    "realized_pnl_usd": "24.0359999993590400",
+    "stop_loss_price_usd": "0.81081440",
+    "take_profit_price_usd": "1.01351800",
+    "monitor_passes": 9,
+    "updated_at_ms": 1777488402779
+  },
+  {
+    "id": "nurture-order-1777487502557-position",
+    "strategy": "nurture",
+    "signal_id": "nurture-1777487502557",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "NURT",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "170.45454545",
+    "entry_price_usd": "0.881320",
+    "current_price_usd": "0.91657280",
+    "entry_notional_usd": "150",
+    "realized_pnl_usd": "24.0359999993590400",
+    "stop_loss_price_usd": "0.81081440",
+    "take_profit_price_usd": "1.01351800",
+    "monitor_passes": 8,
+    "updated_at_ms": 1777488402779
+  },
+  {
+    "id": "nurture-order-1777487622583-position",
+    "strategy": "nurture",
+    "signal_id": "nurture-1777487622583",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "NURT",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "170.45454545",
+    "entry_price_usd": "0.881320",
+    "current_price_usd": "0.91657280",
+    "entry_notional_usd": "150",
+    "realized_pnl_usd": "24.0359999993590400",
+    "stop_loss_price_usd": "0.81081440",
+    "take_profit_price_usd": "1.01351800",
+    "monitor_passes": 7,
+    "updated_at_ms": 1777488402779
+  },
+  {
+    "id": "nurture-order-1777487742589-position",
+    "strategy": "nurture",
+    "signal_id": "nurture-1777487742589",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "NURT",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "170.45454545",
+    "entry_price_usd": "0.881320",
+    "current_price_usd": "1.02233120",
+    "entry_notional_usd": "150",
+    "realized_pnl_usd": "24.0359999993590400",
+    "stop_loss_price_usd": "0.81081440",
+    "take_profit_price_usd": "1.01351800",
+    "monitor_passes": 6,
+    "updated_at_ms": 1777488402779
+  },
+  {
+    "id": "nurture-order-1777487862654-position",
+    "strategy": "nurture",
+    "signal_id": "nurture-1777487862654",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "NURT",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "170.45454545",
+    "entry_price_usd": "0.881320",
+    "current_price_usd": "0.91657280",
+    "entry_notional_usd": "150",
+    "realized_pnl_usd": "24.0359999993590400",
+    "stop_loss_price_usd": "0.81081440",
+    "take_profit_price_usd": "1.01351800",
+    "monitor_passes": 5,
+    "updated_at_ms": 1777488402779
+  },
+  {
+    "id": "nurture-order-1777487982666-position",
+    "strategy": "nurture",
+    "signal_id": "nurture-1777487982666",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "NURT",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "170.45454545",
+    "entry_price_usd": "0.881320",
+    "current_price_usd": "0.91657280",
+    "entry_notional_usd": "150",
+    "realized_pnl_usd": "24.0359999993590400",
+    "stop_loss_price_usd": "0.81081440",
+    "take_profit_price_usd": "1.01351800",
+    "monitor_passes": 4,
+    "updated_at_ms": 1777488402779
+  },
+  {
+    "id": "nurture-order-1777488162783-position",
+    "strategy": "nurture",
+    "signal_id": "nurture-1777488162783",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "NURT",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "170.45454545",
+    "entry_price_usd": "0.881320",
+    "current_price_usd": "1.02233120",
+    "entry_notional_usd": "150",
+    "realized_pnl_usd": "24.0359999993590400",
+    "stop_loss_price_usd": "0.81081440",
+    "take_profit_price_usd": "1.01351800",
+    "monitor_passes": 3,
+    "updated_at_ms": 1777488402779
+  },
+  {
+    "id": "nurture-order-1777488282785-position",
+    "strategy": "nurture",
+    "signal_id": "nurture-1777488282785",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "NURT",
+      "decimals": 18
+    },
+    "state": "open",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "170.45454545",
+    "entry_price_usd": "0.881320",
+    "current_price_usd": "0.91657280",
+    "entry_notional_usd": "150",
+    "realized_pnl_usd": "0",
+    "stop_loss_price_usd": "0.81081440",
+    "take_profit_price_usd": "1.01351800",
+    "monitor_passes": 2,
+    "updated_at_ms": 1777488402779
+  },
+  {
+    "id": "nurture-order-1777488402769-position",
+    "strategy": "nurture",
+    "signal_id": "nurture-1777488402769",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "NURT",
+      "decimals": 18
+    },
+    "state": "open",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "170.45454545",
+    "entry_price_usd": "0.881320",
+    "current_price_usd": "0.91657280",
+    "entry_notional_usd": "150",
+    "realized_pnl_usd": "0",
+    "stop_loss_price_usd": "0.81081440",
+    "take_profit_price_usd": "1.01351800",
+    "monitor_passes": 1,
+    "updated_at_ms": 1777488402779
+  }
+]

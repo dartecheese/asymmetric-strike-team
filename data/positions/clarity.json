@@ -1,0 +1,596 @@
+[
+  {
+    "id": "clarity-order-1777486354534-position",
+    "strategy": "clarity",
+    "signal_id": "clarity-1777486354534",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "CLAR",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "145.83333333",
+    "entry_price_usd": "2.408400",
+    "current_price_usd": "2.50473600",
+    "entry_notional_usd": "350",
+    "realized_pnl_usd": "56.1959999987155200",
+    "stop_loss_price_usd": "2.21572800",
+    "take_profit_price_usd": "2.76966000",
+    "monitor_passes": 22,
+    "updated_at_ms": 1777488462763
+  },
+  {
+    "id": "clarity-order-1777486363934-position",
+    "strategy": "clarity",
+    "signal_id": "clarity-1777486363934",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "CLAR",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "145.83333333",
+    "entry_price_usd": "2.408400",
+    "current_price_usd": "2.79374400",
+    "entry_notional_usd": "350",
+    "realized_pnl_usd": "56.1959999987155200",
+    "stop_loss_price_usd": "2.21572800",
+    "take_profit_price_usd": "2.76966000",
+    "monitor_passes": 21,
+    "updated_at_ms": 1777488462763
+  },
+  {
+    "id": "clarity-order-1777487262606-position",
+    "strategy": "clarity",
+    "signal_id": "clarity-1777487262606",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "CLAR",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "145.83333333",
+    "entry_price_usd": "2.408400",
+    "current_price_usd": "2.50473600",
+    "entry_notional_usd": "350",
+    "realized_pnl_usd": "56.1959999987155200",
+    "stop_loss_price_usd": "2.21572800",
+    "take_profit_price_usd": "2.76966000",
+    "monitor_passes": 20,
+    "updated_at_ms": 1777488462763
+  },
+  {
+    "id": "clarity-order-1777487322534-position",
+    "strategy": "clarity",
+    "signal_id": "clarity-1777487322534",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "CLAR",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "145.83333333",
+    "entry_price_usd": "2.408400",
+    "current_price_usd": "2.50473600",
+    "entry_notional_usd": "350",
+    "realized_pnl_usd": "56.1959999987155200",
+    "stop_loss_price_usd": "2.21572800",
+    "take_profit_price_usd": "2.76966000",
+    "monitor_passes": 19,
+    "updated_at_ms": 1777488462763
+  },
+  {
+    "id": "clarity-order-1777487382558-position",
+    "strategy": "clarity",
+    "signal_id": "clarity-1777487382558",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "CLAR",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "145.83333333",
+    "entry_price_usd": "2.408400",
+    "current_price_usd": "2.79374400",
+    "entry_notional_usd": "350",
+    "realized_pnl_usd": "56.1959999987155200",
+    "stop_loss_price_usd": "2.21572800",
+    "take_profit_price_usd": "2.76966000",
+    "monitor_passes": 18,
+    "updated_at_ms": 1777488462763
+  },
+  {
+    "id": "clarity-order-1777487442572-position",
+    "strategy": "clarity",
+    "signal_id": "clarity-1777487442572",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "CLAR",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "145.83333333",
+    "entry_price_usd": "2.408400",
+    "current_price_usd": "2.50473600",
+    "entry_notional_usd": "350",
+    "realized_pnl_usd": "56.1959999987155200",
+    "stop_loss_price_usd": "2.21572800",
+    "take_profit_price_usd": "2.76966000",
+    "monitor_passes": 17,
+    "updated_at_ms": 1777488462763
+  },
+  {
+    "id": "clarity-order-1777487502540-position",
+    "strategy": "clarity",
+    "signal_id": "clarity-1777487502540",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "CLAR",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "145.83333333",
+    "entry_price_usd": "2.408400",
+    "current_price_usd": "2.50473600",
+    "entry_notional_usd": "350",
+    "realized_pnl_usd": "56.1959999987155200",
+    "stop_loss_price_usd": "2.21572800",
+    "take_profit_price_usd": "2.76966000",
+    "monitor_passes": 16,
+    "updated_at_ms": 1777488462763
+  },
+  {
+    "id": "clarity-order-1777487562624-position",
+    "strategy": "clarity",
+    "signal_id": "clarity-1777487562624",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "CLAR",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "145.83333333",
+    "entry_price_usd": "2.408400",
+    "current_price_usd": "2.79374400",
+    "entry_notional_usd": "350",
+    "realized_pnl_usd": "56.1959999987155200",
+    "stop_loss_price_usd": "2.21572800",
+    "take_profit_price_usd": "2.76966000",
+    "monitor_passes": 15,
+    "updated_at_ms": 1777488462763
+  },
+  {
+    "id": "clarity-order-1777487622560-position",
+    "strategy": "clarity",
+    "signal_id": "clarity-1777487622560",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "CLAR",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "145.83333333",
+    "entry_price_usd": "2.408400",
+    "current_price_usd": "2.50473600",
+    "entry_notional_usd": "350",
+    "realized_pnl_usd": "56.1959999987155200",
+    "stop_loss_price_usd": "2.21572800",
+    "take_profit_price_usd": "2.76966000",
+    "monitor_passes": 14,
+    "updated_at_ms": 1777488462763
+  },
+  {
+    "id": "clarity-order-1777487682545-position",
+    "strategy": "clarity",
+    "signal_id": "clarity-1777487682545",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "CLAR",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "145.83333333",
+    "entry_price_usd": "2.408400",
+    "current_price_usd": "2.50473600",
+    "entry_notional_usd": "350",
+    "realized_pnl_usd": "56.1959999987155200",
+    "stop_loss_price_usd": "2.21572800",
+    "take_profit_price_usd": "2.76966000",
+    "monitor_passes": 13,
+    "updated_at_ms": 1777488462763
+  },
+  {
+    "id": "clarity-order-1777487742662-position",
+    "strategy": "clarity",
+    "signal_id": "clarity-1777487742662",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "CLAR",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "145.83333333",
+    "entry_price_usd": "2.408400",
+    "current_price_usd": "2.79374400",
+    "entry_notional_usd": "350",
+    "realized_pnl_usd": "56.1959999987155200",
+    "stop_loss_price_usd": "2.21572800",
+    "take_profit_price_usd": "2.76966000",
+    "monitor_passes": 12,
+    "updated_at_ms": 1777488462763
+  },
+  {
+    "id": "clarity-order-1777487802557-position",
+    "strategy": "clarity",
+    "signal_id": "clarity-1777487802557",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "CLAR",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "145.83333333",
+    "entry_price_usd": "2.408400",
+    "current_price_usd": "2.50473600",
+    "entry_notional_usd": "350",
+    "realized_pnl_usd": "56.1959999987155200",
+    "stop_loss_price_usd": "2.21572800",
+    "take_profit_price_usd": "2.76966000",
+    "monitor_passes": 11,
+    "updated_at_ms": 1777488462763
+  },
+  {
+    "id": "clarity-order-1777487862896-position",
+    "strategy": "clarity",
+    "signal_id": "clarity-1777487862896",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "CLAR",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "145.83333333",
+    "entry_price_usd": "2.408400",
+    "current_price_usd": "2.50473600",
+    "entry_notional_usd": "350",
+    "realized_pnl_usd": "56.1959999987155200",
+    "stop_loss_price_usd": "2.21572800",
+    "take_profit_price_usd": "2.76966000",
+    "monitor_passes": 10,
+    "updated_at_ms": 1777488462763
+  },
+  {
+    "id": "clarity-order-1777487922588-position",
+    "strategy": "clarity",
+    "signal_id": "clarity-1777487922588",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "CLAR",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "145.83333333",
+    "entry_price_usd": "2.408400",
+    "current_price_usd": "2.79374400",
+    "entry_notional_usd": "350",
+    "realized_pnl_usd": "56.1959999987155200",
+    "stop_loss_price_usd": "2.21572800",
+    "take_profit_price_usd": "2.76966000",
+    "monitor_passes": 9,
+    "updated_at_ms": 1777488462763
+  },
+  {
+    "id": "clarity-order-1777487982532-position",
+    "strategy": "clarity",
+    "signal_id": "clarity-1777487982532",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "CLAR",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "145.83333333",
+    "entry_price_usd": "2.408400",
+    "current_price_usd": "2.50473600",
+    "entry_notional_usd": "350",
+    "realized_pnl_usd": "56.1959999987155200",
+    "stop_loss_price_usd": "2.21572800",
+    "take_profit_price_usd": "2.76966000",
+    "monitor_passes": 8,
+    "updated_at_ms": 1777488462763
+  },
+  {
+    "id": "clarity-order-1777488042569-position",
+    "strategy": "clarity",
+    "signal_id": "clarity-1777488042569",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "CLAR",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "145.83333333",
+    "entry_price_usd": "2.408400",
+    "current_price_usd": "2.50473600",
+    "entry_notional_usd": "350",
+    "realized_pnl_usd": "56.1959999987155200",
+    "stop_loss_price_usd": "2.21572800",
+    "take_profit_price_usd": "2.76966000",
+    "monitor_passes": 7,
+    "updated_at_ms": 1777488462763
+  },
+  {
+    "id": "clarity-order-1777488162652-position",
+    "strategy": "clarity",
+    "signal_id": "clarity-1777488162652",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "CLAR",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "145.83333333",
+    "entry_price_usd": "2.408400",
+    "current_price_usd": "2.79374400",
+    "entry_notional_usd": "350",
+    "realized_pnl_usd": "56.1959999987155200",
+    "stop_loss_price_usd": "2.21572800",
+    "take_profit_price_usd": "2.76966000",
+    "monitor_passes": 6,
+    "updated_at_ms": 1777488462763
+  },
+  {
+    "id": "clarity-order-1777488222745-position",
+    "strategy": "clarity",
+    "signal_id": "clarity-1777488222745",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "CLAR",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "145.83333333",
+    "entry_price_usd": "2.408400",
+    "current_price_usd": "2.50473600",
+    "entry_notional_usd": "350",
+    "realized_pnl_usd": "56.1959999987155200",
+    "stop_loss_price_usd": "2.21572800",
+    "take_profit_price_usd": "2.76966000",
+    "monitor_passes": 5,
+    "updated_at_ms": 1777488462763
+  },
+  {
+    "id": "clarity-order-1777488282778-position",
+    "strategy": "clarity",
+    "signal_id": "clarity-1777488282778",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "CLAR",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "145.83333333",
+    "entry_price_usd": "2.408400",
+    "current_price_usd": "2.50473600",
+    "entry_notional_usd": "350",
+    "realized_pnl_usd": "56.1959999987155200",
+    "stop_loss_price_usd": "2.21572800",
+    "take_profit_price_usd": "2.76966000",
+    "monitor_passes": 4,
+    "updated_at_ms": 1777488462763
+  },
+  {
+    "id": "clarity-order-1777488342719-position",
+    "strategy": "clarity",
+    "signal_id": "clarity-1777488342719",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "CLAR",
+      "decimals": 18
+    },
+    "state": "free_ride",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "145.83333333",
+    "entry_price_usd": "2.408400",
+    "current_price_usd": "2.79374400",
+    "entry_notional_usd": "350",
+    "realized_pnl_usd": "56.1959999987155200",
+    "stop_loss_price_usd": "2.21572800",
+    "take_profit_price_usd": "2.76966000",
+    "monitor_passes": 3,
+    "updated_at_ms": 1777488462763
+  },
+  {
+    "id": "clarity-order-1777488402703-position",
+    "strategy": "clarity",
+    "signal_id": "clarity-1777488402703",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "CLAR",
+      "decimals": 18
+    },
+    "state": "open",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "145.83333333",
+    "entry_price_usd": "2.408400",
+    "current_price_usd": "2.50473600",
+    "entry_notional_usd": "350",
+    "realized_pnl_usd": "0",
+    "stop_loss_price_usd": "2.21572800",
+    "take_profit_price_usd": "2.76966000",
+    "monitor_passes": 2,
+    "updated_at_ms": 1777488462763
+  },
+  {
+    "id": "clarity-order-1777488462754-position",
+    "strategy": "clarity",
+    "signal_id": "clarity-1777488462754",
+    "token": {
+      "address": "0x0000000000000000000000000000000000000000",
+      "chain": "base",
+      "symbol": "CLAR",
+      "decimals": 18
+    },
+    "state": "open",
+    "venue": {
+      "dex": {
+        "chain": "base",
+        "router": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "quantity": "145.83333333",
+    "entry_price_usd": "2.408400",
+    "current_price_usd": "2.50473600",
+    "entry_notional_usd": "350",
+    "realized_pnl_usd": "0",
+    "stop_loss_price_usd": "2.21572800",
+    "take_profit_price_usd": "2.76966000",
+    "monitor_passes": 1,
+    "updated_at_ms": 1777488462763
+  }
+]
