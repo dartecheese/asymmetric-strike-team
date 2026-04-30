@@ -1,145 +1,81 @@
+use std::collections::BTreeMap;
 use std::fmt;
-use std::str::FromStr;
 
-use rust_decimal::{Decimal, RoundingStrategy};
+use alloy_primitives::Address;
+use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 
-use crate::error::{AstError, Result};
+use crate::CoreError;
 
-macro_rules! validated_string_newtype {
-    ($name:ident, $label:literal) => {
-        #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Hash)]
-        #[serde(transparent)]
-        pub struct $name(String);
-
-        impl $name {
-            pub fn new(value: impl Into<String>) -> Result<Self> {
-                let value = value.into().trim().to_owned();
-                if value.is_empty() {
-                    return Err(AstError::Validation(format!(
-                        "{} must not be empty",
-                        $label
-                    )));
-                }
-                Ok(Self(value))
-            }
-
-            pub fn as_str(&self) -> &str {
-                &self.0
-            }
-        }
-
-        impl fmt::Display for $name {
-            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-                f.write_str(&self.0)
-            }
-        }
-
-        impl TryFrom<String> for $name {
-            type Error = AstError;
-
-            fn try_from(value: String) -> Result<Self> {
-                Self::new(value)
-            }
-        }
-
-        impl TryFrom<&str> for $name {
-            type Error = AstError;
-
-            fn try_from(value: &str) -> Result<Self> {
-                Self::new(value)
-            }
-        }
-
-        impl From<$name> for String {
-            fn from(value: $name) -> Self {
-                value.0
-            }
-        }
-    };
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum Chain {
+    Ethereum,
+    Arbitrum,
+    Base,
+    Solana,
 }
-
-validated_string_newtype!(Chain, "chain");
-validated_string_newtype!(Address, "address");
-validated_string_newtype!(Symbol, "symbol");
-validated_string_newtype!(Router, "router");
-validated_string_newtype!(ExchangeName, "exchange");
-validated_string_newtype!(TradingPair, "pair");
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Token {
     pub address: Address,
     pub chain: Chain,
-    pub symbol: Symbol,
+    pub symbol: String,
     pub decimals: u8,
 }
 
-impl Token {
-    pub fn new(
-        address: impl Into<String>,
-        chain: impl Into<String>,
-        symbol: impl Into<String>,
-        decimals: u8,
-    ) -> Result<Self> {
-        if decimals > 38 {
-            return Err(AstError::Validation(
-                "token decimals must be between 0 and 38".into(),
-            ));
-        }
-
-        Ok(Self {
-            address: Address::new(address)?,
-            chain: Chain::new(chain)?,
-            symbol: Symbol::new(symbol)?,
-            decimals,
-        })
-    }
-}
-
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
 #[serde(transparent)]
 pub struct Usd(pub Decimal);
 
 impl Usd {
-    pub fn new(value: Decimal) -> Result<Self> {
-        if value.is_sign_negative() || value.is_zero() {
-            return Err(AstError::Validation("USD amount must be positive".into()));
+    pub fn new(value: Decimal) -> Result<Self, CoreError> {
+        if value.is_sign_negative() {
+            return Err(CoreError::Validation(
+                "usd amounts cannot be negative".to_owned(),
+            ));
         }
-        Ok(Self(value.round_dp_with_strategy(
-            2,
-            RoundingStrategy::MidpointAwayFromZero,
-        )))
+
+        Ok(Self(value))
     }
 
-    pub const fn zero() -> Self {
+    pub fn zero() -> Self {
         Self(Decimal::ZERO)
     }
+}
 
-    pub fn value(self) -> Decimal {
-        self.0
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
+#[serde(transparent)]
+pub struct SignedUsd(pub Decimal);
+
+impl SignedUsd {
+    pub fn new(value: Decimal) -> Self {
+        Self(value)
     }
 
-    pub const fn raw(&self) -> Decimal {
-        self.0
+    pub fn zero() -> Self {
+        Self(Decimal::ZERO)
     }
 }
 
-impl fmt::Display for Usd {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "${}", self.0)
-    }
-}
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
+#[serde(transparent)]
+pub struct TokenAmount(pub Decimal);
 
-impl FromStr for Usd {
-    type Err = AstError;
+impl TokenAmount {
+    pub fn new(value: Decimal) -> Result<Self, CoreError> {
+        if value <= Decimal::ZERO {
+            return Err(CoreError::Validation(
+                "token amount must be greater than zero".to_owned(),
+            ));
+        }
 
-    fn from_str(s: &str) -> Result<Self> {
-        let value = Decimal::from_str(s)?;
-        Self::new(value)
+        Ok(Self(value))
     }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
 pub enum PositionState {
     Pending,
     Open,
@@ -150,6 +86,7 @@ pub enum PositionState {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
 pub enum RiskLevel {
     Low,
     Medium,
@@ -159,78 +96,120 @@ pub enum RiskLevel {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-pub enum Venue {
-    Dex {
-        chain: Chain,
-        router: Router,
-    },
-    Cex {
-        exchange: ExchangeName,
-        pair: TradingPair,
-    },
+#[serde(rename_all = "snake_case")]
+pub enum RiskDecision {
+    Accept,
+    Reject,
+    Review,
 }
 
-impl Venue {
-    pub fn dex(chain: impl Into<String>, router: impl Into<String>) -> Result<Self> {
-        Ok(Self::Dex {
-            chain: Chain::new(chain)?,
-            router: Router::new(router)?,
-        })
-    }
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum Venue {
+    Dex { chain: Chain, router: Address },
+    Cex { exchange: String, pair: String },
+}
 
-    pub fn cex(exchange: impl Into<String>, pair: impl Into<String>) -> Result<Self> {
-        let pair_str: String = pair.into();
-        // Validate "BASE/QUOTE" format and reject trivial pairs like USDT/USDT
-        let parts: Vec<&str> = pair_str.splitn(2, '/').collect();
-        if parts.len() == 2 {
-            let base = parts[0].trim().to_uppercase();
-            let quote = parts[1].trim().to_uppercase();
-            if base == quote {
-                return Err(AstError::Validation(format!(
-                    "invalid CEX pair '{pair_str}': base and quote assets cannot be the same"
-                )));
-            }
-        }
-        Ok(Self::Cex {
-            exchange: ExchangeName::new(exchange)?,
-            pair: TradingPair::new(pair_str)?,
-        })
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct StrategyProfile {
+    pub name: String,
+    pub description: String,
+    pub max_position_size_usd: Usd,
+    pub max_slippage_bps: u16,
+    pub risk_tolerance: RiskLevel,
+    pub scan_interval_seconds: u64,
+    pub paper_trading: bool,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct Signal {
+    pub id: String,
+    pub token: Token,
+    pub venue: Venue,
+    pub price_usd: Usd,
+    pub volume_24h_usd: Usd,
+    pub liquidity_usd: Usd,
+    pub target_notional_usd: Usd,
+    pub timestamp_ms: u64,
+    pub metadata: BTreeMap<String, String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct RiskFactor {
+    pub name: String,
+    pub score: u8,
+    pub details: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct RiskAssessment {
+    pub level: RiskLevel,
+    pub decision: RiskDecision,
+    pub rationale: String,
+    pub approved_notional_usd: Usd,
+    pub factors: Vec<RiskFactor>,
+}
+
+impl RiskAssessment {
+    pub fn acceptable(&self) -> bool {
+        matches!(self.decision, RiskDecision::Accept)
     }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct ExecutionOrder {
-    token: Token,
-    venue: Venue,
-    amount_usd: Usd,
+    pub id: String,
+    pub strategy: String,
+    pub signal_id: String,
+    pub token: Token,
+    pub venue: Venue,
+    pub amount: TokenAmount,
+    pub notional_usd: Usd,
+    pub limit_price_usd: Usd,
+    pub observed_liquidity_usd: Usd,
+    pub observed_volume_24h_usd: Usd,
+    pub max_slippage_bps: u16,
+    pub metadata: BTreeMap<String, String>,
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct ExecutionOrderBuilder {
+    id: Option<String>,
+    strategy: Option<String>,
+    signal_id: Option<String>,
+    token: Option<Token>,
+    venue: Option<Venue>,
+    amount: Option<TokenAmount>,
+    notional_usd: Option<Usd>,
+    limit_price_usd: Option<Usd>,
+    observed_liquidity_usd: Option<Usd>,
+    observed_volume_24h_usd: Option<Usd>,
+    max_slippage_bps: Option<u16>,
+    metadata: Option<BTreeMap<String, String>>,
 }
 
 impl ExecutionOrder {
     pub fn builder() -> ExecutionOrderBuilder {
         ExecutionOrderBuilder::default()
     }
-
-    pub fn token(&self) -> &Token {
-        &self.token
-    }
-
-    pub fn venue(&self) -> &Venue {
-        &self.venue
-    }
-
-    pub fn amount_usd(&self) -> Usd {
-        self.amount_usd
-    }
-}
-
-#[derive(Debug, Default, Clone)]
-pub struct ExecutionOrderBuilder {
-    token: Option<Token>,
-    venue: Option<Venue>,
-    amount_usd: Option<Usd>,
 }
 
 impl ExecutionOrderBuilder {
+    pub fn id(mut self, id: impl Into<String>) -> Self {
+        self.id = Some(id.into());
+        self
+    }
+
+    pub fn strategy(mut self, strategy: impl Into<String>) -> Self {
+        self.strategy = Some(strategy.into());
+        self
+    }
+
+    pub fn signal_id(mut self, signal_id: impl Into<String>) -> Self {
+        self.signal_id = Some(signal_id.into());
+        self
+    }
+
     pub fn token(mut self, token: Token) -> Self {
         self.token = Some(token);
         self
@@ -241,177 +220,234 @@ impl ExecutionOrderBuilder {
         self
     }
 
-    pub fn amount_usd(mut self, amount_usd: Usd) -> Self {
-        self.amount_usd = Some(amount_usd);
+    pub fn amount(mut self, amount: TokenAmount) -> Self {
+        self.amount = Some(amount);
         self
     }
 
-    pub fn build(self) -> Result<ExecutionOrder> {
+    pub fn notional_usd(mut self, notional_usd: Usd) -> Self {
+        self.notional_usd = Some(notional_usd);
+        self
+    }
+
+    pub fn limit_price_usd(mut self, limit_price_usd: Usd) -> Self {
+        self.limit_price_usd = Some(limit_price_usd);
+        self
+    }
+
+    pub fn observed_liquidity_usd(mut self, observed_liquidity_usd: Usd) -> Self {
+        self.observed_liquidity_usd = Some(observed_liquidity_usd);
+        self
+    }
+
+    pub fn observed_volume_24h_usd(mut self, observed_volume_24h_usd: Usd) -> Self {
+        self.observed_volume_24h_usd = Some(observed_volume_24h_usd);
+        self
+    }
+
+    pub fn max_slippage_bps(mut self, max_slippage_bps: u16) -> Self {
+        self.max_slippage_bps = Some(max_slippage_bps);
+        self
+    }
+
+    pub fn metadata(mut self, metadata: BTreeMap<String, String>) -> Self {
+        self.metadata = Some(metadata);
+        self
+    }
+
+    pub fn build(self) -> Result<ExecutionOrder, CoreError> {
         Ok(ExecutionOrder {
+            id: self
+                .id
+                .ok_or_else(|| CoreError::Validation("id is required".to_owned()))?,
+            strategy: self
+                .strategy
+                .ok_or_else(|| CoreError::Validation("strategy is required".to_owned()))?,
+            signal_id: self
+                .signal_id
+                .ok_or_else(|| CoreError::Validation("signal_id is required".to_owned()))?,
             token: self
                 .token
-                .ok_or_else(|| AstError::Validation("execution order token is required".into()))?,
+                .ok_or_else(|| CoreError::Validation("token is required".to_owned()))?,
             venue: self
                 .venue
-                .ok_or_else(|| AstError::Validation("execution order venue is required".into()))?,
-            amount_usd: self.amount_usd.ok_or_else(|| {
-                AstError::Validation("execution order amount_usd is required".into())
+                .ok_or_else(|| CoreError::Validation("venue is required".to_owned()))?,
+            amount: self
+                .amount
+                .ok_or_else(|| CoreError::Validation("amount is required".to_owned()))?,
+            notional_usd: self
+                .notional_usd
+                .ok_or_else(|| CoreError::Validation("notional_usd is required".to_owned()))?,
+            limit_price_usd: self.limit_price_usd.ok_or_else(|| {
+                CoreError::Validation("limit_price_usd is required".to_owned())
             })?,
+            observed_liquidity_usd: self.observed_liquidity_usd.ok_or_else(|| {
+                CoreError::Validation("observed_liquidity_usd is required".to_owned())
+            })?,
+            observed_volume_24h_usd: self.observed_volume_24h_usd.ok_or_else(|| {
+                CoreError::Validation("observed_volume_24h_usd is required".to_owned())
+            })?,
+            max_slippage_bps: self.max_slippage_bps.ok_or_else(|| {
+                CoreError::Validation("max_slippage_bps is required".to_owned())
+            })?,
+            metadata: self.metadata.unwrap_or_default(),
         })
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum ExecutionStatus {
+    Filled,
+    Rejected,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct ExecutionResult {
+    pub order_id: String,
+    pub status: ExecutionStatus,
+    pub fill_price_usd: Usd,
+    pub filled_amount: TokenAmount,
+    pub slippage_bps: u16,
+    pub fill_ratio_bps: u16,
+    pub notional_usd: Usd,
+    pub requested_notional_usd: Usd,
+    pub fee_usd: Usd,
+    pub venue: Venue,
+    pub timestamp_ms: u64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Position {
+    pub id: String,
+    pub strategy: String,
+    pub signal_id: String,
     pub token: Token,
     pub state: PositionState,
-    pub amount_usd: Usd,
+    pub venue: Venue,
+    pub quantity: TokenAmount,
+    pub entry_price_usd: Usd,
+    pub current_price_usd: Usd,
+    pub entry_notional_usd: Usd,
+    pub realized_pnl_usd: SignedUsd,
+    pub unrealized_pnl_usd: SignedUsd,
+    pub fees_paid_usd: Usd,
+    pub stop_loss_price_usd: Usd,
+    pub take_profit_price_usd: Usd,
+    pub monitor_passes: u64,
+    pub updated_at_ms: u64,
+    pub metadata: BTreeMap<String, String>,
 }
 
-impl Position {
-    pub fn transition(self, next: PositionState) -> Result<Self> {
-        use PositionState::*;
-        let allowed = matches!(
-            (&self.state, &next),
-            (Pending, Open)
-                | (Open, StopLossHit)
-                | (Open, FreeRide)
-                | (Open, Closing)
-                | (FreeRide, Closing)
-                | (StopLossHit, Closing)
-                | (Closing, Closed)
-        );
+impl fmt::Display for Chain {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let value = match self {
+            Self::Ethereum => "ethereum",
+            Self::Arbitrum => "arbitrum",
+            Self::Base => "base",
+            Self::Solana => "solana",
+        };
 
-        if !allowed {
-            return Err(AstError::InvalidTransition {
-                from: self.state.as_str(),
-                to: next.as_str(),
-            });
-        }
-
-        Ok(Self {
-            state: next,
-            ..self
-        })
+        f.write_str(value)
     }
 }
 
-impl PositionState {
-    pub const fn as_str(&self) -> &'static str {
-        match self {
-            Self::Pending => "Pending",
-            Self::Open => "Open",
-            Self::StopLossHit => "StopLossHit",
-            Self::FreeRide => "FreeRide",
-            Self::Closing => "Closing",
-            Self::Closed => "Closed",
-        }
-    }
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Signal {
-    pub token: Token,
-    pub confidence_bps: u16,
-    pub source: SignalSource,
-    pub reasoning: String,
-    pub metrics: SignalMetrics,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-pub enum SignalSource {
-    DexProfile,
-    DexBoost,
-    DexProfileAndBoost,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct SignalMetrics {
-    pub liquidity_usd: Option<Decimal>,
-    pub volume_24h_usd: Option<Decimal>,
-    pub velocity_score: u16,
-    pub price_change_h1_bps: i32,
-    pub price_change_h6_bps: i32,
-    pub freshness_bonus_bps: u16,
-    pub boost_score_bps: u16,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct RiskAssessment {
-    pub token: Token,
-    pub risk_level: RiskLevel,
-    pub max_allocation_usd: Usd,
-    pub provider: String,
-    pub factors: Vec<RiskFactorScore>,
-    pub warnings: Vec<String>,
-}
-
-impl RiskAssessment {
-    pub fn acceptable(&self) -> bool {
-        !matches!(self.risk_level, RiskLevel::Critical | RiskLevel::Rejected)
-    }
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-pub enum RiskFactor {
-    Honeypot,
-    BuyTax,
-    SellTax,
-    LiquidityLock,
-    ContractVerification,
-    UnknownToken,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct RiskFactorScore {
-    pub factor: RiskFactor,
-    pub risk_level: RiskLevel,
-    pub score_bps: u16,
-    pub summary: String,
-}
+pub type TradingSignal = Signal;
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use std::collections::BTreeMap;
 
-    fn sample_token() -> Token {
-        Token::new("0xabc", "solana", "AST", 9).expect("token should be valid in test")
-    }
+    use alloy_primitives::Address;
+    use rust_decimal::Decimal;
 
-    #[test]
-    fn usd_requires_positive_values() {
-        assert!(Usd::new(Decimal::ZERO).is_err());
-        assert!(Usd::new(Decimal::new(-1, 0)).is_err());
-        assert_eq!(
-            Usd::new(Decimal::new(12345, 3))
-                .expect("usd should round and stay valid")
-                .value(),
-            Decimal::new(1235, 2)
-        );
-    }
+    use super::{
+        Chain, ExecutionOrder, ExecutionStatus, RiskDecision, RiskLevel, Signal, Token,
+        TokenAmount, Usd, Venue,
+    };
 
     #[test]
     fn execution_order_builder_requires_all_fields() {
-        let error = ExecutionOrder::builder()
-            .token(sample_token())
-            .build()
-            .expect_err("builder must reject incomplete order");
-
-        assert!(matches!(error, AstError::Validation(_)));
+        let result = ExecutionOrder::builder().build();
+        assert!(result.is_err());
     }
 
     #[test]
-    fn position_transition_rejects_invalid_state_change() {
-        let position = Position {
-            token: sample_token(),
-            state: PositionState::Pending,
-            amount_usd: Usd::new(Decimal::new(100, 0)).expect("usd should be valid in test"),
+    fn token_amount_must_be_positive() {
+        let result = TokenAmount::new(Decimal::ZERO);
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn execution_order_builder_accepts_valid_input() {
+        let token = Token {
+            address: Address::ZERO,
+            chain: Chain::Base,
+            symbol: "AST".to_owned(),
+            decimals: 18,
+        };
+        let order = ExecutionOrder::builder()
+            .id("order-1")
+            .strategy("swift")
+            .signal_id("signal-1")
+            .token(token.clone())
+            .venue(Venue::Dex {
+                chain: Chain::Base,
+                router: Address::ZERO,
+            })
+            .amount(TokenAmount::new(Decimal::new(10, 0)).expect("amount should be valid"))
+            .notional_usd(Usd::new(Decimal::new(100, 0)).expect("usd should be valid"))
+            .limit_price_usd(Usd::new(Decimal::new(100, 0)).expect("usd should be valid"))
+            .observed_liquidity_usd(Usd::new(Decimal::new(1000, 0)).expect("usd should be valid"))
+            .observed_volume_24h_usd(Usd::new(Decimal::new(2000, 0)).expect("usd should be valid"))
+            .max_slippage_bps(75)
+            .build()
+            .expect("order should build");
+
+        assert_eq!(order.token, token);
+    }
+
+    #[test]
+    fn risk_decision_acceptability_is_explicit() {
+        let assessment = super::RiskAssessment {
+            level: RiskLevel::Low,
+            decision: RiskDecision::Accept,
+            rationale: "ok".to_owned(),
+            approved_notional_usd: Usd::new(Decimal::ONE).expect("valid usd"),
+            factors: Vec::new(),
         };
 
-        let error = position
-            .transition(PositionState::Closed)
-            .expect_err("pending cannot transition directly to closed");
+        assert!(assessment.acceptable());
+    }
 
-        assert!(matches!(error, AstError::InvalidTransition { .. }));
+    #[test]
+    fn signal_serializes() {
+        let signal = Signal {
+            id: "signal".to_owned(),
+            token: Token {
+                address: Address::ZERO,
+                chain: Chain::Base,
+                symbol: "AST".to_owned(),
+                decimals: 18,
+            },
+            venue: Venue::Dex {
+                chain: Chain::Base,
+                router: Address::ZERO,
+            },
+            price_usd: Usd::new(Decimal::ONE).expect("valid usd"),
+            volume_24h_usd: Usd::new(Decimal::new(1000, 0)).expect("valid usd"),
+            liquidity_usd: Usd::new(Decimal::new(2000, 0)).expect("valid usd"),
+            target_notional_usd: Usd::new(Decimal::new(100, 0)).expect("valid usd"),
+            timestamp_ms: 1,
+            metadata: BTreeMap::new(),
+        };
+
+        let json = serde_json::to_string(&signal).expect("signal should serialize");
+        assert!(json.contains("\"signal\""));
+        let status = ExecutionStatus::Filled;
+        assert_eq!(
+            serde_json::to_string(&status).expect("status should serialize"),
+            "\"filled\""
+        );
     }
 }

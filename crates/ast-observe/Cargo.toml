@@ -1,10 +1,20 @@
 [package]
 name = "ast-observe"
-version.workspace = true
-edition.workspace = true
-publish = false
+version = "0.1.0"
+edition = "2021"
 
 [dependencies]
-ast-core = { path = "../ast-core" }
+alloy-primitives.workspace = true
+anyhow.workspace = true
+async-trait.workspace = true
+axum.workspace = true
+futures-util.workspace = true
+rust_decimal.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+tokio.workspace = true
 tracing.workspace = true
 tracing-subscriber.workspace = true
+
+ast-core = { path = "../ast-core" }

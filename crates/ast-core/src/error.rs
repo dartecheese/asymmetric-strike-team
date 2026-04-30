@@ -1,38 +1,11 @@
-use rust_decimal::Error as DecimalError;
 use thiserror::Error;
 
 #[derive(Debug, Error)]
-pub enum AstError {
+pub enum CoreError {
     #[error("configuration error: {0}")]
-    Config(String),
-    #[error("execution error: {0}")]
-    Execution(String),
-    #[error("external service {service} failed: {message}")]
-    ExternalService {
-        service: &'static str,
-        message: String,
-    },
-    #[error("invalid transition from {from} to {to}")]
-    InvalidTransition { from: &'static str, to: &'static str },
-    #[error("io error: {0}")]
-    Io(#[from] std::io::Error),
-    #[error("persistence corruption: {0}")]
-    PersistenceCorruption(String),
-    #[error("serialization error: {0}")]
-    Serialization(#[from] serde_json::Error),
-    #[error("safety violation: {0}")]
-    SafetyViolation(String),
-    #[error("slippage exceeded: observed {observed_bps} bps > max {max_bps} bps")]
-    SlippageExceeded { observed_bps: u32, max_bps: u32 },
-    #[error("timeout while waiting for {service} after {duration_ms}ms")]
-    Timeout {
-        service: &'static str,
-        duration_ms: u64,
-    },
+    Config(#[from] config::ConfigError),
+    #[error("missing required environment variable: {0}")]
+    MissingEnvVar(&'static str),
     #[error("validation error: {0}")]
     Validation(String),
-    #[error("money parse error: {0}")]
-    MoneyParse(#[from] DecimalError),
 }
-
-pub type Result<T> = std::result::Result<T, AstError>;

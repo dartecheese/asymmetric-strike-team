@@ -1,11 +1,11 @@
-pub mod config;
-pub mod error;
-pub mod types;
+mod config;
+mod error;
+mod types;
 
-pub use config::{AppConfig, CliOverrides, SecretConfig, StartupConfig, StrategyProfile};
-pub use error::{AstError, Result};
+pub use config::{AppConfig, CliOverrides, LlmConfig, ObserveConfig, PaperTradingConfig, RuntimeConfig};
+pub use error::CoreError;
 pub use types::{
-    Address, Chain, ExchangeName, ExecutionOrder, ExecutionOrderBuilder, Position, PositionState,
-    RiskAssessment, RiskFactor, RiskFactorScore, RiskLevel, Router, Signal, SignalMetrics,
-    SignalSource, Symbol, Token, TradingPair, Usd, Venue,
+    Chain, ExecutionOrder, ExecutionOrderBuilder, ExecutionResult, ExecutionStatus, Position,
+    PositionState, RiskAssessment, RiskDecision, RiskFactor, RiskLevel, Signal, SignedUsd,
+    StrategyProfile, Token, TokenAmount, TradingSignal, Usd, Venue,
 };

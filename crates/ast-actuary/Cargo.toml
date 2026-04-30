@@ -1,15 +1,17 @@
 [package]
 name = "ast-actuary"
-version.workspace = true
-edition.workspace = true
-publish = false
+version = "0.1.0"
+edition = "2021"
 
 [dependencies]
+alloy-primitives.workspace = true
 async-trait.workspace = true
-ast-core = { path = "../ast-core" }
 reqwest.workspace = true
 rust_decimal.workspace = true
 serde.workspace = true
 serde_json.workspace = true
+thiserror.workspace = true
 tokio.workspace = true
 tracing.workspace = true
+
+ast-core = { path = "../ast-core" }

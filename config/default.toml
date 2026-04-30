@@ -1,8 +1,79 @@
-scan_interval_ms = 5000
-paper_mode = true
+[runtime]
+position_monitor_interval_seconds = 15
+shutdown_grace_period_ms = 2000
+recent_event_capacity = 5000
+state_dir = "data"
 
-[[strategy_profiles]]
-name = "default"
+[observe]
+log_filter = "info"
+
+[llm]
+enabled = false
+base_url = "http://127.0.0.1:11434"
+live_model = "qwen2.5:3b"
+critic_model = "qwen2.5:7b"
+enabled_strategies = ["bridge"]
+request_timeout_ms = 10000
+
+[strategies.thrive]
+description = "Aggressive high-growth entries"
+max_position_size_usd = 500
+max_slippage_bps = 250
+risk_tolerance = "high"
+scan_interval_seconds = 30
+
+[strategies.swift]
+description = "Fast entry on new pairs"
+max_position_size_usd = 200
+max_slippage_bps = 200
+risk_tolerance = "medium"
+scan_interval_seconds = 15
+
+[strategies.echo]
+description = "Mirrors smart wallet moves"
+max_position_size_usd = 300
+max_slippage_bps = 150
+risk_tolerance = "medium"
+scan_interval_seconds = 60
+
+[strategies.bridge]
+description = "Cross-venue arbitrage"
+max_position_size_usd = 400
+max_slippage_bps = 50
+risk_tolerance = "low"
+scan_interval_seconds = 10
+
+[strategies.flow]
+description = "Liquidity event plays"
+max_position_size_usd = 250
+max_slippage_bps = 200
+risk_tolerance = "medium"
+scan_interval_seconds = 30
+
+[strategies.clarity]
+description = "Oracle manipulation detection"
+max_position_size_usd = 350
+max_slippage_bps = 100
+risk_tolerance = "low"
+scan_interval_seconds = 60
+
+[strategies.nurture]
+description = "Yield cultivation"
+max_position_size_usd = 150
+max_slippage_bps = 100
+risk_tolerance = "low"
+scan_interval_seconds = 120
+
+[strategies.insight]
+description = "Contract-analysis-based opportunities"
+max_position_size_usd = 200
+max_slippage_bps = 250
+risk_tolerance = "high"
+scan_interval_seconds = 45
+
+[paper_trading]
 enabled = true
-max_positions = 5
-max_slippage_bps = 300
+initial_balance_usd = 10000
+default_slippage_model = "simulated"
+use_live_market_data = true
+use_live_risk_checks = true

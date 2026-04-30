@@ -1,10 +1,13 @@
 [package]
 name = "ast-safety"
-version.workspace = true
-edition.workspace = true
-publish = false
+version = "0.1.0"
+edition = "2021"
 
 [dependencies]
-ast-core = { path = "../ast-core" }
+alloy-primitives.workspace = true
+async-trait.workspace = true
 rust_decimal.workspace = true
+thiserror.workspace = true
 tokio.workspace = true
+
+ast-core = { path = "../ast-core" }
