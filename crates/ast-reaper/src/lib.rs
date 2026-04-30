@@ -10,7 +10,8 @@ use thiserror::Error;
 use tokio::sync::Mutex;
 
 use ast_core::{
-    ExecutionOrder, ExecutionResult, Position, PositionState, Signal, SignedUsd, Usd,
+    cache_json, cached_json, prepare_request, record_failure, record_success, ExecutionOrder,
+    ExecutionResult, Position, PositionState, ProviderFailureKind, Signal, SignedUsd, Usd,
 };
 
 #[derive(Debug, Error)]
@@ -119,7 +120,9 @@ impl FileReaper {
     ) -> Result<Option<MarketMark>, ReaperError> {
         let chain = position.token.chain.to_string();
         let url = format!("https://api.dexscreener.com/latest/dex/pairs/{chain}/{pair_address}");
-        let payload = self.get_json_with_retries(&url).await?;
+        let payload = self
+            .get_json_with_retries("dexscreener", &url, std::time::Duration::from_secs(10), std::time::Duration::from_secs(60))
+            .await?;
         let payload = serde_json::from_value::<DexPairResponse>(payload)
             .map_err(|error| ReaperError::MarketData(error.to_string()))?;
         let pair = payload.pair.or_else(|| payload.pairs.into_iter().next());
@@ -158,7 +161,9 @@ impl FileReaper {
             ast_core::Chain::Solana => return Ok(None),
         };
         let url = format!("https://api.geckoterminal.com/api/v2/networks/{network}/pools/{pair_address}");
-        let payload = self.get_json_with_retries(&url).await?;
+        let payload = self
+            .get_json_with_retries("geckoterminal", &url, std::time::Duration::from_secs(10), std::time::Duration::from_secs(60))
+            .await?;
         let Some(attributes) = payload
             .get("data")
             .and_then(|value| value.get("attributes"))
@@ -196,25 +201,63 @@ impl FileReaper {
         }))
     }
 
-    async fn get_json_with_retries(&self, url: &str) -> Result<Value, ReaperError> {
+    async fn get_json_with_retries(
+        &self,
+        provider: &'static str,
+        url: &str,
+        fresh_ttl: std::time::Duration,
+        stale_ttl: std::time::Duration,
+    ) -> Result<Value, ReaperError> {
+        if let Some(cached) = cached_json(url, fresh_ttl) {
+            return Ok(cached);
+        }
+
+        let stale_cache = cached_json(url, stale_ttl);
         let mut last_error = None;
         for delay_ms in [0u64, 250, 750] {
-            if delay_ms > 0 {
-                tokio::time::sleep(std::time::Duration::from_millis(delay_ms)).await;
+            match prepare_request(provider, std::time::Duration::from_millis(400)) {
+                Ok(wait_for) => {
+                    let total_wait = wait_for + std::time::Duration::from_millis(delay_ms);
+                    if total_wait > std::time::Duration::ZERO {
+                        tokio::time::sleep(total_wait).await;
+                    }
+                }
+                Err(_) => {
+                    if let Some(cached) = stale_cache.clone() {
+                        return Ok(cached);
+                    }
+                    last_error = Some("provider cooldown".to_owned());
+                    continue;
+                }
             }
             match self.client.get(url).send().await {
                 Ok(response) => {
                     let status = response.status();
                     if status.is_success() {
-                        return response
+                        let payload = response
                             .json::<Value>()
                             .await
-                            .map_err(|error| ReaperError::MarketData(error.to_string()));
+                            .map_err(|error| ReaperError::MarketData(error.to_string()))?;
+                        cache_json(url, &payload);
+                        record_success(provider);
+                        return Ok(payload);
+                    }
+                    if status.as_u16() == 429 {
+                        record_failure(provider, ProviderFailureKind::RateLimited);
+                    } else {
+                        record_failure(provider, ProviderFailureKind::Other);
                     }
                     last_error = Some(format!("status {status}"));
                 }
-                Err(error) => last_error = Some(error.to_string()),
+                Err(error) => {
+                    record_failure(provider, ProviderFailureKind::Other);
+                    last_error = Some(error.to_string());
+                }
             }
+        }
+
+        if let Some(cached) = stale_cache {
+            return Ok(cached);
         }
 
         Err(ReaperError::MarketData(format!(

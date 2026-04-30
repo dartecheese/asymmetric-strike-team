@@ -302,6 +302,134 @@ body {
   min-height: 0;
 }
 
+.troubleshooting-page,
+.page-layout {
+  display: grid;
+  gap: 10px;
+  padding: 10px;
+}
+
+.page-grid.two-up {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.page-hero {
+  display: grid;
+  gap: 10px;
+}
+
+.page-title {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.page-subtitle {
+  color: #8b949e;
+  font-size: 13px;
+}
+
+.page-hero-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.hero-stat-card {
+  background: #0f141a;
+  border: 1px solid #27303a;
+  border-radius: 8px;
+  padding: 12px;
+  display: grid;
+  gap: 6px;
+}
+
+.hero-stat-card span {
+  color: #8b949e;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.hero-stat-card strong {
+  font-size: 18px;
+}
+
+.scorecard-list,
+.checklist-list {
+  display: grid;
+  gap: 10px;
+}
+
+.scorecard-item,
+.checklist-item {
+  background: #0f141a;
+  border: 1px solid #27303a;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.scorecard-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.scorecard-metrics {
+  display: grid;
+  gap: 4px;
+  text-align: right;
+  font-size: 12px;
+  color: #8b949e;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.data-table th,
+.data-table td {
+  padding: 10px 8px;
+  border-bottom: 1px solid #27303a;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.data-table th {
+  color: #8b949e;
+  font-weight: 600;
+}
+
+.tutorial-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.tutorial-card {
+  display: grid;
+  gap: 10px;
+}
+
+.tutorial-title {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.tutorial-list {
+  padding-left: 18px;
+  display: grid;
+  gap: 8px;
+  color: #c9d1d9;
+}
+
 .troubleshooting-page {
   display: grid;
   gap: 10px;
@@ -816,8 +944,19 @@ body {
   .control-deck,
   .strategy-menu,
   .grid,
-  .diag-grid {
+  .diag-grid,
+  .page-grid.two-up,
+  .tutorial-grid,
+  .page-hero-grid {
     grid-template-columns: 1fr;
+  }
+
+  .scorecard-item {
+    display: grid;
+  }
+
+  .scorecard-metrics {
+    text-align: left;
   }
 }
 

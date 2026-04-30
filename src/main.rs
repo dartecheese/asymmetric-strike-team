@@ -717,7 +717,7 @@ async fn emit_report_ins(
     event_bus: &EventBus,
 ) {
     let source_summary = if paper_trading.use_live_market_data {
-        "live DexScreener → GeckoTerminal → cached-live → paper fallback chain, filtered to Uniswap / Aerodrome / PancakeSwap / SushiSwap / Camelot"
+        "live DexScreener → GeckoTerminal → shared cache/cooldown hub → paper fallback chain, filtered to Uniswap / Aerodrome / PancakeSwap / SushiSwap / Camelot"
     } else {
         "mock paper market feed"
     };
@@ -767,9 +767,9 @@ fn build_capabilities(config: &AppConfig) -> Vec<StrategyCapabilityView> {
                         "fallback-only".to_owned()
                     },
                     summary: if config.llm.enabled && config.llm.enabled_strategies.iter().any(|name| name == &strategy.name) {
-                        format!("DexScreener + GeckoTerminal live feeds across Uniswap, Aerodrome, PancakeSwap, SushiSwap, and Camelot with local Ollama intent generation via {}", config.llm.live_model)
+                        format!("DexScreener + GeckoTerminal live feeds across Uniswap, Aerodrome, PancakeSwap, SushiSwap, and Camelot with shared provider caching/cooldowns, strategy-aware DEX scoring, and local Ollama intent generation via {}", config.llm.live_model)
                     } else if config.paper_trading.use_live_market_data {
-                        "DexScreener primary, GeckoTerminal secondary, cached-live fallback, then paper mock; notable DEX coverage: Uniswap, Aerodrome, PancakeSwap, SushiSwap, Camelot".to_owned()
+                        "DexScreener primary, GeckoTerminal secondary, shared TTL cache + cooldowns, cached-live fallback, then paper mock; notable DEX coverage: Uniswap, Aerodrome, PancakeSwap, SushiSwap, Camelot; strategy-aware venue ranking enabled".to_owned()
                     } else {
                         "Paper mock market feed only".to_owned()
                     },

@@ -1,38 +1,66 @@
 # Asymmetric Strike Team
 
-Asymmetric Strike Team (AST) is a local-first crypto trading lab built for **paper trading now** and structured so real execution can be added later without pretending it already exists.
+Asymmetric Strike Team (AST) is a **local-first crypto trading lab** designed for **paper trading now** with enough structure, observability, and operator tooling to become a real execution system later.
 
-Today, AST is honest about what it is:
-- **live market/risk discovery** where possible
+It is intentionally honest about its current posture:
+- **live market discovery** when providers are healthy
 - **paper-only execution**
-- **file-backed portfolio, ledger, and learning logs**
-- **operator dashboard** for team control, portfolio state, logs, and troubleshooting
+- **file-backed state, ledger, and learning logs**
+- **operator dashboard** for control, portfolio inspection, troubleshooting, and onboarding
+
+---
 
 ## Current runtime
 
-AST currently runs locally:
+AST runs locally on this machine by default:
 - **backend / API:** `http://127.0.0.1:8989`
 - **dashboard:** `http://127.0.0.1:5173`
 
-## What it does
+This is not a public hosted product yet.
 
-AST runs 8 strategy teams:
-- `thrive`
-- `swift`
-- `echo`
-- `bridge`
-- `flow`
-- `clarity`
-- `nurture`
-- `insight`
+---
+
+## What AST is for
+
+AST is built to help you:
+- test multiple crypto strategy styles in parallel
+- inspect why a trade was accepted, rejected, or marked poorly
+- collect better paper-trading logs for later tuning
+- understand whether system activity is translating into actual portfolio quality
+
+The goal is not fake “AI trader” vibes. The goal is an inspectable trading lab with honest operator UX.
+
+---
+
+## Strategy teams
+
+AST currently runs 8 strategy teams:
+- `thrive` — aggressive high-growth entries
+- `swift` — fast response to new opportunities
+- `echo` — smart-money style mirroring
+- `bridge` — cross-venue arbitrage focus
+- `flow` — liquidity and movement-based plays
+- `clarity` — cleaner, more defensive setups
+- `nurture` — slower, steadier yield-oriented setups
+- `insight` — research-heavy, contract-analysis-driven opportunities
+
+Each strategy can be started, paused, or stopped independently from the dashboard.
+
+---
+
+## Agent roles
 
 Each strategy is composed of role agents:
-- **Whisperer** — finds candidate trades from market data
-- **Actuary** — scores trade risk
-- **Safety** — applies hard guards before execution
-- **Slinger** — simulates order execution in paper mode
-- **Reaper** — tracks positions and marks portfolio state
-- **Critic** — records after-action reflection and learning output
+- **Whisperer** — discovers candidate trades from market data
+- **Actuary** — scores risk and screens contracts/taxes/liquidity
+- **Safety** — applies hard safety gates
+- **Slinger** — builds paper orders and simulates execution
+- **Reaper** — tracks positions, marks market value, and updates P&L
+- **Critic** — records after-action reflection and learning traces
+
+The dashboard includes hover help for these roles so a new operator can learn the system in place.
+
+---
 
 ## Paper mode only
 
@@ -44,56 +72,114 @@ That means:
 - no live capital movement
 - `--mode live` remains guarded until real execution infrastructure exists
 
-## Live data and risk pipeline
+Live discovery and live risk checks may still be used in paper mode when available.
 
-### Market data discovery
+---
 
-AST uses a layered feed pipeline:
+## Market data and risk pipeline
+
+### Market data
+
+AST currently uses a layered market data stack:
 1. **DexScreener** primary discovery
 2. **GeckoTerminal** secondary discovery
-3. **cached live signals** if providers are temporarily failing
-4. **paper mock fallback** when running paper mode and live discovery is exhausted
+3. **shared provider cache/cooldown layer** to reduce duplicate requests and survive temporary rate limits
+4. **cached live fallback** when a provider is cooling down or failing
+5. **paper mock fallback** when live discovery is exhausted in paper mode
 
 ### Risk checks
 
-AST uses:
+AST currently uses:
 1. **GoPlus** primary risk checks
 2. **Honeypot.is** secondary checks
-3. **heuristic fallback** in paper mode when live checks fail
+3. **heuristic fallback** in paper mode when external checks fail
 
-## Newly wired notable DEX coverage
+---
 
-AST now explicitly filters and ranks discovery around 5 notable DEX venues:
+## Notable DEX coverage
+
+AST now explicitly recognizes and prioritizes 5 notable DEX venues in live discovery:
 - **Uniswap**
 - **Aerodrome**
 - **PancakeSwap**
 - **SushiSwap**
 - **Camelot**
 
-### What “wired up” means here
+Signals now carry venue metadata such as:
+- `dex_id`
+- `dex_label`
+- `strategy_dex_fit`
 
-For live pair discovery, AST now:
-- recognizes these DEX IDs from provider responses
-- filters out non-target venues from the discovery/ranking pass
-- boosts eligible pairs from these venues in scoring
-- attaches `dex_id` and `dex_label` metadata to emitted signals
+That lets AST rank venues differently depending on strategy instead of treating every discovered pool as equally useful.
 
-This keeps the framework focused on recognizable, liquid venues instead of treating every discovered pair as equal.
+---
 
-## Dashboard capabilities
+## Dashboard pages
 
-The dashboard includes:
-- per-team **Start / Pause / Stop** controls
-- multi-select strategy viewing
-- operator mode/readiness summary
-- holdings and portfolio visibility
-- raw event logs
-- troubleshooting page with:
-  - websocket diagnostics
-  - API endpoint health
-  - recent backend/runtime errors
-  - paused/stopped team warnings
-  - one-click troubleshooting log copy
+AST’s dashboard is meant to be usable by someone who did not build the system.
+
+### 1. Dashboard
+Use this page to:
+- view active team panels
+- start / pause / stop each strategy
+- filter which teams are visible
+- inspect live logs and explanations
+- see quick-start/runtime guidance
+
+### 2. Portfolio
+Use this page to:
+- inspect total cash, equity, invested capital, and P&L
+- review holdings across all strategies in one place
+- compare strategy-level portfolio contribution
+- tell whether system activity is improving the portfolio or just generating noise
+
+### 3. Tutorial
+Use this page to:
+- onboard new operators quickly
+- understand what the main pages are for
+- learn how to interpret common rejection/error patterns
+- avoid confusing paper-execution rejections with infrastructure problems
+
+### 4. Troubleshooting
+Use this page to:
+- inspect websocket health
+- inspect API endpoint health
+- review recent backend/runtime errors
+- detect paused/stopped teams
+- copy a structured troubleshooting report with one click
+
+---
+
+## Understanding common failures
+
+Not every error means the system is broken.
+
+### Trade rejection errors
+Examples:
+- `simulated slippage ... exceeds configured max`
+- `simulated fill ratio ... too low for execution`
+
+These usually mean:
+- poor liquidity
+- overly large position sizing for the venue
+- weak discovery quality
+- a strategy that needs tighter pre-trade filters
+
+These are usually **trade quality problems**, not connectivity problems.
+
+### Provider/rate-limit issues
+Examples:
+- `429 Too Many Requests`
+- provider fetch failures or cooldowns
+
+These usually mean:
+- the system is leaning too hard on a source
+- provider orchestration needs improvement
+- cached/stale fallback is doing recovery work in the background
+
+These are usually **market data infrastructure problems**, not strategy logic problems.
+
+---
 
 ## State, ledgers, and learning logs
 
@@ -101,13 +187,22 @@ AST writes local state under `data/`, including:
 - position state
 - portfolio state
 - per-strategy ledger JSONL
-- learning/event corpora for later tuning and replay
+- learning/event corpora for later replay and tuning
+- archived paper sessions when `--fresh-paper` is used
 
-Paper resets can be done safely with archived prior state instead of destructive deletion.
+This is meant to make paper trading inspectable and training-friendly.
+
+---
 
 ## Running locally
 
 ### Backend
+
+```bash
+cargo run -- --mode paper
+```
+
+Fresh paper session with archival of prior state:
 
 ```bash
 cargo run -- --mode paper --fresh-paper
@@ -120,6 +215,8 @@ cd dashboard
 npm install
 npm run dev -- --host 127.0.0.1 --port 5173
 ```
+
+---
 
 ## Development checks
 
@@ -136,12 +233,30 @@ cd dashboard
 npm run build
 ```
 
+---
+
+## Current limitations
+
+AST is not yet a live trading bot.
+
+Missing pieces for real execution still include things like:
+- wallet signing flow
+- RPC execution path
+- swap routing/execution adapters
+- live kill-switch handling
+- real-money operational safety envelope
+
+Until those exist, AST should be treated as a high-observability paper-trading lab.
+
+---
+
 ## Project posture
 
 AST is built for:
 - realistic paper-trading iteration
 - visible operator UX
 - inspectable logs and learning traces
-- conservative safety around anything that looks like live trading
+- safe local experimentation
+- blunt honesty about what is and is not live-ready
 
-It is **not** yet a live trading bot, and the README is intentionally direct about that.
+That directness is intentional.

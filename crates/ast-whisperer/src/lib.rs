@@ -12,7 +12,10 @@ use thiserror::Error;
 use tokio::sync::Mutex;
 use tracing::warn;
 
-use ast_core::{Chain, Signal, StrategyProfile, Token, Usd, Venue};
+use ast_core::{
+    cache_json, cached_json, prepare_request, record_failure, record_success, Chain,
+    ProviderFailureKind, Signal, StrategyProfile, Token, Usd, Venue,
+};
 
 const NOTABLE_DEXES: [NotableDex; 5] = [
     NotableDex::new("uniswap", "Uniswap", &["uniswap", "uniswap_v2", "uniswap_v3"]),
@@ -130,7 +133,9 @@ impl DexScreenerWhisperer {
         for query in self.discovery_queries() {
             let encoded_query = query.replace(' ', "%20");
             let url = format!("https://api.dexscreener.com/latest/dex/search/?q={encoded_query}");
-            let payload = self.get_json_with_retries(&url).await?;
+            let payload = self
+                .get_json_with_retries("dexscreener", &url, Duration::from_secs(20), Duration::from_secs(120))
+                .await?;
             let pairs = payload.get("pairs").and_then(Value::as_array).ok_or_else(|| {
                 WhispererError::Parse("dexscreener response missing pairs array".to_owned())
             })?;
@@ -183,7 +188,9 @@ impl DexScreenerWhisperer {
         for query in self.discovery_queries() {
             let encoded_query = query.replace(' ', "%20");
             let url = format!("https://api.geckoterminal.com/api/v2/search/pools?query={encoded_query}");
-            let payload = self.get_json_with_retries(&url).await?;
+            let payload = self
+                .get_json_with_retries("geckoterminal", &url, Duration::from_secs(20), Duration::from_secs(120))
+                .await?;
             let data = payload.get("data").and_then(Value::as_array).ok_or_else(|| {
                 WhispererError::Parse("geckoterminal response missing data array".to_owned())
             })?;
@@ -234,26 +241,66 @@ impl DexScreenerWhisperer {
         ))
     }
 
-    async fn get_json_with_retries(&self, url: &str) -> Result<Value, WhispererError> {
+    async fn get_json_with_retries(
+        &self,
+        provider: &'static str,
+        url: &str,
+        fresh_ttl: Duration,
+        stale_ttl: Duration,
+    ) -> Result<Value, WhispererError> {
+        if let Some(cached) = cached_json(url, fresh_ttl) {
+            return Ok(cached);
+        }
+
+        let stale_cache = cached_json(url, stale_ttl);
         let mut last_error = None;
         for delay_ms in [0u64, 250, 750] {
-            if delay_ms > 0 {
-                tokio::time::sleep(Duration::from_millis(delay_ms)).await;
+            match prepare_request(provider, self.min_spacing) {
+                Ok(wait_for) => {
+                    let total_wait = wait_for + Duration::from_millis(delay_ms);
+                    if total_wait > Duration::ZERO {
+                        tokio::time::sleep(total_wait).await;
+                    }
+                }
+                Err(cooldown) => {
+                    if let Some(cached) = stale_cache.clone() {
+                        warn!(strategy = %self.strategy.name, provider, retry_after_ms = cooldown.retry_after.as_millis() as u64, "provider cooling down; using stale cached market data");
+                        return Ok(cached);
+                    }
+                    last_error = Some(format!("provider cooldown {}ms", cooldown.retry_after.as_millis()));
+                    continue;
+                }
             }
 
             match self.client.get(url).send().await {
                 Ok(response) => {
                     let status = response.status();
                     if status.is_success() {
-                        return response
+                        let payload = response
                             .json::<Value>()
                             .await
-                            .map_err(|error| WhispererError::Parse(error.to_string()));
+                            .map_err(|error| WhispererError::Parse(error.to_string()))?;
+                        cache_json(url, &payload);
+                        record_success(provider);
+                        return Ok(payload);
+                    }
+                    if status.as_u16() == 429 {
+                        record_failure(provider, ProviderFailureKind::RateLimited);
+                    } else {
+                        record_failure(provider, ProviderFailureKind::Other);
                     }
                     last_error = Some(format!("status {status}"));
                 }
-                Err(error) => last_error = Some(error.to_string()),
+                Err(error) => {
+                    record_failure(provider, ProviderFailureKind::Other);
+                    last_error = Some(error.to_string());
+                }
             }
+        }
+
+        if let Some(cached) = stale_cache {
+            warn!(strategy = %self.strategy.name, provider, "live fetch retries exhausted; using stale cached market data");
+            return Ok(cached);
         }
 
         Err(WhispererError::Request(format!(
@@ -355,10 +402,37 @@ impl DexScreenerWhisperer {
         };
         score += liquidity.round_dp(0).to_string().parse::<i64>().unwrap_or(0).min(2_000_000);
         score += volume.round_dp(0).to_string().parse::<i64>().unwrap_or(0).min(1_000_000) / 2;
-        if dex.is_some() {
+        if let Some(dex) = dex {
             score += 25_000;
+            score += self.strategy_dex_bonus(dex);
         }
         score
+    }
+
+    fn strategy_dex_bonus(&self, dex: NotableDex) -> i64 {
+        let ordered = match self.strategy.name.as_str() {
+            "bridge" => ["uniswap", "aerodrome", "camelot", "sushiswap", "pancakeswap"],
+            "swift" => ["aerodrome", "uniswap", "pancakeswap", "sushiswap", "camelot"],
+            "thrive" => ["aerodrome", "pancakeswap", "uniswap", "sushiswap", "camelot"],
+            "echo" => ["uniswap", "sushiswap", "aerodrome", "camelot", "pancakeswap"],
+            "flow" => ["aerodrome", "uniswap", "camelot", "pancakeswap", "sushiswap"],
+            "clarity" => ["uniswap", "camelot", "aerodrome", "sushiswap", "pancakeswap"],
+            "nurture" => ["uniswap", "camelot", "sushiswap", "aerodrome", "pancakeswap"],
+            "insight" => ["uniswap", "aerodrome", "sushiswap", "camelot", "pancakeswap"],
+            _ => ["uniswap", "aerodrome", "pancakeswap", "sushiswap", "camelot"],
+        };
+
+        ordered
+            .iter()
+            .position(|key| *key == dex.key)
+            .map(|rank| match rank {
+                0 => 18_000,
+                1 => 12_000,
+                2 => 8_000,
+                3 => 4_000,
+                _ => 2_000,
+            })
+            .unwrap_or(0)
     }
 
     fn pair_to_signal(&self, pair: DexPair) -> Result<Signal, WhispererError> {
@@ -392,6 +466,12 @@ impl DexScreenerWhisperer {
                 (
                     "dex_label",
                     notable_dex.map(|dex| dex.label.to_owned()).unwrap_or_else(|| "Unknown DEX".to_owned()),
+                ),
+                (
+                    "strategy_dex_fit",
+                    notable_dex
+                        .map(|dex| self.strategy_dex_fit_label(dex).to_owned())
+                        .unwrap_or_else(|| "unranked".to_owned()),
                 ),
             ],
         )
@@ -430,8 +510,26 @@ impl DexScreenerWhisperer {
                     "dex_label",
                     notable_dex.map(|dex| dex.label.to_owned()).unwrap_or_else(|| "Unknown DEX".to_owned()),
                 ),
+                (
+                    "strategy_dex_fit",
+                    notable_dex
+                        .map(|dex| self.strategy_dex_fit_label(dex).to_owned())
+                        .unwrap_or_else(|| "unranked".to_owned()),
+                ),
             ],
         )
+    }
+
+    fn strategy_dex_fit_label(&self, dex: NotableDex) -> &'static str {
+        let bonus = self.strategy_dex_bonus(dex);
+        match bonus {
+            18_000 => "primary",
+            12_000 => "strong",
+            8_000 => "good",
+            4_000 => "secondary",
+            2_000 => "allowed",
+            _ => "unranked",
+        }
     }
 
     fn build_signal(
@@ -826,5 +924,25 @@ mod tests {
 
         let dex = lookup_notable_dex(Some("aerodrome-slipstream")).expect("should map alias");
         assert_eq!(dex.key, "aerodrome");
+    }
+
+    #[test]
+    fn bridge_prefers_uniswap_over_pancakeswap() {
+        let strategy = StrategyProfile {
+            name: "bridge".to_owned(),
+            description: "Cross-venue arbitrage".to_owned(),
+            max_position_size_usd: Usd::new(Decimal::new(400, 0)).expect("valid usd"),
+            max_slippage_bps: 50,
+            risk_tolerance: RiskLevel::Low,
+            scan_interval_seconds: 10,
+            paper_trading: true,
+        };
+
+        let whisperer = DexScreenerWhisperer::new(strategy, true, true);
+        let uniswap = lookup_notable_dex(Some("uniswap")).expect("known dex");
+        let pancakeswap = lookup_notable_dex(Some("pancakeswap")).expect("known dex");
+
+        assert!(whisperer.strategy_dex_bonus(uniswap) > whisperer.strategy_dex_bonus(pancakeswap));
+        assert_eq!(whisperer.strategy_dex_fit_label(uniswap), "primary");
     }
 }
