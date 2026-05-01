@@ -29,8 +29,13 @@ use tracing::{error, info};
 #[command(name = "asymmetric-strike-team")]
 #[command(about = "Phase 1 paper-trading orchestration for the Asymmetric Strike Team")]
 struct Cli {
+    /// Path to config TOML. Ignored when --testnet is set.
     #[arg(long, default_value = "config/default.toml")]
     config: PathBuf,
+    /// Sugar for `--config config/testnet.toml` — selects the Base Sepolia
+    /// preset with conservative scan intervals and a $5 per-trade ceiling.
+    #[arg(long, default_value_t = false)]
+    testnet: bool,
     #[arg(long)]
     log_filter: Option<String>,
     #[arg(long, value_enum, default_value_t = LaunchMode::Paper)]
@@ -39,6 +44,16 @@ struct Cli {
     fresh_paper: bool,
     #[arg(long, default_value_t = false)]
     allow_live: bool,
+}
+
+impl Cli {
+    fn config_path(&self) -> PathBuf {
+        if self.testnet {
+            PathBuf::from("config/testnet.toml")
+        } else {
+            self.config.clone()
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, ValueEnum, PartialEq, Eq)]
@@ -74,9 +89,9 @@ async fn main() -> Result<()> {
     let mut operator = build_operator_overview(&cli);
     enforce_operator_mode(&cli, &operator)?;
     let config = AppConfig::load(
-        &cli.config,
+        &cli.config_path(),
         CliOverrides {
-            log_filter: cli.log_filter,
+            log_filter: cli.log_filter.clone(),
             paper_trading_enabled: Some(true),
         },
     )?;

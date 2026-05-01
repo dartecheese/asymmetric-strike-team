@@ -1,0 +1,94 @@
+# Base Sepolia testnet preset.
+# Loaded by `cargo run -- --testnet` (sugar for `--config config/testnet.toml`).
+# Faucet: https://sepoliafaucet.com or https://www.alchemy.com/faucets/base-sepolia
+# Explorer: https://sepolia.basescan.org
+
+[runtime]
+position_monitor_interval_seconds = 30
+shutdown_grace_period_ms = 2000
+recent_event_capacity = 5000
+state_dir = "data/testnet"
+
+[observe]
+log_filter = "info"
+
+[llm]
+enabled = false
+base_url = "http://127.0.0.1:11434"
+live_model = "qwen2.5:3b"
+critic_model = "qwen2.5:7b"
+enabled_strategies = []
+request_timeout_ms = 10000
+
+[paper_trading]
+enabled = true
+initial_balance_usd = 100
+default_slippage_model = "simulated"
+use_live_market_data = true
+use_live_risk_checks = true
+
+[live_execution]
+default_chain = "base_sepolia"
+# rpc_url and private_key load from ETH_RPC_URL / PRIVATE_KEY env vars.
+eth_price_usd = 3000
+max_trade_usd = 5
+wallet_floor_usd = 0
+swap_deadline_secs = 60
+
+# Conservative scan intervals on testnet — faucet ETH is finite, no point
+# burning quota with the same cadence as a live mainnet run.
+[strategies.thrive]
+description = "Aggressive high-growth entries"
+max_position_size_usd = 5
+max_slippage_bps = 250
+risk_tolerance = "high"
+scan_interval_seconds = 120
+
+[strategies.swift]
+description = "Fast entry on new pairs"
+max_position_size_usd = 5
+max_slippage_bps = 200
+risk_tolerance = "medium"
+scan_interval_seconds = 90
+
+[strategies.echo]
+description = "Mirrors smart wallet moves"
+max_position_size_usd = 5
+max_slippage_bps = 150
+risk_tolerance = "medium"
+scan_interval_seconds = 180
+
+[strategies.bridge]
+description = "Cross-venue arbitrage"
+max_position_size_usd = 5
+max_slippage_bps = 50
+risk_tolerance = "low"
+scan_interval_seconds = 60
+
+[strategies.flow]
+description = "Liquidity event plays"
+max_position_size_usd = 5
+max_slippage_bps = 200
+risk_tolerance = "medium"
+scan_interval_seconds = 120
+
+[strategies.clarity]
+description = "Oracle manipulation detection"
+max_position_size_usd = 5
+max_slippage_bps = 100
+risk_tolerance = "low"
+scan_interval_seconds = 180
+
+[strategies.nurture]
+description = "Yield cultivation"
+max_position_size_usd = 5
+max_slippage_bps = 100
+risk_tolerance = "low"
+scan_interval_seconds = 240
+
+[strategies.insight]
+description = "Contract-analysis-based opportunities"
+max_position_size_usd = 5
+max_slippage_bps = 250
+risk_tolerance = "high"
+scan_interval_seconds = 150
