@@ -115,6 +115,18 @@ async fn main() -> Result<()> {
     statuses.initialize(&config.strategies).await;
 
     let (shutdown_tx, _) = broadcast::channel::<()>(1);
+    let live_execution_armed = cli.mode == LaunchMode::Live && operator.live_execution_ready;
+    // Single Arc<LiveSafetyState> shared across all 8 strategies — any
+    // strategy's failure threshold trips the whole runtime. That's the
+    // point of a kill-switch: blast-radius reduction at the cost of a
+    // single sour strategy stalling everything. Declared up here so the
+    // HTTP server can also expose /safety/kill + /safety/status against it.
+    let live_safety_state = Arc::new(LiveSafetyState::new());
+    let live_safety_config = LiveSafetyConfig {
+        wallet_floor_usd: config.live_execution.wallet_floor_usd,
+        daily_loss_cap_usd: config.live_execution.daily_loss_cap_usd,
+        ..LiveSafetyConfig::default()
+    };
     let http_state = ObserveHttpState {
         event_bus: event_bus.clone(),
         strategies: config.strategies.clone(),
@@ -142,6 +154,11 @@ async fn main() -> Result<()> {
         started_at: std::time::Instant::now(),
         state_dir: PathBuf::from(&config.runtime.state_dir),
         initial_balance_usd: config.paper_trading.initial_balance_usd.0,
+        safety: if cli.mode == LaunchMode::Live && operator.live_execution_ready {
+            Some(live_safety_state.clone() as Arc<dyn ast_core::SafetyControlPort>)
+        } else {
+            None
+        },
     };
     let mut server_shutdown_rx = shutdown_tx.subscribe();
     let server_handle = tokio::spawn(async move {
@@ -151,18 +168,6 @@ async fn main() -> Result<()> {
         .await
     });
     tokio::pin!(server_handle);
-
-    let live_execution_armed = cli.mode == LaunchMode::Live && operator.live_execution_ready;
-    // Single Arc<LiveSafetyState> shared across all 8 strategies — any
-    // strategy's failure threshold trips the whole runtime. That's the
-    // point of a kill-switch: blast-radius reduction at the cost of a
-    // single sour strategy stalling everything.
-    let live_safety_state = Arc::new(LiveSafetyState::new());
-    let live_safety_config = LiveSafetyConfig {
-        wallet_floor_usd: config.live_execution.wallet_floor_usd,
-        daily_loss_cap_usd: config.live_execution.daily_loss_cap_usd,
-        ..LiveSafetyConfig::default()
-    };
 
     // Spawn the wallet balance monitor when armed. Polls every 30s and
     // updates LiveSafetyState; LiveSafety::evaluate refuses orders when

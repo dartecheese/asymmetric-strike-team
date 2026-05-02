@@ -22,7 +22,7 @@ use rust_decimal::prelude::ToPrimitive;
 use tracing::{info, warn};
 use tracing_subscriber::{EnvFilter, fmt};
 
-use ast_core::{Position, PositionState, StrategyProfile};
+use ast_core::{Position, PositionState, SafetyControlPort, StrategyProfile};
 
 #[derive(Debug, Error)]
 pub enum ObserveError {
@@ -299,6 +299,10 @@ pub struct ObserveHttpState {
     pub started_at: Instant,
     pub state_dir: PathBuf,
     pub initial_balance_usd: Decimal,
+    /// Live-mode safety control surface. None when running in paper
+    /// mode — the kill / status endpoints return 404 in that case so
+    /// the dashboard can hide the panic-button UI.
+    pub safety: Option<Arc<dyn SafetyControlPort>>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -333,6 +337,8 @@ pub async fn serve_http(
         .route("/capabilities", get(capabilities_handler))
         .route("/events", get(events_handler))
         .route("/portfolio", get(portfolio_handler))
+        .route("/safety/status", get(safety_status_handler))
+        .route("/safety/kill", post(safety_kill_handler))
         .route("/ws", get(ws_handler))
         .with_state(state);
 
@@ -466,6 +472,61 @@ async fn capabilities_handler(State(state): State<ObserveHttpState>) -> impl Int
 async fn portfolio_handler(State(state): State<ObserveHttpState>) -> impl IntoResponse {
     let portfolio = build_portfolio_view(&state).await;
     (StatusCode::OK, Json(portfolio))
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct SafetyStatusView {
+    armed: bool,
+    killed: bool,
+    consecutive_failures: u32,
+    wallet_balance_usd: Option<Decimal>,
+    cumulative_realized_pnl_usd: Decimal,
+}
+
+async fn safety_status_handler(State(state): State<ObserveHttpState>) -> impl IntoResponse {
+    let body = match &state.safety {
+        Some(safety) => SafetyStatusView {
+            armed: true,
+            killed: safety.is_killed(),
+            consecutive_failures: safety.consecutive_failures(),
+            wallet_balance_usd: safety.wallet_balance_usd(),
+            cumulative_realized_pnl_usd: safety.cumulative_realized_pnl_usd(),
+        },
+        None => SafetyStatusView {
+            armed: false,
+            killed: false,
+            consecutive_failures: 0,
+            wallet_balance_usd: None,
+            cumulative_realized_pnl_usd: Decimal::ZERO,
+        },
+    };
+    (StatusCode::OK, Json(body))
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct SafetyKillResponse {
+    tripped: bool,
+    already_killed: bool,
+}
+
+async fn safety_kill_handler(State(state): State<ObserveHttpState>) -> impl IntoResponse {
+    let Some(safety) = state.safety.as_ref() else {
+        // Paper mode — nothing to kill. 404 so the dashboard can hide
+        // the panic-button UI cleanly.
+        return (
+            StatusCode::NOT_FOUND,
+            Json(serde_json::json!({
+                "error": "live safety not armed — kill endpoint inactive in paper mode"
+            })),
+        )
+            .into_response();
+    };
+    let tripped = safety.manual_kill();
+    let response = SafetyKillResponse {
+        tripped,
+        already_killed: !tripped,
+    };
+    (StatusCode::OK, Json(response)).into_response()
 }
 
 async fn ws_handler(

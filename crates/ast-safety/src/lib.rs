@@ -5,7 +5,9 @@ use async_trait::async_trait;
 use rust_decimal::Decimal;
 use thiserror::Error;
 
-use ast_core::{RiskAssessment, RiskDecision, Signal, StrategyProfile, TradingSignal};
+use ast_core::{
+    RiskAssessment, RiskDecision, SafetyControlPort, Signal, StrategyProfile, TradingSignal,
+};
 
 #[derive(Debug, Error)]
 pub enum SafetyError {
@@ -196,6 +198,24 @@ impl LiveSafetyState {
             .lock()
             .map(|guard| *guard)
             .unwrap_or(Decimal::ZERO)
+    }
+}
+
+impl SafetyControlPort for LiveSafetyState {
+    fn is_killed(&self) -> bool {
+        LiveSafetyState::is_killed(self)
+    }
+    fn manual_kill(&self) -> bool {
+        LiveSafetyState::manual_kill(self)
+    }
+    fn consecutive_failures(&self) -> u32 {
+        LiveSafetyState::consecutive_failures(self)
+    }
+    fn wallet_balance_usd(&self) -> Option<Decimal> {
+        LiveSafetyState::wallet_balance_usd(self)
+    }
+    fn cumulative_realized_pnl_usd(&self) -> Decimal {
+        LiveSafetyState::cumulative_realized_pnl_usd(self)
     }
 }
 

@@ -8,7 +8,7 @@ pub use config::{
     AppConfig, CliOverrides, LiveExecutionConfig, LlmConfig, ObserveConfig, PaperTradingConfig,
     RuntimeConfig,
 };
-pub use close::{CloseError, CloseReceipt, LiveCloseExecutor};
+pub use close::{CloseError, CloseReceipt, LiveCloseExecutor, SafetyControlPort};
 pub use error::CoreError;
 pub use market_data::{cache_json, cached_json, prepare_request, record_failure, record_success, ProviderCooldown, ProviderFailureKind};
 pub use types::{

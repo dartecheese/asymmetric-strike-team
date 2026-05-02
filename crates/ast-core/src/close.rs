@@ -4,6 +4,24 @@ use thiserror::Error;
 
 use crate::Position;
 
+/// Read/write port into the live-safety state. ast-observe takes
+/// `Option<Arc<dyn SafetyControlPort>>` so it can expose
+/// HTTP /safety/kill and /safety/status without depending on
+/// ast-safety. ast-safety implements this on `Arc<LiveSafetyState>`.
+pub trait SafetyControlPort: Send + Sync {
+    /// Returns true if the kill switch is set.
+    fn is_killed(&self) -> bool;
+    /// Trip the switch. Returns true if this call was the one that
+    /// tripped it (false if already killed).
+    fn manual_kill(&self) -> bool;
+    /// Number of consecutive execution failures recorded.
+    fn consecutive_failures(&self) -> u32;
+    /// Most recent polled wallet balance, USD. None if no poll yet.
+    fn wallet_balance_usd(&self) -> Option<Decimal>;
+    /// Session-cumulative realized PnL, USD.
+    fn cumulative_realized_pnl_usd(&self) -> Decimal;
+}
+
 /// What you get back from a successful on-chain close. Used by the
 /// Reaper to set realized PnL based on the actual ETH received from
 /// the sell, not just the position's last marked price.
