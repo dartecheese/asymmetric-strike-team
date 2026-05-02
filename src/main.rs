@@ -183,8 +183,12 @@ async fn main() -> Result<()> {
                     floor_usd = %config.live_execution.wallet_floor_usd,
                     "wallet balance monitor armed"
                 );
+                let poll_secs = config
+                    .live_execution
+                    .wallet_poll_interval_seconds
+                    .max(5); // floor at 5s to avoid hammering RPC
                 wallet_monitor_handle = Some(tokio::spawn(async move {
-                    let mut interval = tokio::time::interval(Duration::from_secs(30));
+                    let mut interval = tokio::time::interval(Duration::from_secs(poll_secs));
                     loop {
                         tokio::select! {
                             _ = shutdown.recv() => break,

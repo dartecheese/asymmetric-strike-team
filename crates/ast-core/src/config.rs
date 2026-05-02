@@ -145,6 +145,12 @@ pub struct LiveExecutionConfig {
     /// Seconds from now until a swap deadline expires.
     #[serde(default = "default_swap_deadline_secs")]
     pub swap_deadline_secs: u64,
+    /// How often to poll the wallet's native-currency balance for the
+    /// safety floor check. Cheap chains (Base, Arbitrum) can do 10-30s;
+    /// Ethereum mainnet should back off to 60s+ to be polite to your
+    /// RPC budget.
+    #[serde(default = "default_wallet_poll_interval_seconds")]
+    pub wallet_poll_interval_seconds: u64,
 }
 
 impl Default for LiveExecutionConfig {
@@ -159,6 +165,7 @@ impl Default for LiveExecutionConfig {
             wallet_floor_usd: Decimal::ZERO,
             daily_loss_cap_usd: Decimal::ZERO,
             swap_deadline_secs: default_swap_deadline_secs(),
+            wallet_poll_interval_seconds: default_wallet_poll_interval_seconds(),
         }
     }
 }
@@ -235,6 +242,10 @@ fn default_max_trade_usd() -> Decimal {
 
 fn default_swap_deadline_secs() -> u64 {
     60
+}
+
+fn default_wallet_poll_interval_seconds() -> u64 {
+    30
 }
 
 fn default_routers() -> BTreeMap<String, String> {
