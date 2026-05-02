@@ -1,4 +1,7 @@
+pub mod dex;
+pub mod gas;
 pub mod slippage;
+pub mod tx_manager;
 
 use async_trait::async_trait;
 use rust_decimal::Decimal;
@@ -24,7 +27,10 @@ pub enum SlingerError {
     SlippageExceeded { observed_bps: u32, max_bps: u32 },
 }
 
+pub use dex::{DexSwapExecutor, DexSwapReceipt};
+pub use gas::{GasConfig, GasEstimator, GasParams};
 pub use slippage::{SlippageCheck, SlippageGuard};
+pub use tx_manager::{NonceManager, PendingTx, TxMonitor};
 
 #[async_trait]
 pub trait VenueResolver: Send + Sync {

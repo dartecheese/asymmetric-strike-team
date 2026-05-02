@@ -1,5 +1,8 @@
 use alloy::providers::Provider;
-use ast_core::{AstError, Result};
+
+use crate::SlingerError;
+
+type Result<T> = std::result::Result<T, SlingerError>;
 
 /// EIP-1559 gas parameters ready to attach to a transaction.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -42,9 +45,13 @@ impl GasEstimator {
 
     /// Query current gas prices from the provider and return adjusted EIP-1559 params.
     /// Returns `Err` if the estimated price would exceed `max_gwei_cap`.
-    pub async fn estimate<P: Provider>(&self, provider: &P) -> Result<GasParams> {
+    pub async fn estimate<P, T>(&self, provider: &P) -> Result<GasParams>
+    where
+        P: Provider<T>,
+        T: alloy::transports::Transport + Clone,
+    {
         let base_fee = provider.get_gas_price().await.map_err(|e| {
-            AstError::ExternalService {
+            SlingerError::ExternalService {
                 service: "rpc",
                 message: format!("gas price query failed: {e}"),
             }
@@ -53,11 +60,11 @@ impl GasEstimator {
         let multiplied = base_fee
             .checked_mul(self.config.multiplier_bps as u128)
             .and_then(|v| v.checked_div(10_000))
-            .ok_or_else(|| AstError::Execution("gas price overflow in multiplier".into()))?;
+            .ok_or_else(|| SlingerError::Execution("gas price overflow in multiplier".into()))?;
 
         let cap_wei = self.config.max_gwei_cap as u128 * 1_000_000_000;
         if multiplied > cap_wei {
-            return Err(AstError::Execution(format!(
+            return Err(SlingerError::Execution(format!(
                 "estimated gas ({} gwei) exceeds cap ({} gwei) — refusing to trade",
                 multiplied / 1_000_000_000,
                 self.config.max_gwei_cap,

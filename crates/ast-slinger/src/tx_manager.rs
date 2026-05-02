@@ -3,8 +3,11 @@ use std::time::{Duration, Instant};
 
 use alloy::primitives::{Address, B256};
 use alloy::providers::Provider;
-use ast_core::{AstError, Result};
 use tokio::sync::Mutex;
+
+use crate::SlingerError;
+
+type Result<T> = std::result::Result<T, SlingerError>;
 
 /// Tracks the next nonce to use per (chain_id, wallet_address).
 /// Always queries the chain for the pending nonce on first access,
@@ -29,12 +32,16 @@ impl NonceManager {
 
     /// Returns the next nonce for the given wallet. Fetches from chain on first call;
     /// subsequent calls increment locally until `reset` is called.
-    pub async fn next_nonce<P: Provider>(
+    pub async fn next_nonce<P, T>(
         &self,
         chain_id: u64,
         wallet: Address,
         provider: &P,
-    ) -> Result<u64> {
+    ) -> Result<u64>
+    where
+        P: Provider<T>,
+        T: alloy::transports::Transport + Clone,
+    {
         let key = (chain_id, format!("{wallet:?}").to_lowercase());
         let mut state = self.state.lock().await;
 
@@ -48,7 +55,7 @@ impl NonceManager {
         let on_chain = provider
             .get_transaction_count(wallet)
             .await
-            .map_err(|e| AstError::ExternalService {
+            .map_err(|e| SlingerError::ExternalService {
                 service: "rpc",
                 message: format!("nonce query failed: {e}"),
             })?;
@@ -113,7 +120,11 @@ impl TxMonitor {
 
     /// Returns all transactions that have been pending longer than `stuck_timeout`
     /// and are not yet confirmed on chain.
-    pub async fn find_stuck<P: Provider>(&self, provider: &P) -> Vec<PendingTx> {
+    pub async fn find_stuck<P, T>(&self, provider: &P) -> Vec<PendingTx>
+    where
+        P: Provider<T>,
+        T: alloy::transports::Transport + Clone,
+    {
         let now = Instant::now();
         let candidates: Vec<PendingTx> = self
             .pending
