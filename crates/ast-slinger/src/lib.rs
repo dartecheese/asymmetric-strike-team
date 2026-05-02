@@ -1,5 +1,6 @@
 pub mod dex;
 pub mod gas;
+pub mod live_slinger;
 pub mod slippage;
 pub mod tx_manager;
 
@@ -29,6 +30,7 @@ pub enum SlingerError {
 
 pub use dex::{DexSwapExecutor, DexSwapReceipt};
 pub use gas::{GasConfig, GasEstimator, GasParams};
+pub use live_slinger::LiveSlinger;
 pub use slippage::{SlippageCheck, SlippageGuard};
 pub use tx_manager::{NonceManager, PendingTx, TxMonitor};
 
