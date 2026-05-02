@@ -86,17 +86,21 @@ struct OperatorQuickAction {
 async fn main() -> Result<()> {
     let _ = dotenv();
     let cli = Cli::parse();
-    let mut operator = build_operator_overview(&cli);
-    enforce_operator_mode(&cli, &operator)?;
     let config = AppConfig::load(
         &cli.config_path(),
         CliOverrides {
             log_filter: cli.log_filter.clone(),
+            // Force paper_trading.enabled=true regardless of TOML — paper
+            // trading state machinery (cash balance, position tracker)
+            // remains active even in live mode so the operator UI keeps
+            // working. The slinger choice (Paper vs Live) is what actually
+            // gates real-money execution.
             paper_trading_enabled: Some(true),
         },
     )?;
     init_tracing(&config.observe.log_filter)?;
-    operator.state_dir = config.runtime.state_dir.clone();
+    let operator = build_operator_overview(&cli, &config);
+    enforce_operator_mode(&cli, &operator)?;
 
     if cli.fresh_paper {
         archive_paper_state(&config.runtime.state_dir).await?;
@@ -148,6 +152,7 @@ async fn main() -> Result<()> {
     });
     tokio::pin!(server_handle);
 
+    let live_execution_armed = cli.mode == LaunchMode::Live && operator.live_execution_ready;
     let mut pipeline_handles = Vec::with_capacity(config.strategies.len());
     for strategy in config.strategies.clone() {
         let mut shutdown_rx = shutdown_tx.subscribe();
@@ -157,6 +162,7 @@ async fn main() -> Result<()> {
         let paper_trading = config.paper_trading.clone();
         let local_brain = local_brain.clone();
         let episode_journal = episode_journal.clone();
+        let live_execution = config.live_execution.clone();
 
         pipeline_handles.push(tokio::spawn(async move {
             if let Err(error) = run_strategy_pipeline(
@@ -167,6 +173,8 @@ async fn main() -> Result<()> {
                 episode_journal,
                 event_bus_for_task,
                 status_registry,
+                live_execution,
+                live_execution_armed,
                 &mut shutdown_rx,
             )
             .await
@@ -219,6 +227,8 @@ async fn run_strategy_pipeline(
     episode_journal: Arc<EpisodeJournal>,
     event_bus: EventBus,
     statuses: StrategyStatusRegistry,
+    live_execution: ast_core::LiveExecutionConfig,
+    live_execution_armed: bool,
     shutdown_rx: &mut broadcast::Receiver<()>,
 ) -> Result<()> {
     let whisperer: Arc<dyn SignalScanner> =
@@ -232,12 +242,27 @@ async fn run_strategy_pipeline(
         paper_trading.enabled,
         paper_trading.use_live_risk_checks,
     ));
-    let slinger: Arc<dyn ExecutionRouter> =
+    let slinger: Arc<dyn ExecutionRouter> = if live_execution_armed {
+        let executor = Arc::new(ast_slinger::DexSwapExecutor::new(live_execution.clone()));
+        info!(
+            strategy = strategy.name,
+            chain = live_execution.default_chain,
+            max_trade_usd = %live_execution.max_trade_usd,
+            "live slinger armed — orders will hit the chain"
+        );
+        Arc::new(ast_slinger::LiveSlinger::new(
+            strategy.clone(),
+            DefaultVenueResolver,
+            executor,
+            live_execution,
+        ))
+    } else {
         Arc::new(PaperSlinger::new(
             strategy.clone(),
             DefaultVenueResolver,
             paper_trading.default_slippage_model.clone(),
-        ));
+        ))
+    };
     let safety: Arc<dyn CircuitBreaker> = Arc::new(PaperSafety::new(strategy.clone()));
     let reaper: Arc<dyn PositionTracker> =
         Arc::new(FileReaper::new(state_dir, &strategy.name).await?);
@@ -896,14 +921,20 @@ async fn archive_paper_state(state_dir: &str) -> Result<()> {
     Ok(())
 }
 
-fn build_operator_overview(cli: &Cli) -> OperatorOverview {
+fn build_operator_overview(cli: &Cli, config: &AppConfig) -> OperatorOverview {
     let selected_mode = match cli.mode {
         LaunchMode::Paper => "paper",
         LaunchMode::Live => "live",
     }
     .to_owned();
-    let live_execution_ready = false;
-    let effective_mode = if cli.mode == LaunchMode::Live {
+    // Live execution is "ready" when (a) a wallet private key is configured
+    // and (b) an RPC URL is configured. The DexSwapExecutor adds a third
+    // gate (chain support) per-order. This is the operator-level gate.
+    let live_execution_ready = !config.live_execution.private_key.is_empty()
+        && !config.live_execution.rpc_url.is_empty();
+    let effective_mode = if cli.mode == LaunchMode::Live && live_execution_ready {
+        "live"
+    } else if cli.mode == LaunchMode::Live {
         "live_guarded"
     } else {
         "paper"
@@ -913,9 +944,15 @@ fn build_operator_overview(cli: &Cli) -> OperatorOverview {
     let mut warnings = Vec::new();
     if cli.mode == LaunchMode::Paper {
         warnings.push("Paper mode is active: fills are simulated, but market marks and risk checks can use live crypto data.".to_owned());
+    } else if !live_execution_ready {
+        warnings.push("Live mode was requested, but no wallet/RPC is configured. Set ETH_RPC_URL and PRIVATE_KEY in .env before retrying.".to_owned());
     } else {
-        warnings.push("Live mode was requested, but on-chain execution is not wired yet. The runtime will not place real trades.".to_owned());
-        warnings.push("A wallet/RPC/swap executor and kill-switch path must exist before live can be enabled for real capital.".to_owned());
+        warnings.push(format!(
+            "Live mode is armed on chain '{}'. Real funds will be at risk. Per-trade ceiling: ${}. Wallet floor: ${}.",
+            config.live_execution.default_chain,
+            config.live_execution.max_trade_usd,
+            config.live_execution.wallet_floor_usd,
+        ));
     }
 
     let binary = "./target/debug/asymmetric-strike-team";
@@ -933,9 +970,15 @@ fn build_operator_overview(cli: &Cli) -> OperatorOverview {
             availability: "ready".to_owned(),
         },
         OperatorQuickAction {
+            label: "Testnet (Base Sepolia)".to_owned(),
+            command: format!("{binary} --testnet --mode live --allow-live"),
+            summary: "Run live execution against Base Sepolia testnet. Faucet ETH only.".to_owned(),
+            availability: if live_execution_ready { "ready" } else { "blocked" }.to_owned(),
+        },
+        OperatorQuickAction {
             label: "Attempt live mode".to_owned(),
             command: format!("{binary} --mode live --allow-live"),
-            summary: "Reserved for future real execution. Currently guarded and blocked.".to_owned(),
+            summary: "Real on-chain execution. Requires ETH_RPC_URL + PRIVATE_KEY in .env.".to_owned(),
             availability: if live_execution_ready { "ready" } else { "blocked" }.to_owned(),
         },
     ];
@@ -945,7 +988,7 @@ fn build_operator_overview(cli: &Cli) -> OperatorOverview {
         effective_mode,
         live_execution_ready,
         allow_live: cli.allow_live,
-        state_dir: "data".to_owned(),
+        state_dir: config.runtime.state_dir.clone(),
         dashboard_url: "http://127.0.0.1:8989".to_owned(),
         warnings,
         quick_actions,
