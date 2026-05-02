@@ -6,6 +6,7 @@ use alloy::{
     providers::ProviderBuilder,
     signers::local::PrivateKeySigner,
     sol,
+    sol_types::SolEvent,
     transports::http::reqwest::Url,
 };
 use ast_core::{Chain, ExecutionOrder, LiveExecutionConfig, Venue};
@@ -54,6 +55,20 @@ sol! {
         function allowance(address owner, address spender) external view returns (uint256);
         function balanceOf(address account) external view returns (uint256);
     }
+}
+
+// Uniswap V2 pair Swap event. Used to extract the actual amount-out
+// from a mined receipt instead of trusting the pre-trade AMM quote.
+sol! {
+    #[derive(Debug)]
+    event Swap(
+        address indexed sender,
+        uint256 amount0In,
+        uint256 amount1In,
+        uint256 amount0Out,
+        uint256 amount1Out,
+        address indexed to
+    );
 }
 
 /// Receipt returned by a successful swap. The LiveSlinger builds an
@@ -233,11 +248,16 @@ impl DexSwapExecutor {
             monitor.confirm(tx_hash).await;
         }
 
+        // Use the parsed Swap event's actual output where available.
+        // Falls back to the AMM quote when no Swap log decoded.
+        let actual_token_out = mined.actual_amount_out.unwrap_or(expected_out);
+        let observed_slippage_bps = compute_slippage_bps(expected_out, actual_token_out);
+
         Ok(DexSwapReceipt {
             tx_hash,
-            amount_token: expected_out,
+            amount_token: actual_token_out,
             amount_eth_wei: amount_in_wei,
-            observed_slippage_bps: 0,
+            observed_slippage_bps,
             gas_used: mined.gas_used,
             effective_gas_price: mined.effective_gas_price,
             block_number: mined.block_number,
@@ -360,11 +380,16 @@ impl DexSwapExecutor {
             monitor.confirm(tx_hash).await;
         }
 
+        // Use the parsed Swap event's actual ETH out where available;
+        // falls back to the AMM quote when no Swap log decoded.
+        let actual_eth_out = mined.actual_amount_out.unwrap_or(expected_out);
+        let observed_slippage_bps = compute_slippage_bps(expected_out, actual_eth_out);
+
         Ok(DexSwapReceipt {
             tx_hash,
             amount_token: amount_token_in,
-            amount_eth_wei: expected_out,
-            observed_slippage_bps: 0,
+            amount_eth_wei: actual_eth_out,
+            observed_slippage_bps,
             gas_used: mined.gas_used,
             effective_gas_price: mined.effective_gas_price,
             block_number: mined.block_number,
@@ -453,11 +478,30 @@ fn last_u256(amounts: &[U256]) -> Result<U256> {
         .ok_or_else(|| SlingerError::Execution("AMM returned empty quote".into()))
 }
 
+/// Slippage in basis points: how much less we got than the AMM quote
+/// promised. Negative slippage (we got more) reports as 0. Caps at
+/// u32::MAX in the unrealistic case the actual was zero.
+fn compute_slippage_bps(expected: U256, actual: U256) -> u32 {
+    if expected.is_zero() || actual >= expected {
+        return 0;
+    }
+    let diff = expected - actual;
+    let bps_u256 = diff.saturating_mul(U256::from(10_000u32)) / expected;
+    bps_u256
+        .to_string()
+        .parse::<u32>()
+        .unwrap_or(u32::MAX)
+}
+
 #[derive(Debug, Clone, Copy)]
 struct MinedFacts {
     gas_used: u128,
     effective_gas_price: u128,
     block_number: u64,
+    /// Actual amount-out from the LAST Swap event in the receipt's logs.
+    /// None if no decodable Swap log was found (rare in practice — the
+    /// V2 router always emits one). Falls back to the AMM quote when None.
+    actual_amount_out: Option<U256>,
 }
 
 /// Wait for a sent TX to mine. Errors if the receipt indicates revert
@@ -495,7 +539,33 @@ where
         gas_used: receipt.gas_used,
         effective_gas_price: receipt.effective_gas_price,
         block_number: receipt.block_number.unwrap_or_default(),
+        actual_amount_out: extract_actual_amount_out(&receipt),
     })
+}
+
+/// Walk the receipt's logs for the LAST Uniswap V2 Swap event and
+/// return whichever of `amount0Out` / `amount1Out` is non-zero. For
+/// single-hop swaps that's our actual receive amount; for multi-hop
+/// it's the final-leg output going to our wallet. Returns None if no
+/// Swap log decodes — caller falls back to the AMM quote.
+fn extract_actual_amount_out(
+    receipt: &alloy::rpc::types::TransactionReceipt,
+) -> Option<U256> {
+    let mut last_amount: Option<U256> = None;
+    for log in receipt.inner.logs() {
+        let primitives_log = log.inner.clone();
+        if let Ok(decoded) = Swap::decode_log(&primitives_log, true) {
+            let out = if decoded.amount0Out > U256::ZERO {
+                decoded.amount0Out
+            } else {
+                decoded.amount1Out
+            };
+            if out > U256::ZERO {
+                last_amount = Some(out);
+            }
+        }
+    }
+    last_amount
 }
 
 #[cfg(test)]
@@ -625,6 +695,45 @@ mod tests {
         };
         let executor = DexSwapExecutor::new(cfg);
         assert!(executor.usd_to_wei(Decimal::new(50, 0)).is_err());
+    }
+
+    #[test]
+    fn compute_slippage_bps_zero_when_actual_meets_expected() {
+        assert_eq!(
+            compute_slippage_bps(U256::from(1_000_000u64), U256::from(1_000_000u64)),
+            0
+        );
+    }
+
+    #[test]
+    fn compute_slippage_bps_zero_when_actual_exceeds_expected() {
+        // Better-than-quoted fill — operator got more than promised.
+        assert_eq!(
+            compute_slippage_bps(U256::from(1_000_000u64), U256::from(1_005_000u64)),
+            0
+        );
+    }
+
+    #[test]
+    fn compute_slippage_bps_three_percent() {
+        // 3% short of quote = 300 bps.
+        assert_eq!(
+            compute_slippage_bps(U256::from(1_000_000u64), U256::from(970_000u64)),
+            300
+        );
+    }
+
+    #[test]
+    fn compute_slippage_bps_fifty_percent_drop() {
+        assert_eq!(
+            compute_slippage_bps(U256::from(1_000_000u64), U256::from(500_000u64)),
+            5_000
+        );
+    }
+
+    #[test]
+    fn compute_slippage_bps_handles_zero_expected() {
+        assert_eq!(compute_slippage_bps(U256::ZERO, U256::ZERO), 0);
     }
 
     #[test]
