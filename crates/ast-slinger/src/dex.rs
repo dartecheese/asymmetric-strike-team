@@ -58,16 +58,29 @@ sol! {
 
 /// Receipt returned by a successful swap. The LiveSlinger builds an
 /// `ExecutionResult` from this.
+///
+/// Populated AFTER the TX is mined (via `pending.get_receipt()`), not
+/// just broadcast — so callers can trust that the swap actually executed
+/// rather than just being submitted. A reverted swap returns a typed
+/// `SlingerError::Execution` instead of a `DexSwapReceipt`.
 #[derive(Debug, Clone)]
 pub struct DexSwapReceipt {
     pub tx_hash: B256,
     /// Tokens received (buy) or tokens sold (sell), in raw token-unit `U256`.
+    /// Currently the AMM quote — the next reconciliation slice can replace
+    /// this with the actual filled amount parsed from the Swap event.
     pub amount_token: U256,
     /// ETH spent (buy) or ETH received (sell), in wei.
     pub amount_eth_wei: U256,
     /// Quoted slippage in bps relative to a no-impact swap. 0 means we got
     /// exactly the AMM-quoted output.
     pub observed_slippage_bps: u32,
+    /// Gas units actually consumed by the swap, from the mined receipt.
+    pub gas_used: u128,
+    /// Effective gas price the network charged, in wei.
+    pub effective_gas_price: u128,
+    /// Block number the swap was included in.
+    pub block_number: u64,
 }
 
 /// WETH addresses per supported chain. Returns None for non-EVM chains.
@@ -215,11 +228,19 @@ impl DexSwapExecutor {
                 .await;
         }
 
+        let mined = wait_for_receipt(pending, tx_hash).await?;
+        if let Some(monitor) = &self.tx_monitor {
+            monitor.confirm(tx_hash).await;
+        }
+
         Ok(DexSwapReceipt {
             tx_hash,
             amount_token: expected_out,
             amount_eth_wei: amount_in_wei,
             observed_slippage_bps: 0,
+            gas_used: mined.gas_used,
+            effective_gas_price: mined.effective_gas_price,
+            block_number: mined.block_number,
         })
     }
 
@@ -334,11 +355,19 @@ impl DexSwapExecutor {
                 .await;
         }
 
+        let mined = wait_for_receipt(pending, tx_hash).await?;
+        if let Some(monitor) = &self.tx_monitor {
+            monitor.confirm(tx_hash).await;
+        }
+
         Ok(DexSwapReceipt {
             tx_hash,
             amount_token: amount_token_in,
             amount_eth_wei: expected_out,
             observed_slippage_bps: 0,
+            gas_used: mined.gas_used,
+            effective_gas_price: mined.effective_gas_price,
+            block_number: mined.block_number,
         })
     }
 
@@ -422,6 +451,51 @@ fn last_u256(amounts: &[U256]) -> Result<U256> {
         .last()
         .copied()
         .ok_or_else(|| SlingerError::Execution("AMM returned empty quote".into()))
+}
+
+#[derive(Debug, Clone, Copy)]
+struct MinedFacts {
+    gas_used: u128,
+    effective_gas_price: u128,
+    block_number: u64,
+}
+
+/// Wait for a sent TX to mine. Errors if the receipt indicates revert
+/// (status != 1) — this is the safety check that distinguishes "TX
+/// broadcast" from "swap actually executed". A reverted swap should
+/// never reach the position tracker as Filled.
+///
+/// Constrained to the Ethereum network so we can read concrete receipt
+/// fields rather than going through the generic `ReceiptResponse` trait.
+/// All supported chains (Ethereum, Base, Arbitrum) use the same receipt
+/// shape.
+async fn wait_for_receipt<T>(
+    pending: alloy::providers::PendingTransactionBuilder<T, alloy::network::Ethereum>,
+    tx_hash: B256,
+) -> Result<MinedFacts>
+where
+    T: alloy::transports::Transport + Clone,
+{
+    let receipt = pending
+        .get_receipt()
+        .await
+        .map_err(|e| SlingerError::ExternalService {
+            service: "rpc",
+            message: format!("get_receipt failed for {tx_hash}: {e}"),
+        })?;
+
+    if !receipt.status() {
+        return Err(SlingerError::Execution(format!(
+            "swap reverted on-chain: tx={tx_hash} block={:?}",
+            receipt.block_number
+        )));
+    }
+
+    Ok(MinedFacts {
+        gas_used: receipt.gas_used,
+        effective_gas_price: receipt.effective_gas_price,
+        block_number: receipt.block_number.unwrap_or_default(),
+    })
 }
 
 #[cfg(test)]

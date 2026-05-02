@@ -143,6 +143,20 @@ where
         let fill_price_usd = Usd::new(fill_price_dec.max(Decimal::ZERO))
             .map_err(|error| SlingerError::Execution(error.to_string()))?;
 
+        // gas_used (units) × effective_gas_price (wei/unit) = total fee in wei.
+        // Convert to USD via eth_price_usd. Receipt is populated only after
+        // the TX mines (DexSwapExecutor::wait_for_receipt), so this is real
+        // — not estimated.
+        let gas_fee_wei = (receipt.gas_used as u128)
+            .saturating_mul(receipt.effective_gas_price as u128);
+        let gas_fee_wei_dec = Decimal::from_str_exact(&gas_fee_wei.to_string())
+            .map_err(|e| SlingerError::Execution(format!("gas wei → decimal: {e}")))?;
+        let gas_fee_eth_dec = gas_fee_wei_dec / decimal_pow10(18);
+        let fee_usd_dec =
+            (gas_fee_eth_dec * self.live_config.eth_price_usd).round_dp(8);
+        let fee_usd = Usd::new(fee_usd_dec.max(Decimal::ZERO))
+            .map_err(|error| SlingerError::Execution(error.to_string()))?;
+
         Ok(ExecutionResult {
             order_id: order.id.clone(),
             status: ExecutionStatus::Filled,
@@ -154,9 +168,7 @@ where
             fill_ratio_bps: 10_000,
             notional_usd,
             requested_notional_usd: order.notional_usd.clone(),
-            // TODO: poll the TX receipt for actual gas_used and convert to
-            // fee_usd. Reaper reconciliation slice will refine this.
-            fee_usd: Usd::zero(),
+            fee_usd,
             venue: order.venue.clone(),
             timestamp_ms: timestamp_ms(),
         })
