@@ -1,7 +1,8 @@
 use std::sync::atomic::{AtomicBool, AtomicU32, Ordering};
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 
 use async_trait::async_trait;
+use rust_decimal::Decimal;
 use thiserror::Error;
 
 use ast_core::{RiskAssessment, RiskDecision, Signal, StrategyProfile, TradingSignal};
@@ -117,6 +118,7 @@ impl CircuitBreaker for PaperSafety {
 pub struct LiveSafetyState {
     killed: AtomicBool,
     consecutive_failures: AtomicU32,
+    last_wallet_balance_usd: Mutex<Option<Decimal>>,
 }
 
 impl LiveSafetyState {
@@ -157,6 +159,24 @@ impl LiveSafetyState {
     pub fn consecutive_failures(&self) -> u32 {
         self.consecutive_failures.load(Ordering::Relaxed)
     }
+
+    /// Update the last-known wallet balance from a polling task. Called
+    /// by the WalletBalanceMonitor in ast-slinger. None means "polling
+    /// failed" — the prior reading is preserved.
+    pub fn record_wallet_balance(&self, usd: Decimal) {
+        if let Ok(mut slot) = self.last_wallet_balance_usd.lock() {
+            *slot = Some(usd);
+        }
+    }
+
+    /// Returns the most recent polled wallet balance in USD, or None if
+    /// the monitor hasn't reported yet.
+    pub fn wallet_balance_usd(&self) -> Option<Decimal> {
+        self.last_wallet_balance_usd
+            .lock()
+            .ok()
+            .and_then(|guard| *guard)
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -165,12 +185,22 @@ pub struct LiveSafetyConfig {
     /// trips automatically. Set to 0 to disable auto-tripping (manual
     /// kill only). Default: 3.
     pub kill_after_consecutive_failures: u32,
+    /// Refuse orders when polled wallet balance falls below this USD
+    /// floor. Set to 0 to disable the check. Default: 0 (disabled —
+    /// must be set explicitly per-config).
+    pub wallet_floor_usd: Decimal,
+    /// When wallet_floor_usd > 0 but the monitor hasn't polled a
+    /// balance yet, should we fail-closed (refuse all orders) or
+    /// fail-open (allow)? Default: true (fail-closed). Safer for live.
+    pub require_balance_poll_before_trading: bool,
 }
 
 impl Default for LiveSafetyConfig {
     fn default() -> Self {
         Self {
             kill_after_consecutive_failures: 3,
+            wallet_floor_usd: Decimal::ZERO,
+            require_balance_poll_before_trading: true,
         }
     }
 }
@@ -226,6 +256,30 @@ impl CircuitBreaker for LiveSafety {
                 ),
             });
         }
+
+        if self.config.wallet_floor_usd > Decimal::ZERO {
+            match self.state.wallet_balance_usd() {
+                Some(balance) if balance < self.config.wallet_floor_usd => {
+                    return Ok(SafetyDecision {
+                        should_trade: false,
+                        reason: format!(
+                            "wallet balance ${} below floor ${} — refusing new orders",
+                            balance, self.config.wallet_floor_usd
+                        ),
+                    });
+                }
+                None if self.config.require_balance_poll_before_trading => {
+                    return Ok(SafetyDecision {
+                        should_trade: false,
+                        reason:
+                            "wallet balance not yet polled — refusing trades until floor check passes"
+                                .to_owned(),
+                    });
+                }
+                _ => {}
+            }
+        }
+
         self.inner.evaluate(signal, risk).await
     }
 }
@@ -320,7 +374,10 @@ mod tests {
     #[tokio::test]
     async fn live_safety_refuses_after_kill_switch_trips() {
         let state = std::sync::Arc::new(LiveSafetyState::new());
-        let config = LiveSafetyConfig { kill_after_consecutive_failures: 3 };
+        let config = LiveSafetyConfig {
+            kill_after_consecutive_failures: 3,
+            ..LiveSafetyConfig::default()
+        };
         let safety = LiveSafety::new(strategy(200), state.clone(), config);
 
         // Three failures in a row trip the switch.
@@ -341,7 +398,10 @@ mod tests {
     #[tokio::test]
     async fn live_safety_success_resets_failure_count() {
         let state = std::sync::Arc::new(LiveSafetyState::new());
-        let config = LiveSafetyConfig { kill_after_consecutive_failures: 3 };
+        let config = LiveSafetyConfig {
+            kill_after_consecutive_failures: 3,
+            ..LiveSafetyConfig::default()
+        };
         let safety = LiveSafety::new(strategy(200), state.clone(), config);
 
         state.record_failure(3);
@@ -381,6 +441,99 @@ mod tests {
             .await
             .expect("decision");
         assert!(!decision.should_trade);
+    }
+
+    #[tokio::test]
+    async fn live_safety_refuses_when_balance_below_floor() {
+        let state = std::sync::Arc::new(LiveSafetyState::new());
+        let config = LiveSafetyConfig {
+            wallet_floor_usd: Decimal::new(50, 0),
+            require_balance_poll_before_trading: true,
+            ..LiveSafetyConfig::default()
+        };
+        let safety = LiveSafety::new(strategy(200), state.clone(), config);
+
+        state.record_wallet_balance(Decimal::new(40, 0));
+
+        let decision = safety
+            .evaluate(&signal(), &accepted_risk())
+            .await
+            .expect("decision");
+        assert!(!decision.should_trade);
+        assert!(decision.reason.contains("below floor"));
+    }
+
+    #[tokio::test]
+    async fn live_safety_allows_when_balance_meets_floor() {
+        let state = std::sync::Arc::new(LiveSafetyState::new());
+        let config = LiveSafetyConfig {
+            wallet_floor_usd: Decimal::new(50, 0),
+            require_balance_poll_before_trading: true,
+            ..LiveSafetyConfig::default()
+        };
+        let safety = LiveSafety::new(strategy(200), state.clone(), config);
+
+        state.record_wallet_balance(Decimal::new(75, 0));
+
+        let decision = safety
+            .evaluate(&signal(), &accepted_risk())
+            .await
+            .expect("decision");
+        assert!(decision.should_trade);
+    }
+
+    #[tokio::test]
+    async fn live_safety_fails_closed_before_first_balance_poll() {
+        let state = std::sync::Arc::new(LiveSafetyState::new());
+        let config = LiveSafetyConfig {
+            wallet_floor_usd: Decimal::new(50, 0),
+            require_balance_poll_before_trading: true,
+            ..LiveSafetyConfig::default()
+        };
+        let safety = LiveSafety::new(strategy(200), state.clone(), config);
+
+        // No record_wallet_balance call — state.wallet_balance_usd() is None.
+        let decision = safety
+            .evaluate(&signal(), &accepted_risk())
+            .await
+            .expect("decision");
+        assert!(!decision.should_trade);
+        assert!(decision.reason.contains("not yet polled"));
+    }
+
+    #[tokio::test]
+    async fn live_safety_fails_open_when_disabled_and_no_balance() {
+        let state = std::sync::Arc::new(LiveSafetyState::new());
+        let config = LiveSafetyConfig {
+            wallet_floor_usd: Decimal::new(50, 0),
+            require_balance_poll_before_trading: false,
+            ..LiveSafetyConfig::default()
+        };
+        let safety = LiveSafety::new(strategy(200), state.clone(), config);
+
+        let decision = safety
+            .evaluate(&signal(), &accepted_risk())
+            .await
+            .expect("decision");
+        assert!(decision.should_trade);
+    }
+
+    #[tokio::test]
+    async fn live_safety_skips_balance_check_when_floor_zero() {
+        let state = std::sync::Arc::new(LiveSafetyState::new());
+        let config = LiveSafetyConfig {
+            wallet_floor_usd: Decimal::ZERO,
+            require_balance_poll_before_trading: true,
+            ..LiveSafetyConfig::default()
+        };
+        let safety = LiveSafety::new(strategy(200), state.clone(), config);
+
+        // No balance recorded but floor=0 disables the check entirely.
+        let decision = safety
+            .evaluate(&signal(), &accepted_risk())
+            .await
+            .expect("decision");
+        assert!(decision.should_trade);
     }
 
     #[test]

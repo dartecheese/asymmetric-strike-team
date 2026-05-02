@@ -158,7 +158,51 @@ async fn main() -> Result<()> {
     // point of a kill-switch: blast-radius reduction at the cost of a
     // single sour strategy stalling everything.
     let live_safety_state = Arc::new(LiveSafetyState::new());
-    let live_safety_config = LiveSafetyConfig::default();
+    let live_safety_config = LiveSafetyConfig {
+        wallet_floor_usd: config.live_execution.wallet_floor_usd,
+        ..LiveSafetyConfig::default()
+    };
+
+    // Spawn the wallet balance monitor when armed. Polls every 30s and
+    // updates LiveSafetyState; LiveSafety::evaluate refuses orders when
+    // balance is below floor or hasn't been polled yet.
+    let mut wallet_monitor_handle: Option<tokio::task::JoinHandle<()>> = None;
+    if live_execution_armed {
+        match ast_slinger::WalletBalanceMonitor::new(config.live_execution.clone()) {
+            Ok(monitor) => {
+                let state = live_safety_state.clone();
+                let mut shutdown = shutdown_tx.subscribe();
+                info!(
+                    wallet = %monitor.wallet_address(),
+                    floor_usd = %config.live_execution.wallet_floor_usd,
+                    "wallet balance monitor armed"
+                );
+                wallet_monitor_handle = Some(tokio::spawn(async move {
+                    let mut interval = tokio::time::interval(Duration::from_secs(30));
+                    loop {
+                        tokio::select! {
+                            _ = shutdown.recv() => break,
+                            _ = interval.tick() => {
+                                match monitor.poll_balance_usd().await {
+                                    Ok(usd) => {
+                                        info!(balance_usd = %usd, "wallet balance polled");
+                                        state.record_wallet_balance(usd);
+                                    }
+                                    Err(error) => {
+                                        error!(error = %error, "wallet balance poll failed");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }));
+            }
+            Err(error) => {
+                error!(error = %error, "failed to build wallet balance monitor — live mode disarmed");
+                anyhow::bail!("wallet monitor setup failed: {error}");
+            }
+        }
+    }
 
     let mut pipeline_handles = Vec::with_capacity(config.strategies.len());
     for strategy in config.strategies.clone() {
@@ -217,6 +261,11 @@ async fn main() -> Result<()> {
         match handle.await {
             Ok(()) => {}
             Err(error) => error!(error = %error, "pipeline task join failed"),
+        }
+    }
+    if let Some(handle) = wallet_monitor_handle {
+        if let Err(error) = handle.await {
+            error!(error = %error, "wallet monitor task join failed");
         }
     }
 
