@@ -1,5 +1,8 @@
-use ast_core::{AstError, Result};
 use rust_decimal::Decimal;
+
+use crate::SlingerError;
+
+type Result<T> = std::result::Result<T, SlingerError>;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SlippageCheck {
@@ -14,7 +17,7 @@ pub struct SlippageGuard;
 impl SlippageGuard {
     pub fn minimum_output(expected_out: Decimal, max_slippage_bps: u32) -> Result<Decimal> {
         if expected_out.is_sign_negative() || expected_out.is_zero() {
-            return Err(AstError::Validation(
+            return Err(SlingerError::OrderValidation(
                 "expected output must be greater than zero".into(),
             ));
         }
@@ -30,7 +33,7 @@ impl SlippageGuard {
         max_slippage_bps: u32,
     ) -> Result<SlippageCheck> {
         if actual_out.is_sign_negative() {
-            return Err(AstError::Validation(
+            return Err(SlingerError::OrderValidation(
                 "actual output must be non-negative".into(),
             ));
         }
@@ -39,10 +42,10 @@ impl SlippageGuard {
         let observed_bps = ((expected_out - actual_out) / expected_out * Decimal::from(10_000u32))
             .round_dp(0)
             .to_u32()
-            .ok_or_else(|| AstError::Validation("failed to compute slippage in bps".into()))?;
+            .ok_or_else(|| SlingerError::OrderValidation("failed to compute slippage in bps".into()))?;
 
         if actual_out < minimum_out {
-            return Err(AstError::SlippageExceeded {
+            return Err(SlingerError::SlippageExceeded {
                 observed_bps,
                 max_bps: max_slippage_bps,
             });

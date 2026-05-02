@@ -1,3 +1,5 @@
+pub mod slippage;
+
 use async_trait::async_trait;
 use rust_decimal::Decimal;
 use thiserror::Error;
@@ -13,7 +15,16 @@ pub enum SlingerError {
     OrderValidation(String),
     #[error("execution failed: {0}")]
     Execution(String),
+    #[error("external service {service} failed: {message}")]
+    ExternalService {
+        service: &'static str,
+        message: String,
+    },
+    #[error("slippage exceeded: observed {observed_bps} bps > max {max_bps} bps")]
+    SlippageExceeded { observed_bps: u32, max_bps: u32 },
 }
+
+pub use slippage::{SlippageCheck, SlippageGuard};
 
 #[async_trait]
 pub trait VenueResolver: Send + Sync {
