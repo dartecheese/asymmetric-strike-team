@@ -391,6 +391,9 @@ impl PositionTracker for FileReaper {
                         // Live: queue for on-chain close. Mark Closing so
                         // we don't double-sell on the next pass.
                         position.state = PositionState::Closing;
+                        position
+                            .metadata
+                            .insert("close_trigger".to_owned(), "stop_loss".to_owned());
                         close_candidates.push(idx);
                     } else {
                         // Paper: file-only close.
@@ -402,7 +405,20 @@ impl PositionTracker for FileReaper {
                     // Already in flight — nothing to do this pass; wait
                     // for the prior close attempt to finish or fail.
                 } else if take_profit_hit {
-                    position.state = PositionState::FreeRide;
+                    if self.live_close.is_some() {
+                        // Live: lock the win on-chain. Without this, TP
+                        // just transitions to FreeRide and the position
+                        // eventually rounds-trips back to stop-loss —
+                        // the original target profit never gets captured.
+                        position.state = PositionState::Closing;
+                        position
+                            .metadata
+                            .insert("close_trigger".to_owned(), "take_profit".to_owned());
+                        close_candidates.push(idx);
+                    } else {
+                        // Paper: keep FreeRide semantics for dashboard.
+                        position.state = PositionState::FreeRide;
+                    }
                 }
 
                 ledger_records.push(LedgerRecord::position_marked(position));
