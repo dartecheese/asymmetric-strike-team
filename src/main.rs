@@ -160,6 +160,7 @@ async fn main() -> Result<()> {
     let live_safety_state = Arc::new(LiveSafetyState::new());
     let live_safety_config = LiveSafetyConfig {
         wallet_floor_usd: config.live_execution.wallet_floor_usd,
+        daily_loss_cap_usd: config.live_execution.daily_loss_cap_usd,
         ..LiveSafetyConfig::default()
     };
 
@@ -354,9 +355,24 @@ async fn run_strategy_pipeline(
                 live_execution.clone(),
             ));
             file_reaper = file_reaper.with_live_close(close_adapter);
+            // Feed realized PnL into LiveSafetyState so the daily-loss
+            // cap can refuse new orders after a streak.
+            let pnl_state = live_safety_state.clone();
+            let pnl_strategy = strategy.name.clone();
+            let pnl_callback: Arc<dyn Fn(rust_decimal::Decimal) + Send + Sync> =
+                Arc::new(move |delta| {
+                    info!(
+                        strategy = pnl_strategy,
+                        realized_delta_usd = %delta,
+                        cumulative_usd = %pnl_state.cumulative_realized_pnl_usd(),
+                        "realized close — updating daily PnL cap state"
+                    );
+                    pnl_state.record_realized_pnl(delta);
+                });
+            file_reaper = file_reaper.with_realized_pnl_callback(pnl_callback);
             info!(
                 strategy = strategy.name,
-                "reaper armed with live close adapter"
+                "reaper armed with live close adapter + PnL cap callback"
             );
         }
         Arc::new(file_reaper)

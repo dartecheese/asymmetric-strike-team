@@ -119,6 +119,9 @@ pub struct LiveSafetyState {
     killed: AtomicBool,
     consecutive_failures: AtomicU32,
     last_wallet_balance_usd: Mutex<Option<Decimal>>,
+    /// Session-cumulative realized PnL across all strategies, in USD.
+    /// Positive = up, negative = down. Reset only by restart.
+    cumulative_realized_pnl_usd: Mutex<Decimal>,
 }
 
 impl LiveSafetyState {
@@ -177,6 +180,23 @@ impl LiveSafetyState {
             .ok()
             .and_then(|guard| *guard)
     }
+
+    /// Add a realized PnL delta from a single closed position. Negative
+    /// values reduce the cumulative; positive values lift it. Called by
+    /// the Reaper's close callback after each successful on-chain sell.
+    pub fn record_realized_pnl(&self, delta_usd: Decimal) {
+        if let Ok(mut total) = self.cumulative_realized_pnl_usd.lock() {
+            *total = (*total + delta_usd).round_dp(8);
+        }
+    }
+
+    /// Session-cumulative realized PnL (USD). Starts at 0 each restart.
+    pub fn cumulative_realized_pnl_usd(&self) -> Decimal {
+        self.cumulative_realized_pnl_usd
+            .lock()
+            .map(|guard| *guard)
+            .unwrap_or(Decimal::ZERO)
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -193,6 +213,11 @@ pub struct LiveSafetyConfig {
     /// balance yet, should we fail-closed (refuse all orders) or
     /// fail-open (allow)? Default: true (fail-closed). Safer for live.
     pub require_balance_poll_before_trading: bool,
+    /// Maximum cumulative realized loss this session, in USD. When
+    /// cumulative_realized_pnl < -this_value, LiveSafety refuses new
+    /// orders. Set to 0 to disable. Stored as a positive number; the
+    /// comparison is `realized < -cap`.
+    pub daily_loss_cap_usd: Decimal,
 }
 
 impl Default for LiveSafetyConfig {
@@ -201,6 +226,7 @@ impl Default for LiveSafetyConfig {
             kill_after_consecutive_failures: 3,
             wallet_floor_usd: Decimal::ZERO,
             require_balance_poll_before_trading: true,
+            daily_loss_cap_usd: Decimal::ZERO,
         }
     }
 }
@@ -277,6 +303,19 @@ impl CircuitBreaker for LiveSafety {
                     });
                 }
                 _ => {}
+            }
+        }
+
+        if self.config.daily_loss_cap_usd > Decimal::ZERO {
+            let realized = self.state.cumulative_realized_pnl_usd();
+            if realized < -self.config.daily_loss_cap_usd {
+                return Ok(SafetyDecision {
+                    should_trade: false,
+                    reason: format!(
+                        "session realized PnL ${} below daily loss cap -${} — refusing new orders",
+                        realized, self.config.daily_loss_cap_usd
+                    ),
+                });
             }
         }
 
@@ -529,6 +568,83 @@ mod tests {
         let safety = LiveSafety::new(strategy(200), state.clone(), config);
 
         // No balance recorded but floor=0 disables the check entirely.
+        let decision = safety
+            .evaluate(&signal(), &accepted_risk())
+            .await
+            .expect("decision");
+        assert!(decision.should_trade);
+    }
+
+    #[tokio::test]
+    async fn live_safety_refuses_when_realized_pnl_below_cap() {
+        let state = std::sync::Arc::new(LiveSafetyState::new());
+        let config = LiveSafetyConfig {
+            daily_loss_cap_usd: Decimal::new(20, 0),
+            ..LiveSafetyConfig::default()
+        };
+        let safety = LiveSafety::new(strategy(200), state.clone(), config);
+
+        // Drop $25 cumulatively — exceeds $20 cap.
+        state.record_realized_pnl(Decimal::new(-15, 0));
+        state.record_realized_pnl(Decimal::new(-10, 0));
+        assert_eq!(state.cumulative_realized_pnl_usd(), Decimal::new(-25, 0));
+
+        let decision = safety
+            .evaluate(&signal(), &accepted_risk())
+            .await
+            .expect("decision");
+        assert!(!decision.should_trade);
+        assert!(decision.reason.contains("daily loss cap"));
+    }
+
+    #[tokio::test]
+    async fn live_safety_allows_when_realized_pnl_above_cap() {
+        let state = std::sync::Arc::new(LiveSafetyState::new());
+        let config = LiveSafetyConfig {
+            daily_loss_cap_usd: Decimal::new(20, 0),
+            ..LiveSafetyConfig::default()
+        };
+        let safety = LiveSafety::new(strategy(200), state.clone(), config);
+
+        state.record_realized_pnl(Decimal::new(-5, 0));
+        state.record_realized_pnl(Decimal::new(-10, 0)); // total -15, still above -20
+
+        let decision = safety
+            .evaluate(&signal(), &accepted_risk())
+            .await
+            .expect("decision");
+        assert!(decision.should_trade);
+    }
+
+    #[tokio::test]
+    async fn live_safety_recovers_after_winning_trade() {
+        let state = std::sync::Arc::new(LiveSafetyState::new());
+        let config = LiveSafetyConfig {
+            daily_loss_cap_usd: Decimal::new(20, 0),
+            ..LiveSafetyConfig::default()
+        };
+        let safety = LiveSafety::new(strategy(200), state.clone(), config);
+
+        state.record_realized_pnl(Decimal::new(-25, 0)); // tripped
+        let blocked = safety.evaluate(&signal(), &accepted_risk()).await.expect("decision");
+        assert!(!blocked.should_trade);
+
+        // A profitable close brings cumulative back above -cap.
+        state.record_realized_pnl(Decimal::new(10, 0)); // total -15
+        let allowed = safety.evaluate(&signal(), &accepted_risk()).await.expect("decision");
+        assert!(allowed.should_trade);
+    }
+
+    #[tokio::test]
+    async fn live_safety_skips_pnl_check_when_cap_zero() {
+        let state = std::sync::Arc::new(LiveSafetyState::new());
+        let safety = LiveSafety::new(
+            strategy(200),
+            state.clone(),
+            LiveSafetyConfig::default(),
+        );
+        state.record_realized_pnl(Decimal::new(-10_000, 0));
+
         let decision = safety
             .evaluate(&signal(), &accepted_risk())
             .await

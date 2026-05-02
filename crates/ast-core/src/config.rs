@@ -137,6 +137,11 @@ pub struct LiveExecutionConfig {
     /// positions. Acts as a kill-floor on a draining wallet.
     #[serde(default)]
     pub wallet_floor_usd: Decimal,
+    /// Maximum cumulative realized loss this session, in USD (positive
+    /// number). When session realized PnL drops below -this_value, the
+    /// circuit breaker refuses new orders. 0 disables the check.
+    #[serde(default)]
+    pub daily_loss_cap_usd: Decimal,
     /// Seconds from now until a swap deadline expires.
     #[serde(default = "default_swap_deadline_secs")]
     pub swap_deadline_secs: u64,
@@ -152,6 +157,7 @@ impl Default for LiveExecutionConfig {
             eth_price_usd: default_eth_price_usd(),
             max_trade_usd: default_max_trade_usd(),
             wallet_floor_usd: Decimal::ZERO,
+            daily_loss_cap_usd: Decimal::ZERO,
             swap_deadline_secs: default_swap_deadline_secs(),
         }
     }

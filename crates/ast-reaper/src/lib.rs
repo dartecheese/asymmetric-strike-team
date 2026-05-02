@@ -47,6 +47,10 @@ pub struct FileReaper {
     /// When set, stop-loss triggers attempt an on-chain sell via this
     /// executor before marking the position closed. None = paper mode.
     live_close: Option<Arc<dyn LiveCloseExecutor>>,
+    /// Optional callback invoked with the realized PnL delta (in USD)
+    /// after each successful close. The runtime uses this to feed
+    /// LiveSafetyState's daily-loss cap.
+    realized_pnl_callback: Option<Arc<dyn Fn(Decimal) + Send + Sync>>,
 }
 
 impl FileReaper {
@@ -84,6 +88,7 @@ impl FileReaper {
                 .build()
                 .unwrap_or_else(|_| Client::new()),
             live_close: None,
+            realized_pnl_callback: None,
         })
     }
 
@@ -92,6 +97,17 @@ impl FileReaper {
     /// marking the position closed. Without this, closes are paper-only.
     pub fn with_live_close(mut self, executor: Arc<dyn LiveCloseExecutor>) -> Self {
         self.live_close = Some(executor);
+        self
+    }
+
+    /// Register a callback that fires with realized PnL (USD) after each
+    /// successful close. The runtime feeds this into LiveSafetyState so
+    /// the daily-loss cap can refuse new orders when losses pile up.
+    pub fn with_realized_pnl_callback(
+        mut self,
+        callback: Arc<dyn Fn(Decimal) + Send + Sync>,
+    ) -> Self {
+        self.realized_pnl_callback = Some(callback);
         self
     }
 
@@ -413,31 +429,45 @@ impl PositionTracker for FileReaper {
 
             match executor.close_position(&position_for_close).await {
                 Ok(receipt) => {
-                    let mut positions = self.positions.lock().await;
-                    if let Some(position) = positions.get_mut(idx) {
-                        // Use the actual ETH received as realized USD,
-                        // not the optimistic mark-based net_pnl.
-                        let invested = position.entry_notional_usd.0;
-                        let realized = receipt.eth_received_usd - receipt.fee_usd - invested;
-                        position.state = PositionState::Closed;
-                        position.realized_pnl_usd = SignedUsd::new(realized.round_dp(8));
-                        position.unrealized_pnl_usd = SignedUsd::zero();
-                        position.fees_paid_usd = Usd::new(
-                            (position.fees_paid_usd.0 + receipt.fee_usd).round_dp(8),
-                        )
-                        .unwrap_or(Usd::zero());
-                        position
-                            .metadata
-                            .insert("close_tx_hash".to_owned(), receipt.tx_hash.clone());
-                        position.metadata.insert(
-                            "close_block_number".to_owned(),
-                            receipt.block_number.to_string(),
-                        );
-                        position.updated_at_ms = timestamp_ms();
-                        ledger_records.push(LedgerRecord::state_changed(
-                            &PositionState::Closing,
-                            position,
-                        ));
+                    let realized_delta = {
+                        let mut positions = self.positions.lock().await;
+                        if let Some(position) = positions.get_mut(idx) {
+                            // Use the actual ETH received as realized USD,
+                            // not the optimistic mark-based net_pnl.
+                            let invested = position.entry_notional_usd.0;
+                            let realized =
+                                (receipt.eth_received_usd - receipt.fee_usd - invested)
+                                    .round_dp(8);
+                            position.state = PositionState::Closed;
+                            position.realized_pnl_usd = SignedUsd::new(realized);
+                            position.unrealized_pnl_usd = SignedUsd::zero();
+                            position.fees_paid_usd = Usd::new(
+                                (position.fees_paid_usd.0 + receipt.fee_usd).round_dp(8),
+                            )
+                            .unwrap_or(Usd::zero());
+                            position
+                                .metadata
+                                .insert("close_tx_hash".to_owned(), receipt.tx_hash.clone());
+                            position.metadata.insert(
+                                "close_block_number".to_owned(),
+                                receipt.block_number.to_string(),
+                            );
+                            position.updated_at_ms = timestamp_ms();
+                            ledger_records.push(LedgerRecord::state_changed(
+                                &PositionState::Closing,
+                                position,
+                            ));
+                            Some(realized)
+                        } else {
+                            None
+                        }
+                    };
+                    // Fire the realized-PnL callback OUTSIDE the lock so a
+                    // slow callback doesn't stall further close attempts.
+                    if let (Some(delta), Some(cb)) =
+                        (realized_delta, self.realized_pnl_callback.as_ref())
+                    {
+                        cb(delta);
                     }
                 }
                 Err(error) => {
