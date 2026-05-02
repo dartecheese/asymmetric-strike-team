@@ -304,8 +304,17 @@ async fn run_strategy_pipeline(
         paper_trading.enabled,
         paper_trading.use_live_risk_checks,
     ));
-    let slinger: Arc<dyn ExecutionRouter> = if live_execution_armed {
-        let executor = Arc::new(ast_slinger::DexSwapExecutor::new(live_execution.clone()));
+    // Build the DexSwapExecutor once when armed; shared between the
+    // entry slinger (LiveSlinger) and the close adapter (Reaper).
+    let live_executor: Option<Arc<ast_slinger::DexSwapExecutor>> = if live_execution_armed {
+        Some(Arc::new(ast_slinger::DexSwapExecutor::new(
+            live_execution.clone(),
+        )))
+    } else {
+        None
+    };
+
+    let slinger: Arc<dyn ExecutionRouter> = if let Some(exec) = live_executor.clone() {
         info!(
             strategy = strategy.name,
             chain = live_execution.default_chain,
@@ -315,8 +324,8 @@ async fn run_strategy_pipeline(
         Arc::new(ast_slinger::LiveSlinger::new(
             strategy.clone(),
             DefaultVenueResolver,
-            executor,
-            live_execution,
+            exec,
+            live_execution.clone(),
         ))
     } else {
         Arc::new(PaperSlinger::new(
@@ -334,8 +343,24 @@ async fn run_strategy_pipeline(
     } else {
         Arc::new(PaperSafety::new(strategy.clone()))
     };
-    let reaper: Arc<dyn PositionTracker> =
-        Arc::new(FileReaper::new(state_dir, &strategy.name).await?);
+    let reaper: Arc<dyn PositionTracker> = {
+        let mut file_reaper = FileReaper::new(state_dir, &strategy.name).await?;
+        if let Some(exec) = live_executor {
+            // Pair the Reaper's stop-loss path with an on-chain sell
+            // adapter — without this, live mode opens positions but
+            // can't close them programmatically.
+            let close_adapter = Arc::new(ast_slinger::LiveCloseAdapter::new(
+                exec,
+                live_execution.clone(),
+            ));
+            file_reaper = file_reaper.with_live_close(close_adapter);
+            info!(
+                strategy = strategy.name,
+                "reaper armed with live close adapter"
+            );
+        }
+        Arc::new(file_reaper)
+    };
 
     statuses.mark_running(&strategy.name).await;
     emit_report_ins(&strategy, &paper_trading, &event_bus).await;

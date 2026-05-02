@@ -1,9 +1,11 @@
 use std::sync::Arc;
 
+use alloy::primitives::U256;
 use async_trait::async_trait;
 use ast_core::{
-    ExecutionOrder, ExecutionResult, ExecutionStatus, LiveExecutionConfig, RiskAssessment, Signal,
-    StrategyProfile, TokenAmount, Usd, Venue,
+    CloseError, CloseReceipt, ExecutionOrder, ExecutionResult, ExecutionStatus,
+    LiveCloseExecutor, LiveExecutionConfig, Position, RiskAssessment, Signal, StrategyProfile,
+    TokenAmount, Usd, Venue,
 };
 use rust_decimal::Decimal;
 
@@ -196,6 +198,107 @@ fn timestamp_ms() -> u64 {
         .duration_since(std::time::UNIX_EPOCH)
         .map(|d| d.as_millis() as u64)
         .unwrap_or_default()
+}
+
+/// Adapts `DexSwapExecutor::execute_sell` to the `LiveCloseExecutor`
+/// trait used by the Reaper. The Reaper stores `position.quantity` as
+/// a Decimal in human units; this adapter handles the
+/// Decimal → raw-token-unit U256 scaling and the Position →
+/// ExecutionOrder shaping the executor needs.
+pub struct LiveCloseAdapter {
+    executor: Arc<DexSwapExecutor>,
+    config: LiveExecutionConfig,
+}
+
+impl LiveCloseAdapter {
+    pub fn new(executor: Arc<DexSwapExecutor>, config: LiveExecutionConfig) -> Self {
+        Self { executor, config }
+    }
+}
+
+#[async_trait]
+impl LiveCloseExecutor for LiveCloseAdapter {
+    async fn close_position(&self, position: &Position) -> Result<CloseReceipt, CloseError> {
+        // Refuse to attempt a close on a venue we can't execute on.
+        let chain = match &position.venue {
+            Venue::Dex { chain, .. } => chain,
+            Venue::Cex { .. } => {
+                return Err(CloseError::Validation(
+                    "LiveCloseAdapter only handles DEX venues".to_owned(),
+                ));
+            }
+        };
+        if !self.executor.is_ready_for(chain) {
+            return Err(CloseError::Skipped(format!(
+                "executor not ready for {chain} (no wallet/RPC or unsupported chain)"
+            )));
+        }
+
+        // Decimal quantity → raw token-unit U256. position.quantity is
+        // human-readable (e.g., 1234.567); decimals lives on the token.
+        let scale = decimal_pow10(position.token.decimals as u32);
+        let raw_units_dec = (position.quantity.0 * scale).round_dp(0);
+        if raw_units_dec <= Decimal::ZERO {
+            return Err(CloseError::Validation(format!(
+                "position quantity {} scales to non-positive raw units",
+                position.quantity.0
+            )));
+        }
+        let amount_token_in: U256 = raw_units_dec.to_string().parse().map_err(|e| {
+            CloseError::Execution(format!("Decimal → U256 (qty {}): {e}", position.quantity.0))
+        })?;
+
+        // Synthetic ExecutionOrder for the sell. The executor only needs
+        // venue (for chain + router), token (for address), and
+        // max_slippage_bps. Everything else is informational and gets
+        // sensible placeholders.
+        let synthetic_order = ExecutionOrder::builder()
+            .id(format!("close-{}", position.id))
+            .strategy(position.strategy.clone())
+            .signal_id(position.signal_id.clone())
+            .token(position.token.clone())
+            .venue(position.venue.clone())
+            .amount(position.quantity.clone())
+            .notional_usd(position.entry_notional_usd.clone())
+            .limit_price_usd(position.entry_price_usd.clone())
+            .observed_liquidity_usd(Usd::new(Decimal::ZERO).unwrap_or(Usd::zero()))
+            .observed_volume_24h_usd(Usd::new(Decimal::ZERO).unwrap_or(Usd::zero()))
+            .max_slippage_bps(500) // Closes need to clear; allow more slippage than entries.
+            .metadata(position.metadata.clone())
+            .build()
+            .map_err(|error| CloseError::Validation(error.to_string()))?;
+
+        let receipt = self
+            .executor
+            .execute_sell(&synthetic_order, amount_token_in)
+            .await
+            .map_err(|error| match error {
+                SlingerError::OrderValidation(msg) => CloseError::Validation(msg),
+                _ => CloseError::Execution(error.to_string()),
+            })?;
+
+        // Compute USD received. amount_eth_wei is the WETH out (V2's
+        // last quote); convert to USD via eth_price_usd.
+        let eth_wei_dec = Decimal::from_str_exact(&receipt.amount_eth_wei.to_string())
+            .map_err(|e| CloseError::Execution(format!("U256 → Decimal: {e}")))?;
+        let eth_dec = eth_wei_dec / decimal_pow10(18);
+        let eth_received_usd = (eth_dec * self.config.eth_price_usd).round_dp(8);
+
+        // Gas fee in USD.
+        let gas_fee_wei = (receipt.gas_used as u128)
+            .saturating_mul(receipt.effective_gas_price as u128);
+        let gas_fee_wei_dec = Decimal::from_str_exact(&gas_fee_wei.to_string())
+            .map_err(|e| CloseError::Execution(format!("gas → Decimal: {e}")))?;
+        let gas_fee_eth = gas_fee_wei_dec / decimal_pow10(18);
+        let fee_usd = (gas_fee_eth * self.config.eth_price_usd).round_dp(8);
+
+        Ok(CloseReceipt {
+            tx_hash: format!("{}", receipt.tx_hash),
+            eth_received_usd: eth_received_usd.max(Decimal::ZERO),
+            fee_usd: fee_usd.max(Decimal::ZERO),
+            block_number: receipt.block_number,
+        })
+    }
 }
 
 #[cfg(test)]

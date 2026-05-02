@@ -10,8 +10,9 @@ use thiserror::Error;
 use tokio::sync::Mutex;
 
 use ast_core::{
-    cache_json, cached_json, prepare_request, record_failure, record_success, ExecutionOrder,
-    ExecutionResult, Position, PositionState, ProviderFailureKind, Signal, SignedUsd, Usd,
+    cache_json, cached_json, prepare_request, record_failure, record_success, CloseError,
+    ExecutionOrder, ExecutionResult, LiveCloseExecutor, Position, PositionState,
+    ProviderFailureKind, Signal, SignedUsd, Usd,
 };
 
 #[derive(Debug, Error)]
@@ -38,12 +39,14 @@ pub trait PositionTracker: Send + Sync {
     async fn positions(&self) -> Result<Vec<Position>, ReaperError>;
 }
 
-#[derive(Debug)]
 pub struct FileReaper {
     state_path: PathBuf,
     ledger_path: PathBuf,
     positions: Arc<Mutex<Vec<Position>>>,
     client: Client,
+    /// When set, stop-loss triggers attempt an on-chain sell via this
+    /// executor before marking the position closed. None = paper mode.
+    live_close: Option<Arc<dyn LiveCloseExecutor>>,
 }
 
 impl FileReaper {
@@ -80,7 +83,16 @@ impl FileReaper {
                 .user_agent("asymmetric-strike-team/0.1")
                 .build()
                 .unwrap_or_else(|_| Client::new()),
+            live_close: None,
         })
+    }
+
+    /// Attach a live close executor. When present, stop-loss triggers
+    /// in `monitor_positions` will submit an on-chain sell before
+    /// marking the position closed. Without this, closes are paper-only.
+    pub fn with_live_close(mut self, executor: Arc<dyn LiveCloseExecutor>) -> Self {
+        self.live_close = Some(executor);
+        self
     }
 
     async fn persist(&self, positions: &[Position]) -> Result<(), ReaperError> {
@@ -320,10 +332,17 @@ impl PositionTracker for FileReaper {
 
     async fn monitor_positions(&self) -> Result<Vec<Position>, ReaperError> {
         let mut ledger_records = Vec::new();
-        let snapshot = {
+        // Positions whose stop-loss tripped on this pass — we'll attempt
+        // on-chain closes for them outside the lock to avoid holding the
+        // mutex across awaits to the slinger.
+        let mut close_candidates: Vec<usize> = Vec::new();
+        let snapshot_phase1 = {
             let mut positions = self.positions.lock().await;
-            for position in positions.iter_mut() {
-                if !matches!(position.state, PositionState::Open | PositionState::FreeRide) {
+            for (idx, position) in positions.iter_mut().enumerate() {
+                if !matches!(
+                    position.state,
+                    PositionState::Open | PositionState::FreeRide | PositionState::Closing
+                ) {
                     continue;
                 }
 
@@ -344,11 +363,29 @@ impl PositionTracker for FileReaper {
                 position.updated_at_ms = timestamp_ms();
 
                 let previous_state = position.state.clone();
-                if position.current_price_usd.0 <= position.stop_loss_price_usd.0 {
-                    position.state = PositionState::Closed;
-                    position.realized_pnl_usd = net_pnl(position, true);
-                    position.unrealized_pnl_usd = SignedUsd::zero();
-                } else if position.current_price_usd.0 >= position.take_profit_price_usd.0 {
+                let is_open = matches!(position.state, PositionState::Open | PositionState::FreeRide);
+                let stop_loss_hit =
+                    is_open && position.current_price_usd.0 <= position.stop_loss_price_usd.0;
+                let take_profit_hit = is_open
+                    && matches!(position.state, PositionState::Open)
+                    && position.current_price_usd.0 >= position.take_profit_price_usd.0;
+
+                if stop_loss_hit {
+                    if self.live_close.is_some() {
+                        // Live: queue for on-chain close. Mark Closing so
+                        // we don't double-sell on the next pass.
+                        position.state = PositionState::Closing;
+                        close_candidates.push(idx);
+                    } else {
+                        // Paper: file-only close.
+                        position.state = PositionState::Closed;
+                        position.realized_pnl_usd = net_pnl(position, true);
+                        position.unrealized_pnl_usd = SignedUsd::zero();
+                    }
+                } else if matches!(position.state, PositionState::Closing) {
+                    // Already in flight — nothing to do this pass; wait
+                    // for the prior close attempt to finish or fail.
+                } else if take_profit_hit {
                     position.state = PositionState::FreeRide;
                 }
 
@@ -360,6 +397,70 @@ impl PositionTracker for FileReaper {
             positions.clone()
         };
 
+        // Phase 2: outside the mutex, submit on-chain closes for any
+        // candidates we identified. On success, lock again to update the
+        // position. On failure, the position stays in Closing state and
+        // we'll retry on the next monitor pass.
+        for idx in close_candidates {
+            let position_for_close = snapshot_phase1
+                .get(idx)
+                .cloned()
+                .ok_or_else(|| ReaperError::Persistence("position index out of bounds".into()))?;
+            let executor = match &self.live_close {
+                Some(exec) => exec.clone(),
+                None => continue,
+            };
+
+            match executor.close_position(&position_for_close).await {
+                Ok(receipt) => {
+                    let mut positions = self.positions.lock().await;
+                    if let Some(position) = positions.get_mut(idx) {
+                        // Use the actual ETH received as realized USD,
+                        // not the optimistic mark-based net_pnl.
+                        let invested = position.entry_notional_usd.0;
+                        let realized = receipt.eth_received_usd - receipt.fee_usd - invested;
+                        position.state = PositionState::Closed;
+                        position.realized_pnl_usd = SignedUsd::new(realized.round_dp(8));
+                        position.unrealized_pnl_usd = SignedUsd::zero();
+                        position.fees_paid_usd = Usd::new(
+                            (position.fees_paid_usd.0 + receipt.fee_usd).round_dp(8),
+                        )
+                        .unwrap_or(Usd::zero());
+                        position
+                            .metadata
+                            .insert("close_tx_hash".to_owned(), receipt.tx_hash.clone());
+                        position.metadata.insert(
+                            "close_block_number".to_owned(),
+                            receipt.block_number.to_string(),
+                        );
+                        position.updated_at_ms = timestamp_ms();
+                        ledger_records.push(LedgerRecord::state_changed(
+                            &PositionState::Closing,
+                            position,
+                        ));
+                    }
+                }
+                Err(error) => {
+                    // Leave position in Closing state for retry next pass.
+                    let mut positions = self.positions.lock().await;
+                    if let Some(position) = positions.get_mut(idx) {
+                        position.metadata.insert(
+                            "last_close_error".to_owned(),
+                            close_error_string(&error),
+                        );
+                        position.metadata.insert(
+                            "last_close_error_ts_ms".to_owned(),
+                            timestamp_ms().to_string(),
+                        );
+                    }
+                }
+            }
+        }
+
+        let snapshot = {
+            let positions = self.positions.lock().await;
+            positions.clone()
+        };
         self.persist(&snapshot).await?;
         for record in &ledger_records {
             self.append_ledger(record).await?;
@@ -370,6 +471,14 @@ impl PositionTracker for FileReaper {
     async fn positions(&self) -> Result<Vec<Position>, ReaperError> {
         let positions = self.positions.lock().await;
         Ok(positions.clone())
+    }
+}
+
+fn close_error_string(error: &CloseError) -> String {
+    match error {
+        CloseError::Validation(msg) => format!("validation: {msg}"),
+        CloseError::Execution(msg) => format!("execution: {msg}"),
+        CloseError::Skipped(msg) => format!("skipped: {msg}"),
     }
 }
 

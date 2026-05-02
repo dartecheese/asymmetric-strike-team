@@ -31,7 +31,7 @@ pub enum SlingerError {
 
 pub use dex::{DexSwapExecutor, DexSwapReceipt};
 pub use gas::{GasConfig, GasEstimator, GasParams};
-pub use live_slinger::LiveSlinger;
+pub use live_slinger::{LiveCloseAdapter, LiveSlinger};
 pub use slippage::{SlippageCheck, SlippageGuard};
 pub use tx_manager::{NonceManager, PendingTx, TxMonitor};
 pub use wallet_monitor::WalletBalanceMonitor;
