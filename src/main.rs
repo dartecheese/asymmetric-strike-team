@@ -13,7 +13,7 @@ use ast_observe::{
     StrategyCapabilityView, StrategyControlState, StrategyStatusRegistry,
 };
 use ast_reaper::{FileReaper, PositionTracker};
-use ast_safety::{CircuitBreaker, PaperSafety};
+use ast_safety::{CircuitBreaker, LiveSafety, LiveSafetyConfig, LiveSafetyState, PaperSafety};
 use ast_slinger::{DefaultVenueResolver, ExecutionRouter, PaperSlinger};
 use ast_whisperer::{DexScreenerWhisperer, SignalScanner};
 use clap::{Parser, ValueEnum};
@@ -153,6 +153,13 @@ async fn main() -> Result<()> {
     tokio::pin!(server_handle);
 
     let live_execution_armed = cli.mode == LaunchMode::Live && operator.live_execution_ready;
+    // Single Arc<LiveSafetyState> shared across all 8 strategies — any
+    // strategy's failure threshold trips the whole runtime. That's the
+    // point of a kill-switch: blast-radius reduction at the cost of a
+    // single sour strategy stalling everything.
+    let live_safety_state = Arc::new(LiveSafetyState::new());
+    let live_safety_config = LiveSafetyConfig::default();
+
     let mut pipeline_handles = Vec::with_capacity(config.strategies.len());
     for strategy in config.strategies.clone() {
         let mut shutdown_rx = shutdown_tx.subscribe();
@@ -163,6 +170,8 @@ async fn main() -> Result<()> {
         let local_brain = local_brain.clone();
         let episode_journal = episode_journal.clone();
         let live_execution = config.live_execution.clone();
+        let live_safety_state = live_safety_state.clone();
+        let live_safety_config = live_safety_config.clone();
 
         pipeline_handles.push(tokio::spawn(async move {
             if let Err(error) = run_strategy_pipeline(
@@ -175,6 +184,8 @@ async fn main() -> Result<()> {
                 status_registry,
                 live_execution,
                 live_execution_armed,
+                live_safety_state,
+                live_safety_config,
                 &mut shutdown_rx,
             )
             .await
@@ -229,6 +240,8 @@ async fn run_strategy_pipeline(
     statuses: StrategyStatusRegistry,
     live_execution: ast_core::LiveExecutionConfig,
     live_execution_armed: bool,
+    live_safety_state: Arc<LiveSafetyState>,
+    live_safety_config: LiveSafetyConfig,
     shutdown_rx: &mut broadcast::Receiver<()>,
 ) -> Result<()> {
     let whisperer: Arc<dyn SignalScanner> =
@@ -263,7 +276,15 @@ async fn run_strategy_pipeline(
             paper_trading.default_slippage_model.clone(),
         ))
     };
-    let safety: Arc<dyn CircuitBreaker> = Arc::new(PaperSafety::new(strategy.clone()));
+    let safety: Arc<dyn CircuitBreaker> = if live_execution_armed {
+        Arc::new(LiveSafety::new(
+            strategy.clone(),
+            live_safety_state.clone(),
+            live_safety_config.clone(),
+        ))
+    } else {
+        Arc::new(PaperSafety::new(strategy.clone()))
+    };
     let reaper: Arc<dyn PositionTracker> =
         Arc::new(FileReaper::new(state_dir, &strategy.name).await?);
 
@@ -308,6 +329,9 @@ async fn run_strategy_pipeline(
                     paper_trading.initial_balance_usd.0,
                     &event_bus,
                     &statuses,
+                    live_execution_armed,
+                    live_safety_state.as_ref(),
+                    &live_safety_config,
                 ).await {
                     statuses.mark_error(&strategy.name).await;
                     event_bus
@@ -337,6 +361,9 @@ async fn process_strategy_iteration(
     initial_balance_usd: Decimal,
     event_bus: &EventBus,
     statuses: &StrategyStatusRegistry,
+    live_execution_armed: bool,
+    live_safety_state: &LiveSafetyState,
+    live_safety_config: &LiveSafetyConfig,
 ) -> Result<()> {
     let signals = whisperer.scan().await.map_err(anyhow::Error::from)?;
     for signal in signals {
@@ -479,12 +506,38 @@ async fn process_strategy_iteration(
         emit_order_constructed(strategy, &order, event_bus).await;
 
         let result = match slinger.execute(&order).await {
-            Ok(result) => result,
+            Ok(result) => {
+                if live_execution_armed {
+                    live_safety_state.record_success();
+                }
+                result
+            }
             Err(error) => {
                 statuses.mark_error(&strategy.name).await;
                 event_bus
                     .publish(AgentEvent::error(strategy.name.clone(), "slinger", error.to_string()))
                     .await;
+                if live_execution_armed {
+                    let tripped = live_safety_state
+                        .record_failure(live_safety_config.kill_after_consecutive_failures);
+                    if tripped {
+                        error!(
+                            strategy = strategy.name,
+                            consecutive_failures = live_safety_state.consecutive_failures(),
+                            "LIVE KILL-SWITCH TRIPPED — refusing further orders until restart"
+                        );
+                        event_bus
+                            .publish(AgentEvent::error(
+                                strategy.name.clone(),
+                                "safety",
+                                format!(
+                                    "Kill-switch tripped after {} consecutive execution failures — runtime refusing further orders",
+                                    live_safety_state.consecutive_failures()
+                                ),
+                            ))
+                            .await;
+                    }
+                }
                 continue;
             }
         };
