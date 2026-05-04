@@ -12,7 +12,7 @@ use tokio::sync::Mutex;
 use ast_core::{
     cache_json, cached_json, prepare_request, record_failure, record_success, CloseError,
     ExecutionOrder, ExecutionResult, LiveCloseExecutor, Position, PositionState,
-    ProviderFailureKind, Signal, SignedUsd, Usd,
+    ProviderFailureKind, Signal, SignedUsd, TokenAmount, Usd,
 };
 
 #[derive(Debug, Error)]
@@ -348,10 +348,14 @@ impl PositionTracker for FileReaper {
 
     async fn monitor_positions(&self) -> Result<Vec<Position>, ReaperError> {
         let mut ledger_records = Vec::new();
-        // Positions whose stop-loss tripped on this pass — we'll attempt
-        // on-chain closes for them outside the lock to avoid holding the
-        // mutex across awaits to the slinger.
-        let mut close_candidates: Vec<usize> = Vec::new();
+        // Positions whose stop-loss or take-profit tripped on this pass.
+        // We'll attempt on-chain closes for them outside the lock to
+        // avoid holding the mutex across awaits to the slinger.
+        // Tuple is (index, partial_amount):
+        //   None  → full close (stop-loss): sell the entire position.
+        //   Some(qty) → partial close (take-profit): sell just qty
+        //               tokens, leave the rest as a free-ride position.
+        let mut close_candidates: Vec<(usize, Option<TokenAmount>)> = Vec::new();
         let snapshot_phase1 = {
             let mut positions = self.positions.lock().await;
             for (idx, position) in positions.iter_mut().enumerate() {
@@ -388,13 +392,13 @@ impl PositionTracker for FileReaper {
 
                 if stop_loss_hit {
                     if self.live_close.is_some() {
-                        // Live: queue for on-chain close. Mark Closing so
-                        // we don't double-sell on the next pass.
+                        // Live: queue full close. Mark Closing so we
+                        // don't double-sell on the next pass.
                         position.state = PositionState::Closing;
                         position
                             .metadata
                             .insert("close_trigger".to_owned(), "stop_loss".to_owned());
-                        close_candidates.push(idx);
+                        close_candidates.push((idx, None));
                     } else {
                         // Paper: file-only close.
                         position.state = PositionState::Closed;
@@ -406,15 +410,25 @@ impl PositionTracker for FileReaper {
                     // for the prior close attempt to finish or fail.
                 } else if take_profit_hit {
                     if self.live_close.is_some() {
-                        // Live: lock the win on-chain. Without this, TP
-                        // just transitions to FreeRide and the position
-                        // eventually rounds-trips back to stop-loss —
-                        // the original target profit never gets captured.
+                        // Live: extract original principal on-chain. Sell
+                        // just enough tokens to recover the invested USD
+                        // at current price; the remainder rides as a
+                        // FreeRide position with reduced cost basis.
+                        // Formula: extract_qty = quantity *
+                        // (entry_price / current_price). At TP=+100%
+                        // (current = 2 × entry) this is half the qty.
+                        let partial = compute_principal_extract(position);
                         position.state = PositionState::Closing;
                         position
                             .metadata
                             .insert("close_trigger".to_owned(), "take_profit".to_owned());
-                        close_candidates.push(idx);
+                        if let Some(qty) = &partial {
+                            position.metadata.insert(
+                                "extract_qty".to_owned(),
+                                qty.0.round_dp(8).to_string(),
+                            );
+                        }
+                        close_candidates.push((idx, partial));
                     } else {
                         // Paper: keep FreeRide semantics for dashboard.
                         position.state = PositionState::FreeRide;
@@ -433,7 +447,7 @@ impl PositionTracker for FileReaper {
         // candidates we identified. On success, lock again to update the
         // position. On failure, the position stays in Closing state and
         // we'll retry on the next monitor pass.
-        for idx in close_candidates {
+        for (idx, partial_amount) in close_candidates {
             let position_for_close = snapshot_phase1
                 .get(idx)
                 .cloned()
@@ -443,20 +457,57 @@ impl PositionTracker for FileReaper {
                 None => continue,
             };
 
-            match executor.close_position(&position_for_close).await {
+            match executor
+                .close_position(&position_for_close, partial_amount.clone())
+                .await
+            {
                 Ok(receipt) => {
                     let realized_delta = {
                         let mut positions = self.positions.lock().await;
                         if let Some(position) = positions.get_mut(idx) {
-                            // Use the actual ETH received as realized USD,
-                            // not the optimistic mark-based net_pnl.
-                            let invested = position.entry_notional_usd.0;
-                            let realized =
-                                (receipt.eth_received_usd - receipt.fee_usd - invested)
+                            let realized = if let Some(partial) = &partial_amount {
+                                // Partial close: reduce quantity, reduce
+                                // entry_notional proportionally to keep
+                                // cost-basis math accurate. Realized PnL
+                                // is just the partial leg's profit.
+                                let total_qty = position.quantity.0;
+                                let sold = partial.0.min(total_qty);
+                                let sold_fraction = if total_qty > Decimal::ZERO {
+                                    sold / total_qty
+                                } else {
+                                    Decimal::ONE
+                                };
+                                let recovered_basis = (position.entry_notional_usd.0
+                                    * sold_fraction)
                                     .round_dp(8);
-                            position.state = PositionState::Closed;
-                            position.realized_pnl_usd = SignedUsd::new(realized);
-                            position.unrealized_pnl_usd = SignedUsd::zero();
+                                let realized = (receipt.eth_received_usd
+                                    - receipt.fee_usd
+                                    - recovered_basis)
+                                    .round_dp(8);
+                                let new_qty = (total_qty - sold).max(Decimal::ZERO);
+                                position.quantity = TokenAmount::new(new_qty)
+                                    .unwrap_or_else(|_| position.quantity.clone());
+                                let new_basis = (position.entry_notional_usd.0
+                                    - recovered_basis)
+                                    .max(Decimal::ZERO);
+                                position.entry_notional_usd =
+                                    Usd::new(new_basis).unwrap_or(Usd::zero());
+                                position.realized_pnl_usd = SignedUsd::new(
+                                    (position.realized_pnl_usd.0 + realized).round_dp(8),
+                                );
+                                position.state = PositionState::FreeRide;
+                                realized
+                            } else {
+                                // Full close: realized = ETH received - fee - cost basis.
+                                let invested = position.entry_notional_usd.0;
+                                let realized =
+                                    (receipt.eth_received_usd - receipt.fee_usd - invested)
+                                        .round_dp(8);
+                                position.state = PositionState::Closed;
+                                position.realized_pnl_usd = SignedUsd::new(realized);
+                                position.unrealized_pnl_usd = SignedUsd::zero();
+                                realized
+                            };
                             position.fees_paid_usd = Usd::new(
                                 (position.fees_paid_usd.0 + receipt.fee_usd).round_dp(8),
                             )
@@ -518,6 +569,25 @@ impl PositionTracker for FileReaper {
         let positions = self.positions.lock().await;
         Ok(positions.clone())
     }
+}
+
+/// Compute the token quantity to extract at TP that recovers the
+/// original invested USD. Returns None if the math doesn't yield a
+/// positive amount (zero current price, etc.) — caller falls back to
+/// a full close.
+fn compute_principal_extract(position: &Position) -> Option<TokenAmount> {
+    if position.current_price_usd.0 <= Decimal::ZERO
+        || position.entry_price_usd.0 <= Decimal::ZERO
+        || position.quantity.0 <= Decimal::ZERO
+    {
+        return None;
+    }
+    let ratio = position.entry_price_usd.0 / position.current_price_usd.0;
+    let extract = (position.quantity.0 * ratio).round_dp(8);
+    if extract <= Decimal::ZERO || extract >= position.quantity.0 {
+        return None;
+    }
+    TokenAmount::new(extract).ok()
 }
 
 fn close_error_string(error: &CloseError) -> String {
@@ -704,13 +774,80 @@ struct DexVolume {
 
 #[cfg(test)]
 mod tests {
-    use super::{timestamp_ms, FileReaper, PositionTracker};
+    use super::{compute_principal_extract, timestamp_ms, FileReaper, PositionTracker};
     use ast_core::{
-        Chain, ExecutionOrder, ExecutionResult, ExecutionStatus, RiskLevel, Signal,
-        StrategyProfile, Token, TokenAmount, Usd, Venue,
+        Chain, ExecutionOrder, ExecutionResult, ExecutionStatus, Position, PositionState,
+        RiskLevel, Signal, SignedUsd, StrategyProfile, Token, TokenAmount, Usd, Venue,
     };
+    use alloy_primitives::Address;
     use rust_decimal::Decimal;
     use std::collections::BTreeMap;
+
+    fn position_at(qty: Decimal, entry: Decimal, current: Decimal) -> Position {
+        Position {
+            id: "p1".to_owned(),
+            strategy: "swift".to_owned(),
+            signal_id: "s1".to_owned(),
+            token: Token {
+                address: Address::ZERO,
+                chain: Chain::Base,
+                symbol: "TEST".to_owned(),
+                decimals: 18,
+            },
+            state: PositionState::Open,
+            venue: Venue::Dex {
+                chain: Chain::Base,
+                router: Address::ZERO,
+            },
+            quantity: TokenAmount::new(qty).expect("qty"),
+            entry_price_usd: Usd::new(entry).expect("entry"),
+            current_price_usd: Usd::new(current).expect("current"),
+            entry_notional_usd: Usd::new((qty * entry).round_dp(8)).expect("invested"),
+            realized_pnl_usd: SignedUsd::zero(),
+            unrealized_pnl_usd: SignedUsd::zero(),
+            fees_paid_usd: Usd::zero(),
+            stop_loss_price_usd: Usd::new((entry * Decimal::new(7, 1)).round_dp(8)).expect("sl"),
+            take_profit_price_usd: Usd::new((entry * Decimal::new(2, 0)).round_dp(8)).expect("tp"),
+            monitor_passes: 0,
+            updated_at_ms: 0,
+            metadata: BTreeMap::new(),
+        }
+    }
+
+    #[test]
+    fn principal_extract_sells_half_at_double_price() {
+        // Entry $1, current $2 (TP = +100%) → sell half qty to recover principal.
+        let pos = position_at(Decimal::new(100, 0), Decimal::ONE, Decimal::new(2, 0));
+        let extract = compute_principal_extract(&pos).expect("extract");
+        assert_eq!(extract.0, Decimal::new(50, 0));
+    }
+
+    #[test]
+    fn principal_extract_sells_two_thirds_at_50pct_gain() {
+        // Entry $1, current $1.50 → ratio = 1/1.5 = 0.6666... → sell ~66.67% qty.
+        let pos = position_at(Decimal::new(100, 0), Decimal::ONE, Decimal::new(15, 1));
+        let extract = compute_principal_extract(&pos).expect("extract");
+        // 100 * (1 / 1.5) = 66.666... rounded to 8 dp.
+        assert!(extract.0 > Decimal::new(66, 0));
+        assert!(extract.0 < Decimal::new(67, 0));
+    }
+
+    #[test]
+    fn principal_extract_returns_none_when_current_equals_entry() {
+        // No gain → ratio = 1 → extract = full qty → returns None
+        // (compute_principal_extract refuses extract >= total).
+        let pos = position_at(Decimal::new(100, 0), Decimal::ONE, Decimal::ONE);
+        assert!(compute_principal_extract(&pos).is_none());
+    }
+
+    #[test]
+    fn principal_extract_returns_none_when_current_below_entry() {
+        // Underwater — should never call this in practice (TP gate
+        // wouldn't fire), but guard returns None safely.
+        let pos = position_at(Decimal::new(100, 0), Decimal::new(10, 0), Decimal::new(5, 0));
+        // ratio = 2 → extract > qty → None
+        assert!(compute_principal_extract(&pos).is_none());
+    }
 
     #[tokio::test]
     async fn track_fill_persists_position() {

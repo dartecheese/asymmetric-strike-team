@@ -218,7 +218,11 @@ impl LiveCloseAdapter {
 
 #[async_trait]
 impl LiveCloseExecutor for LiveCloseAdapter {
-    async fn close_position(&self, position: &Position) -> Result<CloseReceipt, CloseError> {
+    async fn close_position(
+        &self,
+        position: &Position,
+        partial_amount: Option<TokenAmount>,
+    ) -> Result<CloseReceipt, CloseError> {
         // Refuse to attempt a close on a venue we can't execute on.
         let chain = match &position.venue {
             Venue::Dex { chain, .. } => chain,
@@ -234,31 +238,51 @@ impl LiveCloseExecutor for LiveCloseAdapter {
             )));
         }
 
-        // Decimal quantity → raw token-unit U256. position.quantity is
-        // human-readable (e.g., 1234.567); decimals lives on the token.
+        // Decimal target quantity → raw token-unit U256. position.quantity
+        // and partial_amount are both human-readable (e.g., 1234.567);
+        // decimals lives on the token.
+        let target_qty_dec = match partial_amount.as_ref() {
+            None => position.quantity.0,
+            Some(qty) => {
+                if qty.0 > position.quantity.0 {
+                    return Err(CloseError::Validation(format!(
+                        "partial close amount {} exceeds position quantity {}",
+                        qty.0, position.quantity.0
+                    )));
+                }
+                qty.0
+            }
+        };
         let scale = decimal_pow10(position.token.decimals as u32);
-        let raw_units_dec = (position.quantity.0 * scale).round_dp(0);
+        let raw_units_dec = (target_qty_dec * scale).round_dp(0);
         if raw_units_dec <= Decimal::ZERO {
             return Err(CloseError::Validation(format!(
-                "position quantity {} scales to non-positive raw units",
-                position.quantity.0
+                "close amount {} scales to non-positive raw units",
+                target_qty_dec
             )));
         }
         let amount_token_in: U256 = raw_units_dec.to_string().parse().map_err(|e| {
-            CloseError::Execution(format!("Decimal → U256 (qty {}): {e}", position.quantity.0))
+            CloseError::Execution(format!("Decimal → U256 (qty {}): {e}", target_qty_dec))
         })?;
 
         // Synthetic ExecutionOrder for the sell. The executor only needs
         // venue (for chain + router), token (for address), and
         // max_slippage_bps. Everything else is informational and gets
         // sensible placeholders.
+        let id_suffix = if partial_amount.is_some() {
+            "partial-close"
+        } else {
+            "close"
+        };
+        let order_amount =
+            TokenAmount::new(target_qty_dec).map_err(|e| CloseError::Validation(e.to_string()))?;
         let synthetic_order = ExecutionOrder::builder()
-            .id(format!("close-{}", position.id))
+            .id(format!("{}-{}", id_suffix, position.id))
             .strategy(position.strategy.clone())
             .signal_id(position.signal_id.clone())
             .token(position.token.clone())
             .venue(position.venue.clone())
-            .amount(position.quantity.clone())
+            .amount(order_amount)
             .notional_usd(position.entry_notional_usd.clone())
             .limit_price_usd(position.entry_price_usd.clone())
             .observed_liquidity_usd(Usd::new(Decimal::ZERO).unwrap_or(Usd::zero()))

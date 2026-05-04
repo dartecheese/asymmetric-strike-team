@@ -2,7 +2,7 @@ use async_trait::async_trait;
 use rust_decimal::Decimal;
 use thiserror::Error;
 
-use crate::Position;
+use crate::{Position, TokenAmount};
 
 /// Read/write port into the live-safety state. ast-observe takes
 /// `Option<Arc<dyn SafetyControlPort>>` so it can expose
@@ -44,8 +44,9 @@ pub enum CloseError {
 }
 
 /// Adapter for live-mode position closes. The Reaper calls this when
-/// a stop-loss triggers. In paper mode, the runtime supplies no
-/// executor and the Reaper just file-marks the position closed —
+/// a stop-loss triggers (full close) or take-profit triggers (partial
+/// close to recover principal). In paper mode, the runtime supplies
+/// no executor and the Reaper just file-marks the position closed —
 /// matches existing behavior. In live mode, this submits a token →
 /// ETH swap and returns the actual ETH received, so realized PnL
 /// reflects what really happened on-chain.
@@ -54,11 +55,22 @@ pub enum CloseError {
 /// `ast-slinger` (provider) can reference it without a cycle.
 #[async_trait]
 pub trait LiveCloseExecutor: Send + Sync {
-    /// Execute a position close. Implementors should:
-    /// 1. Convert `position.quantity` (Decimal) to a raw token-unit
+    /// Execute a position close.
+    /// - `partial_amount = None` → full close: sell `position.quantity`.
+    /// - `partial_amount = Some(qty)` → partial close: sell exactly
+    ///   that token amount. Used by the take-profit "extract
+    ///   principal" pattern, where the Reaper sells just enough to
+    ///   recover the invested USD and lets the rest ride.
+    ///
+    /// Implementors should:
+    /// 1. Convert the target amount (Decimal) to a raw token-unit
     ///    integer using `position.token.decimals`.
     /// 2. Submit a sell swap (with the right router for the chain).
     /// 3. Wait for the receipt — return Err if the swap reverts.
     /// 4. Compute realized USD from the actual ETH received.
-    async fn close_position(&self, position: &Position) -> Result<CloseReceipt, CloseError>;
+    async fn close_position(
+        &self,
+        position: &Position,
+        partial_amount: Option<TokenAmount>,
+    ) -> Result<CloseReceipt, CloseError>;
 }
