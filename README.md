@@ -62,6 +62,24 @@ The dashboard includes hover help for these roles so a new operator can learn th
 
 ---
 
+## Pipeline gates
+
+Between Safety approval and Slinger routing, every signal passes through two universal gates that apply to both paper and live mode. They prevent the failure mode where the simulator opens the same trade thousands of times because the underlying signal keeps re-firing.
+
+**1. Per-strategy capacity gate**
+
+Each strategy gets a budget of `paper_trading.initial_balance_usd / num_strategies`. With the default $10,000 initial balance and 8 configured strategies, each strategy can hold up to `$1,250 × 0.95 = $1,187.50` in open notional at once (5% reserve preserved). New entries that would exceed this are skipped and an event is emitted to the bus tagged `signal_skipped` with `reason = strategy_budget_exhausted`.
+
+This is the paper-mode equivalent of the live `wallet_floor_usd` check. It runs in addition to the live wallet check when in `--mode live`, so over-leverage is gated even if both checks are active.
+
+**2. Per-strategy duplicate-position gate**
+
+If a strategy already has an active position (`Open`, `FreeRide`, `Closing`, or `Pending`) for the same `(symbol, chain)` tuple, the new signal is skipped with `reason = duplicate_open_position`. Different strategies can hold the same token (they have different sizing, exit rules, and risk tolerance), but a single strategy can't double up on the same trade.
+
+Both gates emit `signal_skipped` events visible in the dashboard event feed and the per-strategy ledger, so it's easy to see why a signal didn't route.
+
+---
+
 ## Paper mode only
 
 AST is currently **paper-trading only** for execution.

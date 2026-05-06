@@ -23,7 +23,7 @@ use llm::{LocalBrain, SignalIntent};
 use rust_decimal::Decimal;
 use serde_json::json;
 use tokio::sync::broadcast;
-use tracing::{error, info};
+use tracing::{error, info, warn};
 
 #[derive(Debug, Parser)]
 #[command(name = "asymmetric-strike-team")]
@@ -214,7 +214,8 @@ async fn main() -> Result<()> {
         }
     }
 
-    let mut pipeline_handles = Vec::with_capacity(config.strategies.len());
+    let num_strategies = config.strategies.len();
+    let mut pipeline_handles = Vec::with_capacity(num_strategies);
     for strategy in config.strategies.clone() {
         let mut shutdown_rx = shutdown_tx.subscribe();
         let status_registry = statuses.clone();
@@ -236,6 +237,7 @@ async fn main() -> Result<()> {
                 episode_journal,
                 event_bus_for_task,
                 status_registry,
+                num_strategies,
                 live_execution,
                 live_execution_armed,
                 live_safety_state,
@@ -297,6 +299,7 @@ async fn run_strategy_pipeline(
     episode_journal: Arc<EpisodeJournal>,
     event_bus: EventBus,
     statuses: StrategyStatusRegistry,
+    num_strategies: usize,
     live_execution: ast_core::LiveExecutionConfig,
     live_execution_armed: bool,
     live_safety_state: Arc<LiveSafetyState>,
@@ -392,6 +395,17 @@ async fn run_strategy_pipeline(
     let mut interval = tokio::time::interval(Duration::from_secs(strategy.scan_interval_seconds));
     interval.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Skip);
 
+    // Per-strategy capital budget. Total initial balance divided across
+    // every configured strategy so a single runaway strategy can't drain
+    // the whole portfolio. Iteration logic refuses new orders when the
+    // strategy's open invested + projected_notional exceeds this.
+    let strategy_budget_usd = if num_strategies > 0 {
+        (paper_trading.initial_balance_usd.0 / Decimal::from(num_strategies as u64))
+            .round_dp(2)
+    } else {
+        paper_trading.initial_balance_usd.0
+    };
+
     loop {
         tokio::select! {
             _ = shutdown_rx.recv() => {
@@ -426,13 +440,14 @@ async fn run_strategy_pipeline(
                     local_brain.as_ref(),
                     episode_journal.as_ref(),
                     paper_trading.initial_balance_usd.0,
+                    strategy_budget_usd,
                     &event_bus,
                     &statuses,
                     live_execution_armed,
                     live_safety_state.as_ref(),
                     &live_safety_config,
                 ).await {
-                    statuses.mark_error(&strategy.name).await;
+                    warn!(strategy = strategy.name, error = %error, "iteration failed, will retry next tick");
                     event_bus
                         .publish(AgentEvent::error(
                             strategy.name.clone(),
@@ -458,6 +473,7 @@ async fn process_strategy_iteration(
     local_brain: &LocalBrain,
     episode_journal: &EpisodeJournal,
     initial_balance_usd: Decimal,
+    strategy_budget_usd: Decimal,
     event_bus: &EventBus,
     statuses: &StrategyStatusRegistry,
     live_execution_armed: bool,
@@ -504,7 +520,7 @@ async fn process_strategy_iteration(
         let assessment = match actuary.assess(&signal).await {
             Ok(assessment) => assessment,
             Err(error) => {
-                statuses.mark_error(&strategy.name).await;
+                warn!(strategy = strategy.name, "actuary assessment failed, skipping signal");
                 event_bus
                     .publish(AgentEvent::error(strategy.name.clone(), "actuary", error.to_string()))
                     .await;
@@ -549,7 +565,7 @@ async fn process_strategy_iteration(
         let safety_decision = match safety.evaluate(&signal, &assessment).await {
             Ok(decision) => decision,
             Err(error) => {
-                statuses.mark_error(&strategy.name).await;
+                warn!(strategy = strategy.name, "safety evaluation failed, skipping signal");
                 event_bus
                     .publish(AgentEvent::error(strategy.name.clone(), "safety", error.to_string()))
                     .await;
@@ -589,10 +605,96 @@ async fn process_strategy_iteration(
             continue;
         }
 
+        // Per-strategy capacity + dedup gates. Without these the paper sim
+        // happily opens unbounded positions on the same token, draining
+        // notional cash into double-digit-thousands "invested" with no
+        // closes to free anything up. Both gates apply to live mode too —
+        // dedup is universal, capacity is the paper-mode equivalent of
+        // the live wallet floor.
+        let active_positions = match reaper.positions().await {
+            Ok(positions) => positions,
+            Err(error) => {
+                warn!(strategy = strategy.name, "failed to read positions for capacity check, skipping signal");
+                event_bus
+                    .publish(AgentEvent::error(strategy.name.clone(), "reaper", error.to_string()))
+                    .await;
+                continue;
+            }
+        };
+        let active = active_positions.iter().filter(|p| {
+            matches!(
+                p.state,
+                ast_core::PositionState::Pending
+                    | ast_core::PositionState::Open
+                    | ast_core::PositionState::FreeRide
+                    | ast_core::PositionState::Closing
+            )
+        });
+        let mut already_open = false;
+        let mut invested_usd = Decimal::ZERO;
+        for position in active {
+            invested_usd += position.entry_notional_usd.0;
+            if position.token.symbol == signal.token.symbol
+                && position.token.chain == signal.token.chain
+            {
+                already_open = true;
+            }
+        }
+
+        if already_open {
+            event_bus
+                .publish(AgentEvent::action(
+                    strategy.name.clone(),
+                    "pipeline",
+                    "signal_skipped",
+                    format!(
+                        "{} already open for {} — skipping duplicate entry",
+                        signal.token.symbol, strategy.name
+                    ),
+                    json!({
+                        "signal_id": signal.id,
+                        "reason": "duplicate_open_position",
+                        "token_symbol": signal.token.symbol,
+                    }),
+                ))
+                .await;
+            continue;
+        }
+
+        let projected_notional = assessment
+            .approved_notional_usd
+            .0
+            .min(strategy.max_position_size_usd.0);
+        let capacity_threshold = (strategy_budget_usd * Decimal::new(95, 2)).round_dp(8);
+        if invested_usd + projected_notional > capacity_threshold {
+            event_bus
+                .publish(AgentEvent::action(
+                    strategy.name.clone(),
+                    "pipeline",
+                    "signal_skipped",
+                    format!(
+                        "{} budget exhausted: {} invested + {} projected > {} cap",
+                        strategy.name,
+                        invested_usd.round_dp(2),
+                        projected_notional.round_dp(2),
+                        capacity_threshold.round_dp(2),
+                    ),
+                    json!({
+                        "signal_id": signal.id,
+                        "reason": "strategy_budget_exhausted",
+                        "invested_usd": invested_usd,
+                        "projected_notional_usd": projected_notional,
+                        "strategy_budget_usd": strategy_budget_usd,
+                    }),
+                ))
+                .await;
+            continue;
+        }
+
         let order = match slinger.route(&signal, &assessment).await {
             Ok(order) => order,
             Err(error) => {
-                statuses.mark_error(&strategy.name).await;
+                warn!(strategy = strategy.name, "order routing failed, skipping signal");
                 event_bus
                     .publish(AgentEvent::error(strategy.name.clone(), "slinger", error.to_string()))
                     .await;
@@ -612,7 +714,7 @@ async fn process_strategy_iteration(
                 result
             }
             Err(error) => {
-                statuses.mark_error(&strategy.name).await;
+                warn!(strategy = strategy.name, "execution failed, skipping signal");
                 event_bus
                     .publish(AgentEvent::error(strategy.name.clone(), "slinger", error.to_string()))
                     .await;
@@ -683,7 +785,7 @@ async fn process_strategy_iteration(
                 ).await
             }
             Err(error) => {
-                statuses.mark_error(&strategy.name).await;
+                warn!(strategy = strategy.name, "position tracking failed for fill, skipping");
                 event_bus
                     .publish(AgentEvent::error(strategy.name.clone(), "reaper", error.to_string()))
                     .await;
