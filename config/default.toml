@@ -31,17 +31,17 @@ scan_interval_seconds = 15
 
 [strategies.echo]
 description = "Mirrors smart wallet moves"
-max_position_size_usd = 300
-max_slippage_bps = 150
+max_position_size_usd = 200
+max_slippage_bps = 250
 risk_tolerance = "medium"
 scan_interval_seconds = 60
 
 [strategies.bridge]
 description = "Cross-venue arbitrage"
-max_position_size_usd = 400
-max_slippage_bps = 50
+max_position_size_usd = 200
+max_slippage_bps = 250
 risk_tolerance = "low"
-scan_interval_seconds = 10
+scan_interval_seconds = 30
 
 [strategies.flow]
 description = "Liquidity event plays"

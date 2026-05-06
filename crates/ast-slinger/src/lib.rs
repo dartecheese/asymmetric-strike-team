@@ -146,7 +146,7 @@ where
         }
 
         let fill_ratio_bps = simulated_fill_ratio_bps(order);
-        if fill_ratio_bps < 5_000 {
+        if fill_ratio_bps < 2_000 {
             return Err(SlingerError::Execution(format!(
                 "simulated fill ratio {}bps too low for execution",
                 fill_ratio_bps
@@ -182,6 +182,12 @@ where
 }
 
 fn simulated_slippage_bps(order: &ExecutionOrder) -> u16 {
+    if order.notional_usd.0 <= Decimal::ZERO
+        || order.observed_liquidity_usd.0 <= Decimal::ZERO
+        || order.observed_volume_24h_usd.0 <= Decimal::ZERO
+    {
+        return u16::MAX;
+    }
     let liquidity_ratio_bps = ratio_bps(order.notional_usd.0, order.observed_liquidity_usd.0);
     let volume_ratio_bps = ratio_bps(order.notional_usd.0, order.observed_volume_24h_usd.0);
     let base_bps = 12u16;
