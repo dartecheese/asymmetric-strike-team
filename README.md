@@ -55,7 +55,7 @@ Each strategy is composed of role agents:
 - **Actuary** — scores risk and screens contracts/taxes/liquidity
 - **Safety** — applies hard safety gates
 - **Slinger** — builds paper orders and simulates execution
-- **Reaper** — tracks positions, marks market value, and updates P&L
+- **Reaper** — tracks positions, marks market value, updates P&L. Stop-loss fires at **-5%** (full close); take-profit fires at **+8%** (extract original principal at current price; rest rides as `FreeRide`). Bands are scalp-tight by default so the close machinery actually exercises in normal mid-cap drift; widen them in `crates/ast-reaper/src/lib.rs::track_fill` if you want longer holds.
 - **Critic** — records after-action reflection and learning traces
 
 The dashboard includes hover help for these roles so a new operator can learn the system in place.

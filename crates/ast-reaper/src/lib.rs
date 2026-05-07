@@ -303,10 +303,16 @@ impl PositionTracker for FileReaper {
         signal: &Signal,
         result: &ExecutionResult,
     ) -> Result<Position, ReaperError> {
-        let stop_loss_price = Usd::new((result.fill_price_usd.0 * Decimal::new(92, 2)).round_dp(8))
+        // Tight scalp bands: -5% stop / +8% take-profit. The previous
+        // -8%/+15% bands almost never closed in normal mid-cap drift,
+        // so the operator never got to see the close machinery exercise.
+        // Tuned so that ordinary intraday volatility (1-3%) routinely
+        // surfaces both SL hits and TP partial-extracts; operators with
+        // patience for wider swings can lift these.
+        let stop_loss_price = Usd::new((result.fill_price_usd.0 * Decimal::new(95, 2)).round_dp(8))
             .map_err(|error| ReaperError::StoreUnavailable(error.to_string()))?;
         let take_profit_price =
-            Usd::new((result.fill_price_usd.0 * Decimal::new(115, 2)).round_dp(8))
+            Usd::new((result.fill_price_usd.0 * Decimal::new(108, 2)).round_dp(8))
                 .map_err(|error| ReaperError::StoreUnavailable(error.to_string()))?;
 
         let mut metadata = signal.metadata.clone();
