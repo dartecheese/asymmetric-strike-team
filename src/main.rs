@@ -115,6 +115,10 @@ async fn main() -> Result<()> {
     statuses.initialize(&config.strategies).await;
 
     let (shutdown_tx, _) = broadcast::channel::<()>(1);
+
+    // ── CryptoAgent Bridge ────────────────────────────
+    let bridge_queue = ast_observe::bridge::BridgeSignalQueue::new(32);
+
     let live_execution_armed = cli.mode == LaunchMode::Live && operator.live_execution_ready;
     // Single Arc<LiveSafetyState> shared across all 8 strategies — any
     // strategy's failure threshold trips the whole runtime. That's the
@@ -159,6 +163,7 @@ async fn main() -> Result<()> {
         } else {
             None
         },
+        bridge_queue: Some(bridge_queue.clone()),
     };
     let mut server_shutdown_rx = shutdown_tx.subscribe();
     let server_handle = tokio::spawn(async move {
@@ -227,6 +232,7 @@ async fn main() -> Result<()> {
         let live_execution = config.live_execution.clone();
         let live_safety_state = live_safety_state.clone();
         let live_safety_config = live_safety_config.clone();
+        let bridge_rx = bridge_queue.subscribe();
 
         pipeline_handles.push(tokio::spawn(async move {
             if let Err(error) = run_strategy_pipeline(
@@ -243,6 +249,7 @@ async fn main() -> Result<()> {
                 live_safety_state,
                 live_safety_config,
                 &mut shutdown_rx,
+                bridge_rx,
             )
             .await
             {
@@ -305,6 +312,7 @@ async fn run_strategy_pipeline(
     live_safety_state: Arc<LiveSafetyState>,
     live_safety_config: LiveSafetyConfig,
     shutdown_rx: &mut broadcast::Receiver<()>,
+    mut bridge_rx: broadcast::Receiver<(ast_core::Signal, ast_core::AgenticTradingSignal)>,
 ) -> Result<()> {
     let whisperer: Arc<dyn SignalScanner> =
         Arc::new(DexScreenerWhisperer::new(
@@ -430,6 +438,41 @@ async fn run_strategy_pipeline(
                     }
                 }
 
+                // Drain any pending CryptoAgent bridge signals
+                let mut bridge_signals: Vec<ast_core::Signal> = Vec::new();
+                while let Ok((signal, agentic)) = bridge_rx.try_recv() {
+                    info!(
+                        strategy = strategy.name,
+                        signal_id = %signal.id,
+                        token = %signal.token.symbol,
+                        rating = ?agentic.rating,
+                        "bridge signal received from CryptoAgent"
+                    );
+                    bridge_signals.push(signal);
+                }
+
+                if !bridge_signals.is_empty() {
+                    if let Err(error) = process_bridge_signals(
+                        &strategy,
+                        &bridge_signals,
+                        actuary.as_ref(),
+                        safety.as_ref(),
+                        slinger.as_ref(),
+                        reaper.as_ref(),
+                        local_brain.as_ref(),
+                        episode_journal.as_ref(),
+                        paper_trading.initial_balance_usd.0,
+                        strategy_budget_usd,
+                        &event_bus,
+                        &statuses,
+                        live_execution_armed,
+                        live_safety_state.as_ref(),
+                        &live_safety_config,
+                    ).await {
+                        warn!(strategy = strategy.name, error = %error, "bridge signal processing failed");
+                    }
+                }
+
                 if let Err(error) = process_strategy_iteration(
                     &strategy,
                     whisperer.as_ref(),
@@ -460,6 +503,143 @@ async fn run_strategy_pipeline(
         }
     }
 
+    Ok(())
+}
+
+/// Process CryptoAgent bridge signals through the same safety/execution pipeline
+/// that normal DexScreener-scanned signals go through.
+async fn process_bridge_signals(
+    strategy: &StrategyProfile,
+    signals: &[ast_core::Signal],
+    actuary: &dyn RiskAssessor,
+    safety: &dyn CircuitBreaker,
+    slinger: &dyn ExecutionRouter,
+    reaper: &dyn PositionTracker,
+    local_brain: &LocalBrain,
+    episode_journal: &EpisodeJournal,
+    _initial_balance_usd: Decimal,
+    _strategy_budget_usd: Decimal,
+    event_bus: &EventBus,
+    _statuses: &StrategyStatusRegistry,
+    _live_execution_armed: bool,
+    _live_safety_state: &LiveSafetyState,
+    _live_safety_config: &LiveSafetyConfig,
+) -> Result<()> {
+    for signal in signals {
+        let _ = episode_journal.record_signal(&strategy.name, signal).await;
+        let signal_intent = local_brain.signal_intent(strategy, signal).await;
+
+        event_bus
+            .publish(AgentEvent::action(
+                strategy.name.clone(),
+                "bridge",
+                "signal_received",
+                format!(
+                    "CryptoAgent signal: {} on {} at ${}",
+                    signal.token.symbol,
+                    signal.token.chain,
+                    signal.price_usd.0.round_dp(6)
+                ),
+                json!({
+                    "signal_id": signal.id,
+                    "token_symbol": signal.token.symbol,
+                    "chain": signal.token.chain.to_string(),
+                    "source": signal.metadata.get("source").cloned().unwrap_or_else(|| "cryptoagent".to_owned()),
+                    "rationale": signal.metadata.get("rationale").cloned(),
+                    "intent": signal_intent.as_ref().map(|i| i.intent.clone()),
+                }),
+            ))
+            .await;
+
+        let assessment = match actuary.assess(signal).await {
+            Ok(a) => a,
+            Err(error) => {
+                warn!(strategy = strategy.name, "bridge: actuary failed");
+                event_bus.publish(AgentEvent::error(strategy.name.clone(), "bridge", error.to_string())).await;
+                continue;
+            }
+        };
+
+        let _ = episode_journal.record_risk(&strategy.name, signal, &assessment).await;
+
+        if !assessment.acceptable() {
+            info!(strategy = strategy.name, token = %signal.token.symbol, "bridge: signal rejected by actuary");
+            continue;
+        }
+
+        let safety_decision = match safety.evaluate(signal, &assessment).await {
+            Ok(d) => d,
+            Err(_error) => {
+                warn!(strategy = strategy.name, "bridge: safety failed");
+                continue;
+            }
+        };
+
+        if !safety_decision.should_trade {
+            info!(strategy = strategy.name, token = %signal.token.symbol, reason = %safety_decision.reason, "bridge: signal blocked by safety");
+            continue;
+        }
+
+        // Dedup check
+        let active_positions = match reaper.positions().await {
+            Ok(p) => p,
+            Err(_) => continue,
+        };
+        let already_open = active_positions.iter().any(|p| {
+            matches!(p.state, ast_core::PositionState::Pending | ast_core::PositionState::Open | ast_core::PositionState::FreeRide)
+                && p.token.symbol == signal.token.symbol
+                && p.token.chain == signal.token.chain
+        });
+        if already_open {
+            continue;
+        }
+
+        let order = match slinger.route(signal, &assessment).await {
+            Ok(o) => o,
+            Err(_error) => {
+                warn!(strategy = strategy.name, "bridge: routing failed");
+                continue;
+            }
+        };
+
+        let result = match slinger.execute(&order).await {
+            Ok(r) => r,
+            Err(_error) => {
+                warn!(strategy = strategy.name, "bridge: execution failed");
+                continue;
+            }
+        };
+
+        match reaper.track_fill(&order, signal, &result).await {
+            Ok(position) => {
+                info!(
+                    strategy = strategy.name,
+                    position_id = %position.id,
+                    token = %signal.token.symbol,
+                    notional = %result.notional_usd.0.round_dp(2),
+                    "bridge: position opened from CryptoAgent signal"
+                );
+                event_bus
+                    .publish(AgentEvent::action(
+                        strategy.name.clone(),
+                        "bridge",
+                        "position_opened",
+                        format!("Bridge position {} opened for {}", position.id, signal.token.symbol),
+                        json!({
+                            "position_id": position.id,
+                            "signal_id": signal.id,
+                            "token": signal.token.symbol,
+                            "notional_usd": result.notional_usd.0,
+                        }),
+                    ))
+                    .await;
+            }
+            Err(_error) => {
+                warn!(strategy = strategy.name, "bridge: position tracking failed");
+                continue;
+            }
+        }
+    }
     Ok(())
 }
 

@@ -1,3 +1,5 @@
+pub mod bridge;
+
 use std::collections::{HashMap, VecDeque};
 use std::net::SocketAddr;
 use std::path::PathBuf;
@@ -303,6 +305,8 @@ pub struct ObserveHttpState {
     /// mode — the kill / status endpoints return 404 in that case so
     /// the dashboard can hide the panic-button UI.
     pub safety: Option<Arc<dyn SafetyControlPort>>,
+    /// CryptoAgent bridge queue — receives LLM-generated trading signals.
+    pub bridge_queue: Option<bridge::BridgeSignalQueue>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -339,6 +343,8 @@ pub async fn serve_http(
         .route("/portfolio", get(portfolio_handler))
         .route("/safety/status", get(safety_status_handler))
         .route("/safety/kill", post(safety_kill_handler))
+        .route("/bridge/health", get(bridge::bridge_health_handler))
+        .route("/bridge/signal", post(bridge::bridge_signal_handler))
         .route("/ws", get(ws_handler))
         .with_state(state);
 

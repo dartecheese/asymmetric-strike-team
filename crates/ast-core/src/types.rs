@@ -354,6 +354,76 @@ impl fmt::Display for Chain {
 
 pub type TradingSignal = Signal;
 
+// ── CryptoAgent Bridge Types ────────────────────────────────────────
+// These mirror the Python cryptoagent/bridge/signal_builder.py schema.
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum BridgeDirection {
+    Long,
+    Short,
+    Close,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum BridgeConviction {
+    Low,
+    Medium,
+    High,
+    Conviction,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum BridgeRating {
+    Buy,
+    Overweight,
+    Hold,
+    Underweight,
+    Sell,
+}
+
+/// The canonical signal from CryptoAgent's LLM Research Layer.
+/// Received via HTTP POST /bridge/signal and fed into the AST pipeline.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct AgenticTradingSignal {
+    pub token_address: String,
+    pub chain: String,
+    pub direction: BridgeDirection,
+    pub rating: BridgeRating,
+    pub conviction: BridgeConviction,
+    pub rationale: String,
+    pub time_horizon: String,
+    #[serde(default)]
+    pub narrative_tags: Vec<String>,
+    #[serde(default)]
+    pub entry_type: Option<String>,
+    pub entry_price_usd: Option<f64>,
+    pub position_size_usd: Option<f64>,
+    pub max_slippage_bps: Option<u16>,
+    pub stop_loss_pct: Option<f64>,
+    pub take_profit_pct: Option<f64>,
+    #[serde(default)]
+    pub mev_protection: bool,
+    #[serde(default)]
+    pub gas_strategy: Option<String>,
+    #[serde(default)]
+    pub risk_flags: Vec<String>,
+}
+
+/// Response returned to CryptoAgent after processing a signal.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct BridgeSignalResponse {
+    pub accepted: bool,
+    pub reason: String,
+    pub stage: String, // "received", "safety_blocked", "risk_rejected", "executed", "error"
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub position_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub details: Option<serde_json::Value>,
+}
+
 #[cfg(test)]
 mod tests {
     use std::collections::BTreeMap;
