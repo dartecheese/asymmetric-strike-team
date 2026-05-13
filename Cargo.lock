@@ -1043,6 +1043,7 @@ dependencies = [
 name = "asymmetric-strike-team"
 version = "0.1.0"
 dependencies = [
+ "alloy-primitives",
  "anyhow",
  "ast-actuary",
  "ast-core",

@@ -17,6 +17,13 @@ use ast_core::{
     ProviderFailureKind, Signal, StrategyProfile, Token, Usd, Venue,
 };
 
+/// Minimum 24-hour volume for a pool to be considered tradable.
+/// Pools below this are "dead" — they may have locked liquidity but no swap
+/// activity, so any meaningful fill blows past slippage limits.
+/// A $200 position against a $1k/day pool is ~20% of daily flow — painful
+/// but plausibly fillable; below that, give up at discovery time.
+const MIN_VOLUME_24H_USD: i64 = 1_000;
+
 const NOTABLE_DEXES: [NotableDex; 5] = [
     NotableDex::new("uniswap", "Uniswap", &["uniswap", "uniswap_v2", "uniswap_v3"]),
     NotableDex::new("aerodrome", "Aerodrome", &["aerodrome", "aerodrome-slipstream"]),
@@ -390,6 +397,14 @@ impl DexScreenerWhisperer {
         dex: Option<NotableDex>,
     ) -> i64 {
         if !price_present || liquidity <= Decimal::ZERO {
+            return -1;
+        }
+        // Volume floor — dead pools (high TVL, no swaps) pass the liquidity
+        // check trivially but blow past the slippage cap at fill time, so they
+        // produce orders that never fill. The insight strategy traced 19,378
+        // orders → 0 fills to this: every signal it found had liquidity in
+        // the tens of thousands but 24h volume in the tens of dollars.
+        if volume < Decimal::from(MIN_VOLUME_24H_USD) {
             return -1;
         }
 
@@ -924,6 +939,47 @@ mod tests {
 
         let dex = lookup_notable_dex(Some("aerodrome-slipstream")).expect("should map alias");
         assert_eq!(dex.key, "aerodrome");
+    }
+
+    #[test]
+    fn dead_pool_with_high_tvl_but_no_volume_is_rejected() {
+        // Regression for the insight strategy's 19,378-orders → 0-fills run.
+        // Pools with $70k+ locked liquidity but $36/day volume passed the
+        // liquidity floor, scored above 0, and produced orders that the
+        // slinger then refused for slippage. The volume floor rejects them
+        // at discovery instead.
+        use super::{lookup_notable_dex, DexScreenerWhisperer};
+        let strategy = StrategyProfile {
+            name: "insight".to_owned(),
+            description: "test".to_owned(),
+            max_position_size_usd: Usd::new(Decimal::new(200, 0)).expect("valid usd"),
+            max_slippage_bps: 250,
+            risk_tolerance: RiskLevel::High,
+            scan_interval_seconds: 45,
+            paper_trading: true,
+        };
+        let whisperer = DexScreenerWhisperer::new(strategy, true, true);
+        let uniswap = lookup_notable_dex(Some("uniswap"));
+
+        // High TVL, dead volume — matches the real sample from data/learning/insight.jsonl.
+        let dead_score = whisperer.score_pair(
+            "base",
+            true,
+            Decimal::new(7195123, 2), // $71,951.23 liquidity
+            Decimal::new(3697, 2),    // $36.97 daily volume
+            uniswap,
+        );
+        assert_eq!(dead_score, -1, "dead pool must be rejected at scoring time");
+
+        // Same liquidity, healthy volume — must score positively.
+        let live_score = whisperer.score_pair(
+            "base",
+            true,
+            Decimal::new(7195123, 2),     // same $71,951.23 liquidity
+            Decimal::new(5_000_000, 2),   // $50,000 daily volume
+            uniswap,
+        );
+        assert!(live_score > 0, "pool with healthy volume must score positively");
     }
 
     #[test]
