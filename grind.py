@@ -71,12 +71,13 @@ def ensure_ollama_running() -> bool:
 
 
 def build_agents(engine=None, use_ai=True):
-    """Build the four agents, wired together through the shared engine."""
+    """Build the agents, wired together through the shared engine."""
     if use_ai and engine is not None:
-        from ai_agents import AIWhisperer, AIActuary, AISlinger, AIReaper
+        from ai_agents import AIWhisperer, AIActuary, AISlinger, AIReaper, Researcher
 
         whisperer = AIWhisperer(engine)
         actuary = AIActuary(engine)
+        researcher = Researcher(engine)
 
         from agents.slinger import Slinger as BaseSlinger
         slinger = AISlinger(engine, base=BaseSlinger())
@@ -84,7 +85,7 @@ def build_agents(engine=None, use_ai=True):
         reaper = AIReaper(engine)
 
         print(f"[grind] AI agents loaded. Engine: {engine.info}")
-        return whisperer, actuary, slinger, reaper
+        return whisperer, actuary, researcher, slinger, reaper
     else:
         # No-model mode — wrap existing agents with a consistent interface
         from agents.whisperer import Whisperer as BaseWhisperer
@@ -126,10 +127,37 @@ def build_agents(engine=None, use_ai=True):
         reaper = RulesReaper()
 
         print("[grind] Rules-based agents loaded (no AI).")
-        return whisperer, actuary, slinger, reaper
+        # No researcher in rules-only mode — preserve 5-tuple shape with None.
+        return whisperer, actuary, None, slinger, reaper
 
 
-def run_pipeline(whisperer, actuary, slinger, reaper,
+def _record_decision(signal, assessment, strategy, verdict, entered: bool):
+    """Append a researcher decision to memory for later replay/learning."""
+    try:
+        from ai_agents.memory import DecisionRecord, record_decision
+        import time as _t
+        record_decision(DecisionRecord(
+            ts=_t.time(),
+            strategy=strategy,
+            token_address=signal.token_address,
+            chain=signal.chain,
+            narrative_score=signal.narrative_score,
+            risk_level=assessment.risk_level.value,
+            buy_tax=assessment.buy_tax,
+            sell_tax=assessment.sell_tax,
+            liquidity_locked=assessment.liquidity_locked,
+            rating=verdict.rating.value,
+            confidence=verdict.confidence,
+            bull_summary=verdict.bull_summary,
+            bear_summary=verdict.bear_summary,
+            verdict_reasoning=verdict.reasoning,
+            entered=entered,
+        ))
+    except Exception as e:
+        logger.warning(f"decision memory write failed: {e}")
+
+
+def run_pipeline(whisperer, actuary, researcher, slinger, reaper,
                  strategy="degen", dry_run=False):
     """Run one full pipeline turn. Returns True if a trade was made."""
     print("\n" + "=" * 60)
@@ -161,6 +189,28 @@ def run_pipeline(whisperer, actuary, slinger, reaper,
         print(f"[grind] Risk: {assessment.risk_level.value} | "
               f"Max alloc: ${assessment.max_allocation_usd:.0f}")
 
+        # === RESEARCHER (Bull/Bear debate) ===
+        verdict = None
+        if researcher is not None and not dry_run:
+            print("\n--- Researcher: Bull/Bear debate ---")
+            verdict = researcher.deliberate(signal, assessment, strategy=strategy)
+            if verdict is None:
+                print("[grind] Researcher unavailable; proceeding on Actuary alone.")
+            elif verdict.is_veto:
+                print(f"[grind] Researcher VETO ({verdict.rating.value}). Skipping.")
+                _record_decision(signal, assessment, strategy, verdict, entered=False)
+                return False
+            elif not verdict.is_entry:
+                print(f"[grind] Researcher HOLD ({verdict.rating.value}). Skipping.")
+                _record_decision(signal, assessment, strategy, verdict, entered=False)
+                return False
+            else:
+                # Scale Actuary's max allocation by the rating tier.
+                scaled = assessment.max_allocation_usd * verdict.size_multiplier
+                assessment = assessment.model_copy(update={"max_allocation_usd": scaled})
+                print(f"[grind] Sizing scaled to ${scaled:.0f} "
+                      f"(x{verdict.size_multiplier} from {verdict.rating.value}).")
+
         # === SLINGER ===
         print("\n--- Slinger: Planning execution ---")
         if dry_run:
@@ -175,6 +225,10 @@ def run_pipeline(whisperer, actuary, slinger, reaper,
 
         print(f"[grind] Order: {order.action} ${order.amount_usd:.0f} @ "
               f"{order.slippage_tolerance:.0%} slippage")
+
+        # Persist the decision so future debates can recall it with realized PnL.
+        if verdict is not None:
+            _record_decision(signal, assessment, strategy, verdict, entered=True)
 
         # === REAPER (if we have a position to track) ===
         if order:
@@ -250,13 +304,15 @@ def main():
                 print("[grind] No local model backend. Falling back to rules.")
                 args.no_model = True
 
-    whisperer, actuary, slinger, reaper = build_agents(engine, use_ai=not args.no_model)
+    whisperer, actuary, researcher, slinger, reaper = build_agents(
+        engine, use_ai=not args.no_model
+    )
 
     # === PIPELINE LOOP ===
     try:
         while True:
             made_trade = run_pipeline(
-                whisperer, actuary, slinger, reaper,
+                whisperer, actuary, researcher, slinger, reaper,
                 strategy=args.strategy,
                 dry_run=args.dry_run,
             )

@@ -84,22 +84,47 @@ class PositionStore:
         """Return only ACTIVE and FREE_RIDE positions."""
         return [p for p in self.load_all() if p.get("status") in ("ACTIVE", "FREE_RIDE")]
 
-    def remove_position(self, token_address: str) -> None:
-        """Remove a closed/stopped position from the store."""
+    def remove_position(self, token_address: str, reason: str = "") -> None:
+        """Remove a closed/stopped position from the store.
+
+        Before deletion, append the final realized PnL to the durable outcomes
+        log so the researcher's decision memory can join on it later."""
         data = self._read()
         key = token_address.lower()
         if key in data:
+            entry = data[key]
+            pnl = entry.get("pnl_pct")
+            prev_status = str(entry.get("status", "")).upper()
+            # Skip the outcome log if update_status already logged the terminal
+            # transition — avoids double-logging on the canonical close flow.
+            already_logged = prev_status in ("CLOSED", "STOPPED")
+            if pnl is not None and not already_logged:
+                try:
+                    from ai_agents.memory import record_outcome
+                    record_outcome(
+                        token_address=token_address,
+                        realized_pnl_pct=pnl,
+                        final_status=entry.get("status", "CLOSED"),
+                        reason=reason or "position_store.remove_position",
+                    )
+                except Exception as e:
+                    logger.warning(f"record_outcome failed: {e}")
             del data[key]
             self._write(data)
             logger.info(f"Removed position: {token_address[:12]}...")
 
     def update_status(self, token_address: str, status: str, current_value: float = None, pnl_pct: float = None) -> None:
-        """Quick status/value update without reloading a full Position object."""
+        """Quick status/value update without reloading a full Position object.
+
+        If the new status indicates a terminal state (CLOSED/STOPPED), the
+        final PnL is appended to the durable outcomes log so the researcher's
+        decision memory can recall it even after the position is removed."""
         data = self._read()
         key = token_address.lower()
         if key not in data:
             logger.warning(f"update_status: {token_address[:12]}... not found in store.")
             return
+        prev_status = str(data[key].get("status", "")).upper()
         data[key]["status"] = status
         data[key]["saved_at"] = time.time()
         if current_value is not None:
@@ -107,6 +132,23 @@ class PositionStore:
         if pnl_pct is not None:
             data[key]["pnl_pct"] = pnl_pct
         self._write(data)
+
+        new_status = str(status).upper()
+        is_terminal_now = new_status in ("CLOSED", "STOPPED")
+        was_terminal = prev_status in ("CLOSED", "STOPPED")
+        if is_terminal_now and not was_terminal:
+            final_pnl = pnl_pct if pnl_pct is not None else data[key].get("pnl_pct")
+            if final_pnl is not None:
+                try:
+                    from ai_agents.memory import record_outcome
+                    record_outcome(
+                        token_address=token_address,
+                        realized_pnl_pct=final_pnl,
+                        final_status=new_status,
+                        reason="position_store.update_status",
+                    )
+                except Exception as e:
+                    logger.warning(f"record_outcome failed: {e}")
 
     def summary(self) -> dict:
         """Return a quick overview of all persisted positions."""

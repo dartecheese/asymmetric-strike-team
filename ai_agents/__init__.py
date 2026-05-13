@@ -12,3 +12,6 @@ from .whisperer import AIWhisperer
 from .actuary import AIActuary
 from .slinger import AISlinger
 from .reaper import AIReaper
+from .researcher import Researcher, ResearcherVerdict
+from .rating import EntryRating, parse_rating
+from . import memory
