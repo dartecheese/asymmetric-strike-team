@@ -463,18 +463,22 @@ fn compute_strategy_snapshot(strategy: &str, positions: &[Position]) -> Strategy
     let timestamp_ms = positions.iter().map(|position| position.updated_at_ms).max().unwrap_or(0);
     let open_positions = positions.iter().filter(|p| is_active_position(&p.state)).count();
     let closed_positions = positions.iter().filter(|p| matches!(p.state, PositionState::Closed)).count();
+    // Financial fields use is_filled_position — Pending intent has not consumed
+    // cash and has no market value until the slinger reports a fill. Counting
+    // Pending here was producing snapshots like equity_usd = -$9.5k on a $10k
+    // account when many Pending orders accumulated but never executed.
     let invested_usd = positions
         .iter()
-        .filter(|p| is_active_position(&p.state))
+        .filter(|p| is_filled_position(&p.state))
         .fold(Decimal::ZERO, |acc, position| acc + position.entry_notional_usd.0);
     let market_value_usd = positions
         .iter()
-        .filter(|p| is_active_position(&p.state))
+        .filter(|p| is_filled_position(&p.state))
         .fold(Decimal::ZERO, |acc, position| acc + (position.current_price_usd.0 * position.quantity.0));
     let realized_pnl_usd = positions.iter().fold(Decimal::ZERO, |acc, position| acc + position.realized_pnl_usd.0);
     let unrealized_pnl_usd = positions
         .iter()
-        .filter(|p| is_active_position(&p.state))
+        .filter(|p| is_filled_position(&p.state))
         .fold(Decimal::ZERO, |acc, position| acc + position.unrealized_pnl_usd.0);
     let fees_paid_usd = positions.iter().fold(Decimal::ZERO, |acc, position| acc + position.fees_paid_usd.0);
     let win_rate = compute_win_rate(positions);
@@ -497,18 +501,19 @@ fn compute_global_snapshot(positions: &[Position], initial_balance_usd: Decimal)
     let timestamp_ms = positions.iter().map(|position| position.updated_at_ms).max().unwrap_or(0);
     let open_positions = positions.iter().filter(|p| is_active_position(&p.state)).count();
     let closed_positions = positions.iter().filter(|p| matches!(p.state, PositionState::Closed)).count();
+    // See compute_strategy_snapshot for the Pending-vs-filled rationale.
     let invested_usd = positions
         .iter()
-        .filter(|p| is_active_position(&p.state))
+        .filter(|p| is_filled_position(&p.state))
         .fold(Decimal::ZERO, |acc, position| acc + position.entry_notional_usd.0);
     let market_value_usd = positions
         .iter()
-        .filter(|p| is_active_position(&p.state))
+        .filter(|p| is_filled_position(&p.state))
         .fold(Decimal::ZERO, |acc, position| acc + (position.current_price_usd.0 * position.quantity.0));
     let realized_pnl_usd = positions.iter().fold(Decimal::ZERO, |acc, position| acc + position.realized_pnl_usd.0);
     let unrealized_pnl_usd = positions
         .iter()
-        .filter(|p| is_active_position(&p.state))
+        .filter(|p| is_filled_position(&p.state))
         .fold(Decimal::ZERO, |acc, position| acc + position.unrealized_pnl_usd.0);
     let fees_paid_usd = positions.iter().fold(Decimal::ZERO, |acc, position| acc + position.fees_paid_usd.0);
     let cash_balance_usd = initial_balance_usd + realized_pnl_usd - invested_usd;
@@ -537,6 +542,16 @@ fn is_active_position(state: &PositionState) -> bool {
     )
 }
 
+/// Filled positions — slinger has reported a fill, so cash has truly moved.
+/// Pending is excluded because pending = intent, not committed capital.
+/// Use this for any field that represents money (invested, market value, PnL).
+fn is_filled_position(state: &PositionState) -> bool {
+    matches!(
+        state,
+        PositionState::Open | PositionState::FreeRide | PositionState::Closing
+    )
+}
+
 fn compute_win_rate(positions: &[Position]) -> Decimal {
     let closed: Vec<_> = positions
         .iter()
@@ -550,4 +565,95 @@ fn compute_win_rate(positions: &[Position]) -> Decimal {
         .filter(|position| position.realized_pnl_usd.0 > Decimal::ZERO)
         .count();
     Decimal::from(winners as u64) / Decimal::from(closed.len() as u64)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use alloy_primitives::Address;
+    use ast_core::{Chain, SignedUsd, Token, TokenAmount, Usd, Venue};
+    use rust_decimal::Decimal;
+    use std::collections::BTreeMap;
+    use std::str::FromStr;
+
+    fn mk_position(state: PositionState, entry_notional: &str, qty: &str, price: &str) -> Position {
+        Position {
+            id: "test".to_owned(),
+            strategy: "test".to_owned(),
+            signal_id: "test-sig".to_owned(),
+            token: Token {
+                address: Address::ZERO,
+                chain: Chain::Base,
+                symbol: "TEST".to_owned(),
+                decimals: 18,
+            },
+            state,
+            venue: Venue::Dex {
+                chain: Chain::Base,
+                router: Address::ZERO,
+            },
+            quantity: TokenAmount::new(Decimal::from_str(qty).unwrap()).unwrap(),
+            entry_price_usd: Usd::new(Decimal::from_str(price).unwrap()).unwrap(),
+            current_price_usd: Usd::new(Decimal::from_str(price).unwrap()).unwrap(),
+            entry_notional_usd: Usd::new(Decimal::from_str(entry_notional).unwrap()).unwrap(),
+            realized_pnl_usd: SignedUsd::zero(),
+            unrealized_pnl_usd: SignedUsd::zero(),
+            fees_paid_usd: Usd::zero(),
+            stop_loss_price_usd: Usd::zero(),
+            take_profit_price_usd: Usd::zero(),
+            monitor_passes: 0,
+            updated_at_ms: 0,
+            metadata: BTreeMap::new(),
+        }
+    }
+
+    #[test]
+    fn pending_positions_do_not_consume_cash() {
+        // Regression: portfolio.jsonl historically reported equity_usd = -$9,503 on a
+        // $10k account because 10,419 Pending positions ($2.4M of intent) were counted
+        // as invested cash. Pending = intent, not capital — should not move cash.
+        let initial = Decimal::from(10_000);
+        let pending_intent = mk_position(PositionState::Pending, "500", "1", "1");
+
+        let snap = compute_global_snapshot(&[pending_intent], initial);
+
+        assert_eq!(snap.invested_usd, Decimal::ZERO, "Pending must not consume cash");
+        assert_eq!(snap.market_value_usd, Decimal::ZERO, "Pending must have no market value");
+        assert_eq!(snap.cash_balance_usd, initial, "cash must equal initial");
+        assert_eq!(snap.equity_usd, initial, "equity must equal initial");
+    }
+
+    #[test]
+    fn open_positions_do_consume_cash() {
+        let initial = Decimal::from(10_000);
+        // Filled $500 of TOKEN at $1 each → cash drops by $500, market value = $500.
+        let filled = mk_position(PositionState::Open, "500", "500", "1");
+
+        let snap = compute_global_snapshot(&[filled], initial);
+
+        assert_eq!(snap.invested_usd, Decimal::from(500));
+        assert_eq!(snap.market_value_usd, Decimal::from(500));
+        assert_eq!(snap.cash_balance_usd, Decimal::from(9_500));
+        assert_eq!(snap.equity_usd, Decimal::from(10_000));
+    }
+
+    #[test]
+    fn mixed_pending_and_open_only_filled_count() {
+        // The scenario that broke: many Pendings + a few Opens. Equity should reflect
+        // only the Opens regardless of how absurd the Pending intent total is.
+        let initial = Decimal::from(10_000);
+        let mut positions = Vec::new();
+        for _ in 0..1_000 {
+            positions.push(mk_position(PositionState::Pending, "500", "1", "1"));
+        }
+        positions.push(mk_position(PositionState::Open, "250", "250", "1"));
+
+        let snap = compute_global_snapshot(&positions, initial);
+
+        assert_eq!(snap.invested_usd, Decimal::from(250));
+        assert_eq!(snap.market_value_usd, Decimal::from(250));
+        assert!(snap.equity_usd >= Decimal::ZERO,
+                "equity must never go negative just from accumulating Pendings");
+        assert_eq!(snap.equity_usd, Decimal::from(10_000));
+    }
 }

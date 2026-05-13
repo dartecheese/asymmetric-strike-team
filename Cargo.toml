@@ -57,3 +57,6 @@ ast-reaper = { path = "crates/ast-reaper" }
 ast-safety = { path = "crates/ast-safety" }
 ast-slinger = { path = "crates/ast-slinger" }
 ast-whisperer = { path = "crates/ast-whisperer" }
+
+[dev-dependencies]
+alloy-primitives.workspace = true
