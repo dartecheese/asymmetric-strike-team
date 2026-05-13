@@ -55,12 +55,19 @@ def _iter_jsonl(path: Path) -> Iterator[dict]:
 
 
 def load_portfolio_curve(path: Path | None = None,
-                         downsample_seconds: int = 60) -> list[PortfolioPoint]:
+                         downsample_seconds: int = 60,
+                         start_after_ms: int = 0,
+                         end_before_ms: int = 0) -> list[PortfolioPoint]:
     """Return the global-portfolio equity curve, down-sampled to one point per bucket.
 
     Down-sampling keeps the last record in each bucket — equity is monotone-ish
     over short windows so this introduces minimal smoothing. Set
     downsample_seconds=0 to keep every tick.
+
+    start_after_ms / end_before_ms (both ms epoch) clip the window. Useful for
+    skipping historical anomalies — e.g. the pre-2026-05-06 data where the
+    per-strategy capacity gate hadn't been added yet and equity tracked $2M+ of
+    spurious intent. 0 means no clip on that side.
     """
     src = path or DEFAULT_PORTFOLIO_LOG
     bucket_ms = max(0, downsample_seconds) * 1000
@@ -72,6 +79,10 @@ def load_portfolio_curve(path: Path | None = None,
             continue
         ts = int(rec.get("timestamp_ms", 0))
         if ts == 0:
+            continue
+        if start_after_ms and ts < start_after_ms:
+            continue
+        if end_before_ms and ts > end_before_ms:
             continue
         pt = PortfolioPoint(
             ts_ms=ts,

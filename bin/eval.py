@@ -30,20 +30,49 @@ from eval.benchmark import eth_buy_and_hold
 from eval.report import write_report, render_markdown
 
 
+def _parse_ts(value: str) -> int:
+    """Parse either a Unix ms epoch or an ISO-8601 UTC string into ms epoch."""
+    value = value.strip()
+    if not value:
+        return 0
+    if value.isdigit():
+        n = int(value)
+        # Auto-detect: values that look like seconds (10 digits) get *1000.
+        return n * 1000 if n < 10**11 else n
+    from datetime import datetime, timezone
+    dt = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return int(dt.timestamp() * 1000)
+
+
 def main() -> int:
     p = argparse.ArgumentParser(description="AST evaluation harness")
     p.add_argument("--downsample", type=int, default=60,
                    help="seconds per portfolio bucket (0 = no downsampling)")
     p.add_argument("--no-benchmark", action="store_true",
                    help="skip ETH buy-and-hold comparison")
+    p.add_argument("--start-after", default="",
+                   help="skip portfolio points before this timestamp (ISO-8601 or ms epoch). "
+                        "Useful for ignoring pre-2026-05-06 data when the capacity gate "
+                        "hadn't been added yet.")
+    p.add_argument("--end-before", default="",
+                   help="skip portfolio points at/after this timestamp (ISO-8601 or ms epoch)")
     p.add_argument("--out", type=Path, default=ROOT / "eval_results",
                    help="output directory for the report")
     p.add_argument("--stdout", action="store_true",
                    help="print markdown to stdout instead of writing files")
     args = p.parse_args()
 
+    start_after_ms = _parse_ts(args.start_after)
+    end_before_ms = _parse_ts(args.end_before)
+
     print("[eval] loading portfolio curve...", file=sys.stderr)
-    curve = load_portfolio_curve(downsample_seconds=args.downsample)
+    curve = load_portfolio_curve(
+        downsample_seconds=args.downsample,
+        start_after_ms=start_after_ms,
+        end_before_ms=end_before_ms,
+    )
     print(f"[eval]   {len(curve)} points", file=sys.stderr)
 
     print("[eval] computing equity metrics...", file=sys.stderr)
